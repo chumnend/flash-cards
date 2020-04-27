@@ -1,0 +1,33 @@
+{% set active_page = 'explore' %}
+{% extends 'base.html' %}
+
+{% block title %}
+    Explore
+{% endblock %}
+
+{% block content %}
+    <section class="content-header">
+        {% if prev_url %}
+            <a href="{{ prev_url }}">Prev Page</a>
+        {% else %}
+            <span>Prev Page</span>
+        {% endif %}
+        <h1>Explore</h1>
+        {% if next_url %}
+            <a href="{{ next_url }}">Next Page</a>
+        {% else %}
+            <span>Next Page</span>
+        {% endif %}
+    </section>
+    <section class="explore">
+        {% if decks %}
+            <div class="deck-container">
+                {% for deck in decks %}
+                    {% include 'main/_deck.html' %}
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="deck-error">No decks found.</div>
+        {% endif %}
+    </section>
+{% endblock %}

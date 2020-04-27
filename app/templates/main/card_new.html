@@ -1,0 +1,30 @@
+{% set active_page = 'card_new' %}
+{% extends 'base.html' %}
+
+{% block title %}
+    New Card
+{% endblock %}
+
+{% block content %}
+    <div class="form-container">
+        <h1 class="form-header">Create New Card</h1>
+        <form class="form" action="" method="post">
+            {{ form.hidden_tag() }}
+            <p class="form-group">
+                {{ form.front.label }}<br>
+                {{ form.front(cols=64, rows=4) }}<br>
+                {% for error in form.front.errors %}
+                    <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+            </p>
+            <p class="form-group">
+                {{ form.back.label }}<br>
+                {{ form.back(cols=64, rows=4) }}<br>
+                {% for error in form.back.errors %}
+                    <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+            </p>
+            <p>{{ form.submit(class_="btn") }}</p>
+        </form>
+    </div>
+{% endblock %}

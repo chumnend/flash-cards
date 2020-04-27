@@ -1,0 +1,86 @@
+{% set active_page = 'deck_view' %}
+{% extends 'base.html' %}
+
+{% block title %}
+    {{ deck.name }} by {{ deck.author.username }}
+{% endblock %}
+
+{% block content %}
+    <section class="card-slideshow-header">
+        <h1>{{ deck.name }}</h1>
+        <p>By <a href="{{ url_for('main.user', username=deck.author.username) }}">{{ deck.author.username }}</a></p>
+        <p>created on {{ deck.created }}</p>
+        <p>{{ deck.description  }}</p>
+        {% if deck.author == current_user %}
+            <a href="{{ url_for('main.deck_manage', deck_id=deck.id) }}">Manage</a>
+        {% endif %}
+    </section>
+    <section class="card-slideshow">
+        {% if num_cards == 0 %}
+            <p class="card-error">No cards found in this deck</p>
+        {% else %}
+            {% for card in cards %}
+                <div class="card">
+                    <div class="card-frame">
+                        <div class="card-face card-front">
+                            <span class="card-tip">front</span>
+                            <span class="card-text">{{ card.front }}</span>
+                            <span class="card-tip">click to flip</span>
+                        </div>
+                        <div class="card-face card-back">
+                            <span class="card-tip">back</span>
+                            <span class="card-text">{{ card.back }}</span>
+                            <span class="card-tip">click to flip</span>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <a class="card-slideshow-prev" onclick="changeSlide(-1)">&#10094;</a>
+        <a class="card-slideshow-next" onclick="changeSlide(1)">&#10095;</a>
+        {% if num_cards != 0 %}
+            <div class="card-slideshow-number"><span id="slideIndex"></span> / {{ num_cards }}</div>
+        {% endif %}
+  
+    </section>
+    <script>
+        // SLIDESHOW ================================================
+        var slideIndex = 1;
+        changeSlide(0);
+
+        function changeSlide(n) {
+            showSlides(slideIndex += n);
+            
+            let e = document.getElementById("slideIndex")
+            e.innerHTML = slideIndex;
+        }
+
+        function showSlides(n) {
+            var i;
+            var slides = document.getElementsByClassName("card");
+
+            if (n > slides.length) {
+                slideIndex = 1
+            }
+
+            if (n < 1) {
+                slideIndex = slides.length
+            }
+
+            for (i = 0; i < slides.length; i++) {
+                slides[i].style.display = "none";
+            }
+
+            slides[slideIndex-1].style.display = "block"; 
+        } 
+
+        // CARD =====================================================
+        var cards = document.getElementsByClassName('card-frame');
+        for(let i=0; i<cards.length; i++) {
+            cards[i].addEventListener("click", function() {
+                this.classList.toggle('flipped');
+            });
+        }
+    </script>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% set active_page = 'index' %}
+{% extends 'base.html' %}
+
+{% block title %}
+    Welcome
+{% endblock %}
+
+{% block content %}
+    <div class="landing-container">
+        <h1 class="landing-header">Welcome to Flash Cards</h1>
+        <p class="landing-tagline">Create your own personalized flash cards and share them with the world</p>
+        <a class="btn" href="{{ url_for('auth.register') }}">Get Started</a>
+    </div>
+{% endblock %}

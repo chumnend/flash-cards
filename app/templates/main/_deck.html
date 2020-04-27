@@ -1,0 +1,15 @@
+<div class="deck">
+    <div class="deck-header">
+        {{ deck.name }}
+        by <a href="{{ url_for('main.user', username=deck.author.username) }}">{{ deck.author.username }}</a>
+    </div>
+    <div class="deck-body">
+        {{ deck.description }}
+    </div>
+    <div class="deck-footer">
+        <a href="{{ url_for('main.deck_view', deck_id=deck.id) }}">View</a>
+        {% if deck.author == current_user %}
+            <a href="{{ url_for('main.deck_manage', deck_id=deck.id) }}">Manage</a>
+        {% endif %}
+    </div>
+</div>
