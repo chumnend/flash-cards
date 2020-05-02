@@ -4,7 +4,12 @@ init:
 
 .PHONY: start
 start:
-	@flask run
+	gunicorn flashcards:app
+
+.PHONY: dev 
+dev: export FLASK_ENV=development
+dev: 
+	flask run
 
 .PHONY: test
 test:

@@ -8,7 +8,6 @@
     <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
     <link rel="icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,400;0,700;1,400&display=swap"/>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}"/>
 
     <title>{% block title %}{% endblock %} - Flash Cards</title>
@@ -19,14 +18,28 @@
             <a class="header-logo" href="{{ url_for('main.index') }}">Flash Cards</a>
             <ul class="header-nav">
                 {% if current_user.is_anonymous %}
-                    <li><a class="{{ 'active' if active_page=='register' }}" href="{{ url_for('auth.register') }}">Register</a></li>
-                    <li><a class="{{ 'active' if active_page=='login' }}" href="{{ url_for('auth.login') }}">Login</a></li>
+                    <li>
+                        <a class="{{ 'active' if active_page=='register' }}" href="{{ url_for('auth.register') }}">Register</a>
+                    </li>
+                    <li>
+                        <a class="{{ 'active' if active_page=='login' }}" href="{{ url_for('auth.login') }}">Login</a>
+                    </li>
                 {% else %}
-                    <li><a class="{{ 'active' if active_page=='deck_new' }}" href="{{ url_for('main.deck_new') }}">Create Deck</a></li>
-                    <li><a class="{{ 'active' if active_page=='feed' }}" href="{{ url_for('main.feed') }}">Feed</a></li>
-                    <li><a class="{{ 'active' if active_page=='explore' }}" href="{{ url_for('main.explore') }}">Explore</a></li>
-                    <li><a class="{{ 'active' if active_page==current_user.username }}" href="{{ url_for('main.user', username=current_user.username) }}">{{ current_user.username }}</a></li>
-                    <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
+                    <li>
+                        <a class="{{ 'active' if active_page=='deck_new' }}" href="{{ url_for('main.deck_new') }}">Create Deck</a>
+                    </li>
+                    <li>
+                        <a class="{{ 'active' if active_page=='feed' }}" href="{{ url_for('main.feed') }}">Feed</a>
+                    </li>
+                    <li>
+                        <a class="{{ 'active' if active_page=='explore' }}" href="{{ url_for('main.explore') }}">Explore</a>
+                    </li>
+                    <li>
+                        <a class="{{ 'active' if active_page==current_user.username }}" href="{{ url_for('main.user', username=current_user.username) }}">{{ current_user.username }}</a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('auth.logout') }}">Logout</a>
+                    </li>
                 {% endif %}
             </ul>
         </div>
@@ -39,7 +52,7 @@
             {% endfor %}
         {% endif %}
         {% endwith %}
-    </section>
+    </section>    
     <section class="content">
         {% block content %}{% endblock %}
     </section>

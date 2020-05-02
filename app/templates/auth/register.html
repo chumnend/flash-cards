@@ -40,6 +40,8 @@
             </p>
             <p>{{ form.submit(class_='btn') }}</p>
         </form>
-        <a href="{{ url_for('auth.login') }}">Already have an account? Login now!</a>
+        <div class="form-footer">
+            <a href="{{ url_for('auth.login') }}">Already have an account? Login now!</a>
+        </div>
     </div>
 {% endblock %}

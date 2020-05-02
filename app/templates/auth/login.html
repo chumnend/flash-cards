@@ -28,6 +28,8 @@
             <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>
             <p>{{ form.submit(class_="btn") }}</p>
         </form>
-        <a href="{{ url_for('auth.register') }}">Don't have an account? Register now!</a>
+        <div class="form-footer">
+            <a href="{{ url_for('auth.register') }}">Don't have an account? Register now!</a>
+        </div>
     </div>
 {% endblock %}
