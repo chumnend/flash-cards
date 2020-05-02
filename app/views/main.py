@@ -1,19 +1,20 @@
 from datetime import datetime
-from flask import render_template, redirect, url_for, request, flash, current_app
+from flask import Blueprint, render_template, redirect, url_for, request, flash, current_app
 from flask_login import current_user, login_required
 from app import db
 from app.models import User, Deck, Card
-from app.blueprints.main import bp
-from app.blueprints.main.forms import CreateDeckForm, EditDeckForm ,CreateCardForm, EditCardForm, EditUserForm
+from app.forms.main import CreateDeckForm, EditDeckForm ,CreateCardForm, EditCardForm, EditUserForm
 
-@bp.before_request
+main = Blueprint('main', __name__)
+
+@main.before_request
 def before_request():
     if current_user.is_authenticated:
         current_user.last_seen = datetime.utcnow()
         db.session.commit()
 
 # INDEX =============================================================
-@bp.route('/')
+@main.route('/')
 def index():
     if current_user.is_authenticated:
         return redirect( url_for('main.feed') )
@@ -21,7 +22,7 @@ def index():
     return render_template('main/landing.html')
 
 # FEED ==============================================================
-@bp.route('/feed')
+@main.route('/feed')
 @login_required
 def feed():
     # load users decks + followed users decks
@@ -40,7 +41,7 @@ def feed():
     )
 
 # EXPLORE ===========================================================
-@bp.route('/explore')
+@main.route('/explore')
 @login_required
 def explore():
     # load newest decks to render on explore page
@@ -59,7 +60,7 @@ def explore():
     )
 
 # DECK NEW ==========================================================
-@bp.route('/decks/new', methods=['GET', 'POST'])
+@main.route('/decks/new', methods=['GET', 'POST'])
 @login_required
 def deck_new():
     # setup form for creation of new deck
@@ -82,7 +83,7 @@ def deck_new():
     )
 
 # DECK VIEW =========================================================
-@bp.route('/decks/<deck_id>/view')
+@main.route('/decks/<deck_id>/view')
 @login_required
 def deck_view(deck_id):
     # load cards in the deck
@@ -99,7 +100,7 @@ def deck_view(deck_id):
     )
 
 # DECK MANAGE =======================================================
-@bp.route('/decks/<deck_id>/manage')
+@main.route('/decks/<deck_id>/manage')
 @login_required
 def deck_manage(deck_id):
     # find deck model
@@ -121,7 +122,7 @@ def deck_manage(deck_id):
     )
 
 # DECK EDIT =========================================================
-@bp.route('/decks/<deck_id>/edit', methods=['GET', 'POST'])
+@main.route('/decks/<deck_id>/edit', methods=['GET', 'POST'])
 @login_required
 def deck_edit(deck_id):
     # find deck model 
@@ -152,7 +153,7 @@ def deck_edit(deck_id):
     )
 
 # DECK DELETE =======================================================
-@bp.route('/decks/<deck_id>/delete')
+@main.route('/decks/<deck_id>/delete')
 @login_required
 def deck_delete(deck_id):
     # find deck model 
@@ -171,7 +172,7 @@ def deck_delete(deck_id):
     return redirect( url_for('main.user', username=current_user.username) )
 
 # CARD NEW ==========================================================
-@bp.route('/decks/<deck_id>/cards/new', methods=['GET', 'POST'])
+@main.route('/decks/<deck_id>/cards/new', methods=['GET', 'POST'])
 @login_required
 def card_new(deck_id):
     # find deck model
@@ -198,7 +199,7 @@ def card_new(deck_id):
     )
 
 # CARD EDIT =======================================================
-@bp.route('/decks/<deck_id>/cards/<card_id>/edit', methods=['GET', 'POST'])
+@main.route('/decks/<deck_id>/cards/<card_id>/edit', methods=['GET', 'POST'])
 @login_required
 def card_edit(deck_id, card_id):
     # find deck and card model
@@ -230,7 +231,7 @@ def card_edit(deck_id, card_id):
     )
 
 # CARD DELETE =======================================================
-@bp.route('/decks/<deck_id>/cards/<card_id>/delete')
+@main.route('/decks/<deck_id>/cards/<card_id>/delete')
 @login_required
 def card_delete(deck_id, card_id):
     # find card model
@@ -251,7 +252,7 @@ def card_delete(deck_id, card_id):
     return redirect( url_for('main.deck_manage', deck_id=deck_id) )
 
 # USER ==============================================================
-@bp.route('/users/<username>')
+@main.route('/users/<username>')
 @login_required
 def user(username):
     # load user and thier decks
@@ -273,7 +274,7 @@ def user(username):
     )
 
 # EDIT USER =========================================================
-@bp.route('/edit_user', methods=['GET', 'POST'])
+@main.route('/edit_user', methods=['GET', 'POST'])
 @login_required
 def edit_user():
     # setup edit user form
@@ -294,7 +295,7 @@ def edit_user():
     )
 
 # FOLLOW ============================================================
-@bp.route('/follow/<username>')
+@main.route('/follow/<username>')
 @login_required
 def follow(username):
     user = User.query.filter_by(username=username).first()
@@ -314,7 +315,7 @@ def follow(username):
     return redirect( url_for('main.user', username=username) )
 
 # UNFOLLOW ==========================================================
-@bp.route('/unfollow/<username>')
+@main.route('/unfollow/<username>')
 @login_required
 def unfollow(username):
     user = User.query.filter_by(username=username).first()

@@ -19,14 +19,14 @@ def create_app(config_class=Config):
     login.init_app(app)
 
     # blueprint configuration
-    from app.blueprints.main import bp as main_bp
-    app.register_blueprint(main_bp)
+    from app.views.main import main
+    app.register_blueprint(main)
 
-    from app.blueprints.auth import bp as auth_bp
-    app.register_blueprint(auth_bp, url_prefix='/auth')
+    from app.views.auth import auth
+    app.register_blueprint(auth, url_prefix='/auth')
 
-    from app.blueprints.errors import bp as errors_bp
-    app.register_blueprint(errors_bp)
+    from app.views.errors import errors
+    app.register_blueprint(errors)
 
     return app
 
