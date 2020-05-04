@@ -6,15 +6,13 @@
 {% endblock %}
 
 {% block content %}
-    <div class="content-header">
-        <div>
-            <p>Deck Name: {{ deck.name }}</p>
-            <p>Description: {{ deck.description }}</p>
-            <p>Creation Date: {{ deck.created }}</p>
-            <p>Last Edited On: {{ deck.last_edited }}</p>
-            <p>Number of Cards: {{ num_cards }}</p>
-        </div>
-        <div>
+    <div class="card-manage-header">
+        <p>Deck Name: {{ deck.name }}</p>
+        <p>Description: {{ deck.description }}</p>
+        <p>Creation Date: {{ moment(deck.created).format('LLL') }}</p>
+        <p>Last Edited On: {{ moment(deck.last_edited).format('LLL') }}</p>
+        <p>Number of Cards: {{ num_cards }}</p>
+        <div class="card-manage-header-buttons">
             <a href="{{ url_for('main.card_new', deck_id=deck.id) }}">Add Card</a>
             <a href="{{ url_for('main.deck_view', deck_id=deck.id) }}">View Deck</a>
             <a href="{{ url_for('main.deck_edit', deck_id=deck.id ) }}">Edit Deck</a>
@@ -22,11 +20,11 @@
         </div>
     </div>
 
-    <div class="card-list">
+    <div class="card-manage-list">
         {% for card in cards %}
-            <div class="card-tile">
+            <div class="card-manage-item">
                 <div>{{ card.front }} | {{ card.back }}</div>
-                <span class="card-tile-btns">
+                <span class="card-manage-item-buttons">
                     <a href="{{ url_for('main.card_edit', deck_id=deck.id, card_id=card.id ) }}">Edit</a>
                     <a href="{{ url_for('main.card_delete', deck_id=deck.id, card_id=card.id ) }}">Delete</a>
                 </span>

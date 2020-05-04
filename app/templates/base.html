@@ -9,7 +9,9 @@
     <link rel="icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,400;0,700;1,400&display=swap"/>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}"/>
-
+    {{ moment.include_jquery() }}
+    {{ moment.include_moment() }}
+    
     <title>{% block title %}{% endblock %} - Flash Cards</title>
 </head>
 <body>

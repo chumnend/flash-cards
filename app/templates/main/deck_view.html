@@ -7,10 +7,11 @@
 
 {% block content %}
     <section class="card-slideshow-header">
-        <h1>{{ deck.name }}</h1>
-        <p>By <a href="{{ url_for('main.user', username=deck.author.username) }}">{{ deck.author.username }}</a></p>
-        <p>created on {{ deck.created }}</p>
-        <p>{{ deck.description  }}</p>
+        <div class="card-slideshow-header-title">
+            <h1>{{ deck.name }} By <a href="{{ url_for('main.user', username=deck.author.username) }}">{{ deck.author.username }}</a></h1>
+            <p>{{ moment(deck.created).format('LLL') }}</p>
+        </div>
+        <p class="card-slideshow-header-desc">{{ deck.description  }}</p>
         {% if deck.author == current_user %}
             <a href="{{ url_for('main.deck_manage', deck_id=deck.id) }}">Manage</a>
         {% endif %}
