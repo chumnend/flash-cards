@@ -2,11 +2,11 @@
 A web app for creating and managing flashcards
 
 ## Development Setup
-TBD
 
 ### Prerequistes
 - Install Python 3
-- Install Pip 
+- Install Pip
+- install virtualenv
 
 ### Start
 Setup virtual environment,
@@ -31,4 +31,4 @@ python manage.py runserver
 ```
 
 ### Deploy
-TBD
+Push to master branch to deploy to Heroku
