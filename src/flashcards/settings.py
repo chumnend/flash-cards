@@ -8,7 +8,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '1esa=o%ryoy=s!o)6_khn6vt*q+#_xf8rvb@=!^1ybb_q+v^k2'
+SECRET_KEY = 'g2i&yn7n!*ukp893(mn^3+ncq-#_ei3v7s3dorvq=mhwc58+y4'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -25,7 +25,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'decks',
 ]
 
 MIDDLEWARE = [
@@ -43,7 +42,9 @@ ROOT_URLCONF = 'flashcards.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['flashcards/templates'],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'templates'),
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -108,6 +109,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR,  'flashcards/static'),
-)
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
