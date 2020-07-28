@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block styles %}
+  <style>
+    .home__header {
+      width: 100%;
+      padding: 2rem 0;
+      text-align: center;
+    }
+    
+    .home__header div {
+      background: #ddd;
+      padding: 3rem 1rem;
+    }
+    
+    .home__header--title {
+      font-size: 2.5rem;
+    }
+    
+    .home__header--text {
+      padding: 1rem 0;
+      font-style: italic;
+    }
+  
+    .home__decks {
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-gap: 1rem;
+      padding: 1rem 0;
+    }
+  
+    .tile {
+      border: 1px;
+      padding: 1rem 0.5rem;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .tile__description {
+      padding: 0.5rem 0;
+    }
+    
+    .tile__button {
+      align-self: flex-end;
+    }
+    
+    .see-more {
+      display: block;
+      margin: 1rem auto;
+    }
+    
+    @media all and (min-width: 575px) {
+      .home__decks {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    
+    @media all and (min-width: 1200px) {
+      .home__decks {
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+    }
+  </style>
+{% endblock styles %}
+
+{% block content %}
+  <header class="home__header">
+    <div>
+      <h2 class="home__header--title">Welcome to Flash Cards!</h2>
+      <p class="home__header--text">
+        Flash cards is web site for creating and sharing user created flash cards.
+        You can get started by register through the menu above or look below to take
+        a peek of what has already been created.
+      </p>
+    </div>
+  </header>
+  <section class="home__decks">
+    {% for deck in decks %}
+      <div class="tile">
+        <h3 class="tile__header">{{ deck.name }}</h3>
+        <p class="tile__description">{{ deck.description }}</p>
+        <a class="tile__button btn">View</a>
+      </div>
+    {% endfor %}
+  </section>
+  <a class="see-more btn" href="#">See More</a>
+{% endblock %}
