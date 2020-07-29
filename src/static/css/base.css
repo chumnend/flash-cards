@@ -55,6 +55,11 @@ body {
   font-weight: 700;
 }
 
+.navbar__brand a {
+  text-decoration: none;
+  color: black;
+}
+
 .navbar__links {
   list-style: none;
   display: none;
@@ -98,7 +103,7 @@ body {
   color: black;
 }
 
-@media all and (min-width: 575px) {
+@media all and (min-width: 568px) {
   .navbar__links {
     display: flex;
   }
@@ -109,9 +114,18 @@ body {
   }
 }
 
+/* HEADER */
+.header {
+  width: 100%;
+  margin: 1rem 0;
+  padding: 1rem;
+  background: #ddd;
+}
+
 /* CONTENT STYLES */
 .content {
   width: 100%;
+  padding: 1rem 0;
   min-height: calc(100vh - (64px + 48px));
 }
 
@@ -127,5 +141,11 @@ body {
   height: 100%;
   display: flex;
   justify-content: center;
-  align-items: center; 
+  align-items: center;
 }
+
+/* BREAKPOINTS */
+@media all and (min-width: 568px) {}
+@media all and (min-width: 768px) {}
+@media all and (min-width: 1024px) {}
+@media all and (min-width: 1200px) {}

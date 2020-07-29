@@ -2,26 +2,13 @@
 
 {% block styles %}
   <style>
-    .header {
-      text-align: center;
-    }
-
-    .header__title {
-      font-size: 2.5rem;
-    }
-    
-    .header__text {
-      padding: 1rem 0;
-      font-style: italic;
-    }
-
-    .home__decks {
+    .explore__decks {
       display: grid;
       grid-template-columns: 1fr;
       grid-gap: 1rem;
       padding: 1rem 0;
     }
-    
+
     .tile {
       border: 1px;
       padding: 1rem 0.5rem;
@@ -42,45 +29,46 @@
     .tile__button {
       align-self: flex-end;
     }
-
-    .see-more {
-      display: block;
-      margin: 1rem auto;
-    }
     
-    @media all and (min-width: 768px) {
-      .home__decks {
+    @media all and (min-width: 568px) {
+      .explore__decks {
         grid-template-columns: 1fr 1fr;
       }
     }
     
     @media all and (min-width: 1200px) {
-      .home__decks {
+      .explore__decks {
         grid-template-columns: 1fr 1fr 1fr;
       }
     }
   </style>
 {% endblock styles %}
 
+{% block title %}Explore{% endblock title %}
+
 {% block header %}
-  <h2 class="header__title">Welcome to Flash Cards!</h2>
-  <p class="header__text">
-    Flash cards is web site for creating and sharing user created flash cards.
-    You can get started by register through the menu above or look below to take
-    a peek of what has already been created.
-  </p>
+  <form>
+    <input type="text" placeholder="Search by name">
+    <select id="categories" name="categories">
+      <option disabled selected value> --select a category-- </option>
+      <option value="">All</option>
+      {% for category in categories %}
+        <option value="{{ category.name }}">{{ category.name }}</option>
+      {% endfor %}
+    </select>
+    <button>Search</button>
+  </form>
 {% endblock header %}
 
 {% block content %}
-  <section class="home__decks">
+  <section class="explore__decks">
     {% for deck in decks %}
       <div class="tile">
-        <h3 class="tile__header">{{ deck.name }}</h3>
+        <h3 class="tile__header">{{ deck.name }}</h3>        
         <p class="tile__owner">By {{ deck.owner }}</p>
         <p class="tile__description">{{ deck.description }}</p>
         <a class="tile__button btn" href="{% url 'deck' deck.id %}">View</a>
       </div>
     {% endfor %}
   </section>
-  <a class="see-more btn" href="{% url 'explore' %}">See More</a>
-{% endblock %}
+{% endblock content %}
