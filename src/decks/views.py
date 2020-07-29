@@ -1,5 +1,6 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404
 from decks.models import Category, Deck, Card
+from decks.forms import SearchDeckForm
 
 def home(request):
     decks = Deck.objects.filter(publish_status="o")[:4]
@@ -10,11 +11,20 @@ def home(request):
     return render(request, 'decks/home.html', context)
 
 def explore(request):
-    decks = Deck.objects.filter(publish_status="o")
+    decks = Deck.objects.filter(publish_status='o')
+    if request.method == 'POST':
+        form = SearchDeckForm(request.POST)
+        if form.is_valid():
+            decks = decks.filter(name__icontains=form.cleaned_data['name'])
+            if form.cleaned_data['category']:
+                decks = decks.filter(categories__name__contains=form.cleaned_data['category'])
+
     categories = Category.objects.all()
+    form = SearchDeckForm()
     context = {
         "decks": decks,
         "categories": categories,
+        "form": form,
     }
     
     return render(request, 'decks/explore.html', context)

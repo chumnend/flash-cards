@@ -11,16 +11,11 @@ class Category(models.Model):
         return self.name
 
 class Deck(models.Model):
-    PUBLISH_STATUS = (
-        ("o", "public"),
-        ("f", "followers"),
-        ("x", "private"),
-    )
-    
     name = models.CharField(max_length=20)
     description = models.TextField(blank=True, default="")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
+    PUBLISH_STATUS = ( ("o", "public"), ("f", "followers"), ("x", "private") )
     publish_status = models.CharField(max_length=1, choices=PUBLISH_STATUS, default="o")
     owner = models.ForeignKey(User, related_name="decks", on_delete=models.CASCADE)
     categories = models.ManyToManyField("Category", related_name="decks", blank=True)

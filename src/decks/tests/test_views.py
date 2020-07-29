@@ -1,8 +1,9 @@
 from django.urls import resolve, reverse
 from django.test import TestCase
+from django.contrib.auth.models import User
 from decks.views import home, explore, deck
 from decks.models import Deck
-from django.contrib.auth.models import User
+from decks.forms import SearchDeckForm
 
 class HomeViewTests(TestCase):
     def setUp(self):
@@ -69,6 +70,12 @@ class ExploreViewTests(TestCase):
         response = self.client.get(explore_url)
         deck_url = reverse('deck', kwargs={'pk': self.private_deck.pk})
         self.assertNotContains(response, f'href="{deck_url}"')
+    
+    def test_contains_form(self):
+        explore_url = reverse('explore')
+        response = self.client.get(explore_url)
+        form = response.context.get('form')
+        self.assertIsInstance(form, SearchDeckForm)
 
 class DeckViewTests(TestCase):
     def setUp(self):

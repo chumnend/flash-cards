@@ -2,6 +2,33 @@
 
 {% block styles %}
   <style>
+    .search {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .search label {
+      display: none;
+    }
+
+    #id_name {
+      flex-grow: 1;
+      padding: 0.5rem;
+      margin-bottom: 1rem;
+      font-family: 'Roboto', sans-serif;
+    }
+    
+    #id_category {
+      padding: 0.5rem;
+      margin-bottom: 1rem;
+      font-family: 'Roboto', sans-serif;
+    }
+    
+    .search .btn {
+      background: #7fcd91;
+      font-weight: 700;
+    }
+  
     .explore__decks {
       display: grid;
       grid-template-columns: 1fr;
@@ -36,6 +63,17 @@
       }
     }
     
+    @media all and (min-width: 768px) {
+      .search {
+        flex-direction: row;
+      }
+      
+      #id_name,
+      #id_category {
+        margin: 0;
+      }
+    }
+    
     @media all and (min-width: 1200px) {
       .explore__decks {
         grid-template-columns: 1fr 1fr 1fr;
@@ -47,16 +85,10 @@
 {% block title %}Explore{% endblock title %}
 
 {% block header %}
-  <form>
-    <input type="text" placeholder="Search by name">
-    <select id="categories" name="categories">
-      <option disabled selected value> --select a category-- </option>
-      <option value="">All</option>
-      {% for category in categories %}
-        <option value="{{ category.name }}">{{ category.name }}</option>
-      {% endfor %}
-    </select>
-    <button>Search</button>
+  <form class="search" method="post">
+    {% csrf_token %}
+    {{ form }}
+    <button class="btn">Search</button>
   </form>
 {% endblock header %}
 
