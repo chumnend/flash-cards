@@ -1,5 +1,5 @@
 # Flashcards
-A web app for creating and managing flashcards
+A web app for creating and managing flashcards, built using Django/Python
 
 ## Development Setup
 
@@ -27,7 +27,12 @@ python manage.py migrate
 
 Start the app,
 ```
-python manage.py runserver
+python manage.py runserver <PORT>
+```
+
+### Test
+```
+python manage.py test
 ```
 
 ### Deploy

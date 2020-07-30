@@ -54,8 +54,7 @@
     }
     
     .card__back {
-      color: #7fcd91;
-      background: #4d4646;
+      background: #ddd;
       transform: rotateY( 180deg );
     }
     
@@ -81,8 +80,10 @@
 {% block title %}{{ deck.name }}{% endblock title %}
 
 {% block header %}
-  <h2>{{ deck.name }}</h2>
-  <p>{{ deck.description }}</p>
+  <header class="header">
+    <h2>{{ deck.name }}</h2>
+    <p>{{ deck.description }}</p>
+  </header>
 {% endblock header %}
 
 {% block content %}

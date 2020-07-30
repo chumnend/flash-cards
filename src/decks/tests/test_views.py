@@ -37,7 +37,7 @@ class HomeViewTests(TestCase):
         response = self.client.get(home_url)
         deck_url = reverse('deck', kwargs={'pk': self.private_deck.pk})
         self.assertNotContains(response, f'href="{deck_url}"')
-        
+
 class ExploreViewTests(TestCase):
     def setUp(self):
         self.owner = User.objects.create_user('tester', 'tester@example.com', 'test')

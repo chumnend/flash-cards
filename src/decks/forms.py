@@ -3,14 +3,12 @@ from decks.models import Deck, Category
 
 class SearchDeckForm(forms.ModelForm):
     name = forms.CharField(
-        widget=forms.TextInput(
-            attrs = {
-                'placeholder': 'Enter Search Name',
-            }
-        ), 
         label="Name", 
         max_length=20, 
         required=False,
+        widget=forms.TextInput(
+            attrs= {'placeholder': 'Search by deck name'}
+        )
     )
     category = forms.ModelChoiceField(
         queryset=Category.objects.all(), 

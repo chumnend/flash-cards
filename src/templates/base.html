@@ -21,27 +21,39 @@
       <h1 class="navbar__brand">
         <a href="{% url 'home' %}">Flash Cards</a>
       </h1>
-      <ul class="navbar__links">
-        <li><a href="{% url 'explore' %}">Explore</a></li>
-        <li><a href="#">Register</a></li>
-        <li><a href="#">Login</a></li>
-      </ul>
-      <div id="navbar__mobile--menu">
-        <a href="{% url 'explore' %}">Explore</a>
-        <a href="#">Register</a>
-        <a href="#">Login</a>
-      </div>
+      {% if user.is_authenticated %}
+        <ul class="navbar__links">
+          <li><a href="{% url 'explore' %}">Explore</a></li>
+          <li><a href="#">Decks</a></li>
+          <li><a href="#">Profile</a></li>
+          <li><a href="{% url 'logout' %}">Logout</a></li>
+        </ul>
+        <div id="navbar__mobile--menu">
+          <a href="{% url 'explore' %}">Explore</a>
+          <a href="#">Decks</a>
+          <a href="#">Profile</a>
+          <a href="{% url 'logout' %}">Logout</a>
+        </div>
+      {% else %}
+        <ul class="navbar__links">
+          <li><a href="{% url 'explore' %}">Explore</a></li>
+          <li><a href="{% url 'register' %}">Register</a></li>
+          <li><a href="{% url 'login' %}">Login</a></li>
+        </ul>
+        <div id="navbar__mobile--menu">
+          <a href="{% url 'explore' %}">Explore</a>
+          <a href="{% url 'register' %}">Register</a>
+          <a href="{% url 'login' %}">Login</a>
+        </div>
+      {% endif %}
       <a class="navbar__mobile--icon" href="javascript:void(0);" onclick="openMobileMenu()">
         <i class="fa fa-bars"></i>
       </a>
     </div>
   </nav>
-  
   <main class="content">
     <div class="container">
-      <header class="header">
-        {% block header %}{% endblock header %}
-      </header>
+      {% block header %}{% endblock header %}
       {% block content %}{% endblock content %}
     </div>
   </main>
