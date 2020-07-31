@@ -1,52 +1,14 @@
 {% extends 'base.html' %}
 
-{% block styles %}
-  <style>
-    .search {
-      display: flex;
-      flex-direction: column;
-    }
-    
-    .search label {
-      display: none;
-    }
-    
-    .search input {
-      flex-grow: 1;
-    }
-    
-    .search input,
-    .search select {
-      padding: 0.5rem;
-      font-family: 'Roboto', sans-serif;
-      font-size: 16px;
-    }
-    
-    .search .btn {
-      background: #7fcd91;
-      font-weight: 700;
-    }
-    
-    @media all and (min-width: 768px) {
-      .search {
-        flex-direction: row;
-      }
-    }
-  </style>
-{% endblock styles %}
-
 {% block title %}Explore{% endblock title %}
 
 {% block header %}
   <header class="header">
-    <form class="search" method="post">
-      {% csrf_token %}
-      {{ form }}
-      <button class="btn">Search</button>
-    </form>
+    {% include 'partials/search_bar.html' %}
   </header>
 {% endblock header %}
 
 {% block content %}
   {% include 'partials/deck_list.html' %}
+  {% include 'partials/pagination.html' %}
 {% endblock content %}

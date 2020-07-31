@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block styles %}
+  <style type="text/css">
+    .dashboard {
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-gap: 1rem;
+    }
+    
+    .dashboard__decks--list {
+      list-style: none;
+    }
+    
+    .decks {
+      grid-template-columns: 1fr;
+    }
+    
+    @media all and (min-width: 768px) {
+      .dashboard {
+        grid-template-columns: 1fr 2fr;
+      }
+    }
+    
+    @media all and (min-width: 1200px) {
+      .decks {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+  </style>
+{% endblock styles %}
+
+{% block title %}Dashboard{% endblock title %}
+
+{% block header %}
+  <header class="header">
+    <h2>Welcome, {{ user.username }}.</h2>
+  </header>
+{% endblock header %}
+
+{% block content %}
+  <div class="dashboard">
+    <aside class="dashboard__decks">
+      <h3>Decks</h3>
+      <ul class="dashboard__decks--list">
+        {% for deck in owner_decks %}
+          <li><a href="{% url 'deck' deck.id %}">{{ deck.name }}</a></li>
+        {% endfor %}
+      </ul>
+    </aside>
+    <section class="dashboard__feed">
+      <h3>Recent Activity</h3>
+      {% include 'partials/deck_list.html' %}
+    </section>
+  </div>
+{% endblock content %}

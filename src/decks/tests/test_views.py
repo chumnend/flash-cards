@@ -38,6 +38,22 @@ class HomeViewTests(TestCase):
         deck_url = reverse('deck', kwargs={'pk': self.private_deck.pk})
         self.assertNotContains(response, f'href="{deck_url}"')
 
+class DashboardViewTests(TestCase):
+    def setUp(self):
+        self.owner = User.objects.create_user('tester', 'tester@example.com', 'test')
+        self.deck = Deck.objects.create(name='Django1', description='Django deck', owner=self.owner)
+    
+    def test_dashboard_view_status_code(self):
+        self.client.login(username='tester', password='test')
+        url = reverse('home')
+        response = self.client.get(url)
+        self.assertEquals(response.status_code, 200)
+    
+    def test_home_url_resolves_dashboard_view(self):
+        self.client.login(username='tester', password='test')
+        view = resolve('/')
+        self.assertEquals(view.func, home)
+
 class ExploreViewTests(TestCase):
     def setUp(self):
         self.owner = User.objects.create_user('tester', 'tester@example.com', 'test')
