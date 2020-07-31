@@ -36,6 +36,10 @@ body {
   font-weight: 700;
 }
 
+.center {
+  text-align: center;
+}
+
 /* NAVIGATION STYLES */
 .navbar {
   width: 100%;

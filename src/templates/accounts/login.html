@@ -28,7 +28,7 @@
       {% csrf_token %}
       {% include 'partials/form.html' %}
       <button class="btn">Login</button>
-      <a class="forgot" href="#">Forgot your password?</a>
+      <a class="forgot" href="{% url 'password_reset'%}">Forgot your password?</a>
     </form>
   </section>
 {% endblock content %}
