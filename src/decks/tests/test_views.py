@@ -1,9 +1,9 @@
 from django.urls import resolve, reverse
 from django.test import TestCase
 from django.contrib.auth.models import User
-from decks.views import home, explore, deck
+from decks.views import home, explore, deck, new_deck
 from decks.models import Deck
-from decks.forms import SearchDeckForm
+from decks.forms import SearchDeckForm, NewDeckForm
 
 class HomeViewTests(TestCase):
     def setUp(self):
@@ -77,6 +77,33 @@ class ExploreViewTests(TestCase):
     def test_contains_form(self):
         form = self.response.context.get('form')
         self.assertIsInstance(form, SearchDeckForm)
+
+class NewDeckViewTests(TestCase):
+    def setUp(self):
+        self.owner = User.objects.create_user('tester', 'tester@example.com', 'test')
+        self.client.login(username='tester', password='test')
+        url = reverse('new_deck')
+        self.response = self.client.get(url)
+    
+    def test_status_code(self):
+        self.assertEquals(self.response.status_code, 200)
+    
+    def test_view_function(self):
+        view = resolve('/decks/new/')
+        self.assertEquals(view.func, new_deck)
+
+    def test_csrf(self):
+        self.assertContains(self.response, 'csrfmiddlewaretoken')
+
+    def test_contains_form(self):
+        form = self.response.context.get('form')
+        self.assertIsInstance(form, NewDeckForm)
+        
+    def test_form_inputs(self):
+        self.assertContains(self.response, '<input', 2)
+        self.assertContains(self.response, 'type="text"', 1)
+        self.assertContains(self.response, 'textarea', 1)
+        self.assertContains(self.response, 'select', 1)
 
 class DeckViewTests(TestCase):
     def setUp(self):

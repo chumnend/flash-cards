@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}New Deck{% endblock title %}
+
+{% block header %}
+    <header class="header">
+        <h2>New Deck</h2>
+    </header>
+{% endblock header %}
+
+{% block content %}
+  <form class="form" method="post">
+    {% csrf_token %}
+    {% include 'partials/form.html' %}
+    <button type="submit" class="btn">Create</button>
+  </form>
+{% endblock content %}

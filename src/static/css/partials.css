@@ -56,7 +56,8 @@
   text-transform: uppercase;
 }
 
-.form__group input {
+.form__group input,
+.form__group textarea {
   width: 100%;
   padding: 0.5rem 1rem;
   margin: 0.5rem 0;

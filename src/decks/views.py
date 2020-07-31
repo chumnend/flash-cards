@@ -1,7 +1,8 @@
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
 from decks.models import Category, Deck, Card
-from decks.forms import SearchDeckForm
+from decks.forms import SearchDeckForm, NewDeckForm
 
 def home(request):
     if request.user.is_authenticated:
@@ -53,3 +54,28 @@ def deck(request, pk):
     }
 
     return render(request, 'decks/deck.html', context)
+
+@login_required
+def new_deck(request):
+    if request.POST:
+        form = NewDeckForm(request.POST)
+        if form.is_valid():
+            
+            deck = Deck.objects.create(
+                    name=form.cleaned_data['name'],
+                    description=form.cleaned_data['description'],
+                    owner = request.user,
+                )
+                
+            if form.cleaned_data['category']:
+                category = Category.objects.get_or_create(name=form.cleaned_data['category'])
+                deck.categories.add(category)
+            
+            return redirect('home')
+    
+    form = NewDeckForm()
+    context = {
+        "form": form,
+    }
+    
+    return render(request, 'decks/new_deck.html', context)
