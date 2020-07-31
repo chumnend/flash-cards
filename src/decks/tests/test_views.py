@@ -13,7 +13,6 @@ class HomeViewTests(TestCase):
         url = reverse('home')
         self.response = self.client.get(url)
     
-    
     def test_status_code(self):
         self.assertEquals(self.response.status_code, 200)
 
