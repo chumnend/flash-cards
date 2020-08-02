@@ -63,10 +63,10 @@ class RegisterFailTests(TestCase):
         url = reverse('register')
         self.response = self.client.post(url, {})
 
-    def test_register_status_code(self):
+    def test_status_code(self):
         self.assertEquals(self.response.status_code, 200)
 
-    def test_dont_create_user(self):
+    def test_no_user_creation(self):
         self.assertFalse(User.objects.exists())
 
 class PasswordResetViewsTests(TestCase):

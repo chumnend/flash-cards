@@ -26,20 +26,18 @@ class NewDeckForm(forms.ModelForm):
     name = forms.CharField(
         label="Deck Name",
         max_length=20,
-        widget=forms.TextInput()
     ),
     description = forms.CharField(
         label="Deck Description",
         max_length=2000,
         widget=forms.Textarea(),
     ),
-    category = forms.ModelChoiceField(
-        queryset=Category.objects.all(), 
-        label="Category",
-        empty_label="All",
-        required=False,
+    categories = forms.CharField(
+        label="Categories",
+        max_length=200,
+        help_text="Seperate categories using spaces"
     )
     
     class Meta:
         model = Deck
-        fields = ['name', 'description', 'category']
+        fields = ['name', 'description', 'categories']

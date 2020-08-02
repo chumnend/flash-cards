@@ -11,6 +11,6 @@ class SearchDeckFormTest(TestCase):
 class NewDeckFormTest(TestCase):
     def test_form_has_fields(self):
         form = NewDeckForm()
-        expected = ['name', 'description', 'category',]
+        expected = ['name', 'description', 'categories',]
         actual = list(form.fields)
         self.assertSequenceEqual(expected, actual)

@@ -43,7 +43,7 @@ class DashboardViewTests(TestCase):
     def test_status_code(self):
         self.assertEquals(self.response.status_code, 200)
     
-    def test_home_url_resolves_dashboard_view(self):
+    def test_view_function(self):
         view = resolve('/')
         self.assertEquals(view.func, home)
 
@@ -98,13 +98,53 @@ class NewDeckViewTests(TestCase):
     def test_contains_form(self):
         form = self.response.context.get('form')
         self.assertIsInstance(form, NewDeckForm)
-        
-    def test_form_inputs(self):
-        self.assertContains(self.response, '<input', 2)
-        self.assertContains(self.response, 'type="text"', 1)
-        self.assertContains(self.response, 'textarea', 1)
-        self.assertContains(self.response, 'select', 1)
 
+class NewDeckLoginRequiredTests(TestCase):
+    def setUp(self):
+        self.url = reverse('new_deck')
+        self.response = self.client.get(self.url)
+    
+    def test_redirection(self):
+        login_url = reverse('login')
+        self.assertRedirects(self.response, f'{login_url}?next={self.url}')
+
+class NewDeckSuccessTests(TestCase):
+    def setUp(self):
+        self.owner = User.objects.create_user('tester', 'tester@example.com', 'test')
+        self.client.login(username='tester', password='test')
+        data = {
+            'name': 'Test',
+            'description': 'Lorem ipsum dolor sit amet',
+            'categories': 'Math Cars',
+        }
+        url = reverse('new_deck')
+        self.response = self.client.post(url, data)
+
+    def test_redirection(self):
+        url = reverse('home')
+        self.assertRedirects(self.response, url)
+    
+    def test_create(self):
+        self.assertTrue(Deck.objects.exists())
+        
+class NewDeckFailTests(TestCase):
+    def setUp(self):
+        self.owner = User.objects.create_user('tester', 'tester@example.com', 'test')
+        self.client.login(username='tester', password='test')
+        data = {
+            'name': '',
+            'description': 'Lorem ipsum dolor sit amet',
+            'categories': 'Math Cars',
+        }
+        url = reverse('new_deck')
+        self.response = self.client.post(url, data)
+        
+    def test_status_code(self):
+        self.assertEquals(self.response.status_code, 200)
+        
+    def test_no_create(self):
+        self.assertFalse(Deck.objects.exists())
+    
 class DeckViewTests(TestCase):
     def setUp(self):
         self.owner = User.objects.create_user('tester', 'tester@example.com', 'test')

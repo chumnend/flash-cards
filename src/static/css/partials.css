@@ -57,13 +57,19 @@
 }
 
 .form__group input,
-.form__group textarea {
+.form__group textarea,
+.form__group select {
   width: 100%;
   padding: 0.5rem 1rem;
   margin: 0.5rem 0;
   border: 1px solid #ccc;
   font-family: 'Roboto', sans-serif;
   font-size: 1rem;
+}
+
+.form__group select option {
+  width: 100%;
+  padding: 0.5rem;
 }
 
 .form__group input.is_invalid {

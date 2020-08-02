@@ -60,16 +60,20 @@ def new_deck(request):
     if request.POST:
         form = NewDeckForm(request.POST)
         if form.is_valid():
+            name=form.cleaned_data['name']
+            description=form.cleaned_data['description']
+            categories = form.cleaned_data['categories'].split()
             
             deck = Deck.objects.create(
-                    name=form.cleaned_data['name'],
-                    description=form.cleaned_data['description'],
-                    owner = request.user,
-                )
-                
-            if form.cleaned_data['category']:
-                category = Category.objects.get_or_create(name=form.cleaned_data['category'])
-                deck.categories.add(category)
+                name=name,
+                description=description,
+                owner = request.user,
+            )
+            
+            if categories:
+                for category in categories:
+                    obj, created = Category.objects.get_or_create(name=category)
+                    deck.categories.add(obj)
             
             return redirect('home')
     
