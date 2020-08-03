@@ -7,7 +7,7 @@ from decks.forms import SearchDeckForm, NewDeckForm
 def home(request):
     if request.user.is_authenticated:
         owner_decks = Deck.objects.filter(owner=request.user)
-        feed_decks = Deck.objects.all() # TO REPLACE WITH FOLLOWED USER DECKS
+        feed_decks = Deck.objects.filter(publish_status="o")[:6] # TO REPLACE WITH FOLLOWED USER DECKS
         context = {
             "owner_decks": owner_decks,
             "decks": feed_decks,
@@ -34,26 +34,33 @@ def explore(request):
     page_number = request.GET.get('page')
     deck_page_obj = deck_paginator.get_page(page_number)
     
+    num_decks = len(decks)
     categories = Category.objects.all()
     form = SearchDeckForm()
     context = {
         "decks": deck_page_obj,
+        "num_decks": num_decks,
         "categories": categories,
         "form": form,
     }
     
     return render(request, 'decks/explore.html', context)
 
-def deck(request, pk):
-    deck = get_object_or_404(Deck, pk=pk)
-    cards = Card.objects.filter(deck=deck)
+@login_required
+def decks(request):
+    if request.POST:
+        pass
+    
+    decks = Deck.objects.filter(owner=request.user)
+    deck_paginator = Paginator(decks, 10)
+    page_number = request.GET.get('page')
+    deck_page_obj = deck_paginator.get_page(page_number)
+    
     context = {
-        "deck": deck,
-        "cards": cards,
-        "num_cards": len(cards),
+        "decks": deck_page_obj,
     }
-
-    return render(request, 'decks/deck.html', context)
+    
+    return render(request, 'decks/decks.html', context)
 
 @login_required
 def new_deck(request):
@@ -83,3 +90,31 @@ def new_deck(request):
     }
     
     return render(request, 'decks/new_deck.html', context)
+
+def deck(request, pk):
+    deck = get_object_or_404(Deck, pk=pk)
+    cards = Card.objects.filter(deck=deck)
+    num_cards = len(cards)
+    context = {
+        "deck": deck,
+        "cards": cards,
+        "num_cards": num_cards,
+    }
+
+    return render(request, 'decks/deck.html', context)
+
+@login_required
+def manage_deck(request, pk):
+    deck = get_object_or_404(Deck, pk=pk)
+    if deck.owner.username != request.user.username:
+        return redirect('home')
+    
+    cards = Card.objects.filter(deck=deck)
+    num_cards = len(cards)
+    context = {
+        "deck": deck,
+        "cards": cards,
+        "num_cards": num_cards,
+    }
+    
+    return render(request, 'decks/deck_manage.html', context)

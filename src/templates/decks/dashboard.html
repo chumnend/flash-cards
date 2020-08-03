@@ -16,6 +16,11 @@
       grid-template-columns: 1fr;
     }
     
+    .see-more {
+      display: block;
+      margin: 1rem auto;
+    }
+
     @media all and (min-width: 768px) {
       .dashboard {
         grid-template-columns: 1fr 2fr;
@@ -51,6 +56,7 @@
     <section class="dashboard__feed">
       <h3>Recent Activity</h3>
       {% include 'partials/deck_list.html' %}
+      <a class="see-more btn" href="{% url 'explore' %}">See More</a>
     </section>
   </div>
 {% endblock content %}

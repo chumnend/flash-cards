@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block styles %}
+    <style>
+        .btn {
+            display: inline-block;
+        }
+    </style>
+{% endblock styles %}
+
+{% block title %}{{ deck.name }}{% endblock title %}
+
+{% block header %}
+  <header class="header">
+    <h2>{{ deck.name }}</h2>
+    <p>{{ deck.description }}</p>
+    <a class="btn" href="#">Create New Card</a>
+    <a class="btn" href="#">Edit</a>
+    <a class="btn" href="#">Delete</a>
+  </header>
+{% endblock header %}
+
+{% block content %}
+    {% if num_cards == 0 %}
+      <p class="center">No cards are currently in this deck.</p>
+    {% else %}
+        <div class="cards">
+            {% for card in cards %}
+            <div class="cards__tile">
+                <p>{{ card.front_text }} || {{  card.back_text }}</p>
+                <div>
+                    <button class="btn">Edit</button>
+                    <button class="btn">Delete</button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endblock content %}

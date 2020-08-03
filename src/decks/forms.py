@@ -35,7 +35,8 @@ class NewDeckForm(forms.ModelForm):
     categories = forms.CharField(
         label="Categories",
         max_length=200,
-        help_text="Seperate categories using spaces"
+        required=False,
+        help_text="Seperate categories using spaces",
     )
     
     class Meta:

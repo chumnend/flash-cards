@@ -9,6 +9,10 @@
 {% endblock header %}
 
 {% block content %}
-  {% include 'partials/deck_list.html' %}
-  {% include 'partials/pagination.html' %}
+  {% if num_decks == 0 %}
+    <p class="center">Nothing was found.</p>
+  {% else %}
+    {% include 'partials/deck_list.html' %}
+    {% include 'partials/pagination.html' %}
+  {% endif %}
 {% endblock content %}

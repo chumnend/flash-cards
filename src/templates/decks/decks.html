@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block styles %}
+{% endblock styles %}
+
+{% block title %}Your Decks{% endblock title %}
+
+{% block header %}
+  <header class="header">
+    <a class="btn" href="{% url 'new_deck' %}">Create New Deck</a>
+  </header>
+{% endblock header %}
+
+{% block content %}
+    <section>
+      {% include 'partials/deck_list.html' %}
+      {% include 'partials/pagination.html' %}
+    </section>
+{% endblock content %}

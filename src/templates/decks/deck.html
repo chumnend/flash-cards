@@ -2,6 +2,10 @@
 
 {% block styles %}
   <style>
+    .header .btn {
+      display: inline-block;
+    }
+  
     .deck__slideshow {
       text-align: center;
     }
@@ -83,6 +87,9 @@
   <header class="header">
     <h2>{{ deck.name }}</h2>
     <p>{{ deck.description }}</p>
+    {% if user.username == deck.owner.username %}
+      <a class="btn" href="{% url 'manage_deck' deck.id %}">Manage</a>
+    {% endif %}
   </header>
 {% endblock header %}
 

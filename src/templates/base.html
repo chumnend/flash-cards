@@ -25,7 +25,7 @@
       {% if user.is_authenticated %}
         <ul class="navbar__links">
           <li><a href="{% url 'explore' %}">Explore</a></li>
-          <li><a href="#">Decks</a></li>
+          <li><a href="{% url 'decks' %}">Decks</a></li>
           <li><a href="#">Profile</a></li>
           <li><a href="{% url 'logout' %}">Logout</a></li>
         </ul>
