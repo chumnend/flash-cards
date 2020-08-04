@@ -1,8 +1,9 @@
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.views.generic import UpdateView
 from decks.models import Category, Deck, Card
-from decks.forms import SearchDeckForm, NewDeckForm, NewCardForm
+from decks.forms import SearchDeckForm, DeckForm, CardForm
 
 def home(request):
     if request.user.is_authenticated:
@@ -65,16 +66,18 @@ def decks(request):
 @login_required
 def new_deck(request):
     if request.POST:
-        form = NewDeckForm(request.POST)
+        form = DeckForm(request.POST)
         if form.is_valid():
             name=form.cleaned_data['name']
             description=form.cleaned_data['description']
             categories = form.cleaned_data['categories']
+            publish_status = form.cleaned_data['publish_status']
             
             deck = Deck.objects.create(
                 name=name,
                 description=description,
                 owner = request.user,
+                publish_status = publish_status,
             )
             
             if categories:
@@ -83,7 +86,7 @@ def new_deck(request):
             
             return redirect('home')
     
-    form = NewDeckForm()
+    form = DeckForm()
     context = {
         "form": form,
     }
@@ -119,14 +122,40 @@ def manage_deck(request, pk):
     return render(request, 'decks/manage_deck.html', context)
 
 @login_required
-def new_card(request, pk):
+def edit_deck(request, pk):
+    deck = get_object_or_404(Deck, pk=pk)
+    if deck.owner.username != request.user.username:
+        return redirect('home')
+        
     if request.POST:
-        form = NewCardForm(request.POST)
+        form = DeckForm(request.POST, instance=deck)
+        if form.is_valid():
+            form.save()
+            return redirect('manage_deck', pk=pk)
+    
+    form = DeckForm(instance=deck)
+    context = {
+        'deck': deck,
+        'form': form,
+    }
+    
+    return render(request, 'decks/edit_deck.html', context)
+
+def delete_deck(request, pk):
+    pass
+
+@login_required
+def new_card(request, pk):
+    deck = get_object_or_404(Deck, pk=pk)
+    if deck.owner.username != request.user.username:
+        return redirect('home')
+    
+    if request.POST:
+        form = CardForm(request.POST)
         if form.is_valid():
             front_text=form.cleaned_data['front_text']
             back_text=form.cleaned_data['back_text']
-            
-            deck = get_object_or_404(Deck, pk=pk)
+
             Card.objects.create(
                 front_text=front_text,
                 back_text=back_text,
@@ -135,9 +164,15 @@ def new_card(request, pk):
             
             return redirect('manage_deck', pk=pk)
             
-    form = NewCardForm()
+    form = CardForm()
     context = {
         "form": form,
     }
     
     return render(request, 'decks/new_card.html', context)
+
+def edit_card(request, deck_pk, card_pk):
+    pass
+
+def delete_card(request, deck_pk, card_pk):
+    pass

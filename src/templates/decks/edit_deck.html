@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit {{ deck.name }}{% endblock title %}
+
+{% block header %}
+    <header class="header">
+        <h2>Edit {{ deck.name }}</h2>
+    </header>
+{% endblock header %}
+
+{% block content %}
+  <form class="form" method="post">
+    {% csrf_token %}
+    {% include 'partials/form.html' %}
+    <button type="submit" class="btn">Update</button>
+  </form>
+{% endblock content %}

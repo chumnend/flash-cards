@@ -15,13 +15,13 @@ class Deck(models.Model):
     description = models.TextField(blank=True, default="")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
-    PUBLISH_STATUS = ( ("o", "public"), ("f", "followers"), ("x", "private") )
-    publish_status = models.CharField(max_length=1, choices=PUBLISH_STATUS, default="o")
+    PUBLISH_STATUS = ( ("x", "Private"), ("f", "Followers Only"), ("o", "Everyone"), )
+    publish_status = models.CharField(max_length=1, choices=PUBLISH_STATUS, default="x")
     owner = models.ForeignKey(User, related_name="decks", on_delete=models.CASCADE)
     categories = models.ManyToManyField("Category", related_name="decks", blank=True)
     
     class Meta:
-        ordering = ['updated_at']
+        ordering = ['-updated_at', '-created_at']
     
     def __str__(self):
         return self.name
@@ -34,7 +34,7 @@ class Card(models.Model):
     deck = models.ForeignKey("Deck", on_delete=models.CASCADE)
     
     class Meta:
-        ordering = ['updated_at']
+        ordering = ['-updated_at', '-created_at']
     
     def __str__(self):
         return f"{self.front_text} | {self.back_text}"

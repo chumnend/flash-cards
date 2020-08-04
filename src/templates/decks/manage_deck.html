@@ -16,8 +16,8 @@
     <p>{{ deck.description }}</p>
     <a class="btn" href="{% url 'new_card' deck.pk %}">Create New Card</a>
     <a class="btn" href="{% url 'deck' deck.pk %}">View</a>
-    <a class="btn" href="#">Edit</a>
-    <a class="btn" href="#">Delete</a>
+    <a class="btn" href="{% url 'edit_deck' deck.pk %}">Edit</a>
+    <a class="btn" href="{% url 'delete_deck' deck.pk  %}">Delete</a>
   </header>
 {% endblock header %}
 
@@ -30,8 +30,8 @@
             <div class="cards__tile">
                 <p>{{ card.front_text }} || {{  card.back_text }}</p>
                 <div>
-                    <button class="btn">Edit</button>
-                    <button class="btn">Delete</button>
+                    <button class="btn" href="{% url 'edit_card' deck.pk card.pk %}">Edit</button>
+                    <button class="btn" href="{% url 'delete_card' deck.pk card.pk %}">Delete</button>
                 </div>
             </div>
             {% endfor %}

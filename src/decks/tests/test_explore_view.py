@@ -8,7 +8,7 @@ from decks.forms import SearchDeckForm
 class ExploreViewTests(TestCase):
     def setUp(self):
         self.owner = User.objects.create_user('tester', 'tester@example.com', 'test')
-        self.deck = Deck.objects.create(name='Django1', description='Django deck', owner=self.owner)
+        self.deck = Deck.objects.create(name='Django1', description='Django deck', owner=self.owner, publish_status='o')
         self.private_deck = Deck.objects.create(name='Django2', description='Django deck', owner=self.owner, publish_status='x')
         url = reverse('explore')
         self.response = self.client.get(url)

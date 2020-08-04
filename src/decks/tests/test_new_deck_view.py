@@ -3,7 +3,7 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from decks.views import new_deck
 from decks.models import Deck, Category
-from decks.forms import NewDeckForm
+from decks.forms import DeckForm
 
 class NewDeckViewTests(TestCase):
     def setUp(self):
@@ -24,7 +24,7 @@ class NewDeckViewTests(TestCase):
 
     def test_contains_form(self):
         form = self.response.context.get('form')
-        self.assertIsInstance(form, NewDeckForm)
+        self.assertIsInstance(form, DeckForm)
 
 class NewDeckLoginRequiredTests(TestCase):
     def setUp(self):
@@ -40,13 +40,13 @@ class NewDeckSuccessTests(TestCase):
         self.owner = User.objects.create_user('tester', 'tester@example.com', 'test')
         self.category = Category.objects.create(name="Science")
         self.client.login(username='tester', password='test')
-        data = {
+        url = reverse('new_deck')
+        self.response = self.client.post(url, {
             'name': 'Test',
             'description': 'Lorem ipsum dolor sit amet',
             'category': self.category,
-        }
-        url = reverse('new_deck')
-        self.response = self.client.post(url, data)
+            'publish_status': 'o',
+        })
 
     def test_redirection(self):
         url = reverse('home')

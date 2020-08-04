@@ -22,7 +22,7 @@ class SearchDeckForm(forms.ModelForm):
         fields = ['name', 'category']
 
 
-class NewDeckForm(forms.ModelForm):
+class DeckForm(forms.ModelForm):
     name = forms.CharField(
         label="Deck Name",
         max_length=20,
@@ -37,12 +37,18 @@ class NewDeckForm(forms.ModelForm):
         label="Category",
         required=False,
     )
+    PUBLISH_STATUS = ( ("x", "Private"), ("f", "Followers Only"), ("o", "Everyone"), )
+    publish_status = forms.ChoiceField(
+        choices=PUBLISH_STATUS,
+        label="Visibility",
+        required=False,
+    )
     
     class Meta:
         model = Deck
-        fields = ['name', 'description', 'categories']
+        fields = ['name', 'description', 'categories', 'publish_status']
 
-class NewCardForm(forms.ModelForm):
+class CardForm(forms.ModelForm):
     front_text = forms.CharField(
         label="Front Card Text",
         max_length=30,

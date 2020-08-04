@@ -3,7 +3,7 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from decks.views import new_card
 from decks.models import Deck, Card
-from decks.forms import NewCardForm
+from decks.forms import CardForm
 
 class NewCardViewTests(TestCase):
     def setUp(self):
@@ -25,7 +25,7 @@ class NewCardViewTests(TestCase):
 
     def test_contains_form(self):
         form = self.response.context.get('form')
-        self.assertIsInstance(form, NewCardForm)
+        self.assertIsInstance(form, CardForm)
         
 class NewCardLoginRequiredTests(TestCase):
     def setUp(self):
