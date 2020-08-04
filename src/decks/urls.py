@@ -8,4 +8,5 @@ urlpatterns = [
     path("decks/new/", views.new_deck, name="new_deck"),
     path("decks/<int:pk>/", views.deck, name="deck"),
     path("decks/<int:pk>/manage/", views.manage_deck, name="manage_deck"),
+    path("decks/<int:pk>/card/new/", views.new_card, name="new_card"),
 ]

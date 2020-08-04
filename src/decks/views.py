@@ -2,7 +2,7 @@ from django.core.paginator import Paginator
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from decks.models import Category, Deck, Card
-from decks.forms import SearchDeckForm, NewDeckForm
+from decks.forms import SearchDeckForm, NewDeckForm, NewCardForm
 
 def home(request):
     if request.user.is_authenticated:
@@ -116,4 +116,28 @@ def manage_deck(request, pk):
         "num_cards": num_cards,
     }
     
-    return render(request, 'decks/deck_manage.html', context)
+    return render(request, 'decks/manage_deck.html', context)
+
+@login_required
+def new_card(request, pk):
+    if request.POST:
+        form = NewCardForm(request.POST)
+        if form.is_valid():
+            front_text=form.cleaned_data['front_text']
+            back_text=form.cleaned_data['back_text']
+            
+            deck = get_object_or_404(Deck, pk=pk)
+            Card.objects.create(
+                front_text=front_text,
+                back_text=back_text,
+                deck=deck,
+            )
+            
+            return redirect('manage_deck', pk=pk)
+            
+    form = NewCardForm()
+    context = {
+        "form": form,
+    }
+    
+    return render(request, 'decks/new_card.html', context)

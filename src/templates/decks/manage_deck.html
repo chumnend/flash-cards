@@ -14,7 +14,8 @@
   <header class="header">
     <h2>{{ deck.name }}</h2>
     <p>{{ deck.description }}</p>
-    <a class="btn" href="#">Create New Card</a>
+    <a class="btn" href="{% url 'new_card' deck.pk %}">Create New Card</a>
+    <a class="btn" href="{% url 'deck' deck.pk %}">View</a>
     <a class="btn" href="#">Edit</a>
     <a class="btn" href="#">Delete</a>
   </header>

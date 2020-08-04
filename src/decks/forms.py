@@ -1,5 +1,5 @@
 from django import forms
-from decks.models import Deck, Category
+from decks.models import Deck, Card, Category
 
 class SearchDeckForm(forms.ModelForm):
     name = forms.CharField(
@@ -41,3 +41,19 @@ class NewDeckForm(forms.ModelForm):
     class Meta:
         model = Deck
         fields = ['name', 'description', 'categories']
+
+class NewCardForm(forms.ModelForm):
+    front_text = forms.CharField(
+        label="Front Card Text",
+        max_length=30,
+        widget=forms.Textarea(),
+    )
+    back_text = forms.CharField(
+        label="Back Card Text",
+        max_length=30,
+        widget=forms.Textarea(),
+    )
+    
+    class Meta:
+        model = Card
+        fields = ['front_text', 'back_text']
