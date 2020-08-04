@@ -2,7 +2,7 @@ from django.urls import resolve, reverse
 from django.test import TestCase
 from django.contrib.auth.models import User
 from decks.views import home, explore, decks, new_deck, deck, manage_deck
-from decks.models import Deck
+from decks.models import Deck, Category
 from decks.forms import SearchDeckForm, NewDeckForm
 
 class HomeViewTests(TestCase):
@@ -144,11 +144,12 @@ class NewDeckLoginRequiredTests(TestCase):
 class NewDeckSuccessTests(TestCase):
     def setUp(self):
         self.owner = User.objects.create_user('tester', 'tester@example.com', 'test')
+        self.category = Category.objects.create(name="Science")
         self.client.login(username='tester', password='test')
         data = {
             'name': 'Test',
             'description': 'Lorem ipsum dolor sit amet',
-            'categories': 'Math Cars',
+            'category': self.category,
         }
         url = reverse('new_deck')
         self.response = self.client.post(url, data)
@@ -167,7 +168,6 @@ class NewDeckFailTests(TestCase):
         data = {
             'name': '',
             'description': 'Lorem ipsum dolor sit amet',
-            'categories': 'Math Cars',
         }
         url = reverse('new_deck')
         self.response = self.client.post(url, data)

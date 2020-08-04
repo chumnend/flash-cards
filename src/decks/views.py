@@ -69,7 +69,7 @@ def new_deck(request):
         if form.is_valid():
             name=form.cleaned_data['name']
             description=form.cleaned_data['description']
-            categories = form.cleaned_data['categories'].split()
+            categories = form.cleaned_data['categories']
             
             deck = Deck.objects.create(
                 name=name,
@@ -79,8 +79,7 @@ def new_deck(request):
             
             if categories:
                 for category in categories:
-                    obj, created = Category.objects.get_or_create(name=category)
-                    deck.categories.add(obj)
+                    deck.categories.add(category)
             
             return redirect('home')
     

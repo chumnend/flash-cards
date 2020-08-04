@@ -32,11 +32,10 @@ class NewDeckForm(forms.ModelForm):
         max_length=2000,
         widget=forms.Textarea(),
     ),
-    categories = forms.CharField(
-        label="Categories",
-        max_length=200,
+    categories = forms.ModelMultipleChoiceField(
+        queryset=Category.objects.all(), 
+        label="Category",
         required=False,
-        help_text="Seperate categories using spaces",
     )
     
     class Meta:
