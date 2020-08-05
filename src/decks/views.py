@@ -1,7 +1,8 @@
 from django.core.paginator import Paginator
+from django.urls import reverse_lazy
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.views.generic import UpdateView
+from django.views.generic import DeleteView
 from decks.models import Category, Deck, Card
 from decks.forms import SearchDeckForm, DeckForm, CardForm
 
@@ -141,8 +142,11 @@ def edit_deck(request, pk):
     
     return render(request, 'decks/edit_deck.html', context)
 
-def delete_deck(request, pk):
-    pass
+class DeleteDeck(DeleteView):
+    model = Deck
+    pk_url_kwarg= 'pk'
+    template_name= 'decks/delete_deck.html'
+    success_url = reverse_lazy('decks')
 
 @login_required
 def new_card(request, pk):
@@ -171,8 +175,32 @@ def new_card(request, pk):
     
     return render(request, 'decks/new_card.html', context)
 
+@login_required
 def edit_card(request, deck_pk, card_pk):
-    pass
+    deck = get_object_or_404(Deck, pk=deck_pk)
+    card = get_object_or_404(Card, pk=card_pk)
+    if deck.owner.username != request.user.username:
+        return redirect('home')
+        
+    if request.POST:
+        form = CardForm(request.POST, instance=card)
+        if form.is_valid():
+            form.save()
+            return redirect('manage_deck', pk=deck_pk)
+    
+    form = CardForm(instance=card)
+    context = {
+        'deck': deck,
+        'card': card,
+        'form': form,
+    }
+    
+    return render(request, 'decks/edit_card.html', context)
 
-def delete_card(request, deck_pk, card_pk):
-    pass
+class DeleteCard(DeleteView):
+    model = Card
+    pk_url_kwarg= 'card_pk'
+    template_name= 'decks/delete_card.html'
+
+    def get_success_url(self, **kwargs):
+        return reverse_lazy('manage_deck', kwargs={'pk': self.kwargs['deck_pk']})

@@ -30,8 +30,8 @@
             <div class="cards__tile">
                 <p>{{ card.front_text }} || {{  card.back_text }}</p>
                 <div>
-                    <button class="btn" href="{% url 'edit_card' deck.pk card.pk %}">Edit</button>
-                    <button class="btn" href="{% url 'delete_card' deck.pk card.pk %}">Delete</button>
+                    <a class="btn" href="{% url 'edit_card' deck.pk card.pk %}">Edit</a>
+                    <a class="btn" href="{% url 'delete_card' deck.pk card.pk %}">Delete</a>
                 </div>
             </div>
             {% endfor %}
