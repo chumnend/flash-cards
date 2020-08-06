@@ -47,16 +47,24 @@
   <div class="dashboard">
     <aside class="dashboard__decks">
       <h3>Decks</h3>
-      <ul class="dashboard__decks--list">
-        {% for deck in owner_decks %}
-          <li><a href="{% url 'deck' deck.id %}">{{ deck.name }}</a></li>
-        {% endfor %}
-      </ul>
+      {% if owner_decks %}
+        <ul class="dashboard__decks--list">
+          {% for deck in owner_decks %}
+            <li><a href="{% url 'deck' deck.id %}">{{ deck.name }}</a></li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p>No decks found.</p>
+      {% endif %}
     </aside>
     <section class="dashboard__feed">
       <h3>Recent Activity</h3>
-      {% include 'partials/deck_list.html' %}
-      <a class="see-more btn" href="{% url 'explore' %}">See More</a>
+      {% if decks %}
+        {% include 'partials/deck_list.html' %}
+        <a class="see-more btn" href="{% url 'explore' %}">See More</a>
+      {% else %}
+        <p>No activity found.</p>
+      {% endif %}      
     </section>
   </div>
 {% endblock content %}
