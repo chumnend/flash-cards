@@ -2,7 +2,7 @@
   {% for deck in decks %}
     <div class="decks__tile">
       <h3 class="decks__tile--header">{{ deck.name }}</h3>
-      <p class="decks__tile--owner">By {{ deck.owner }}</p>
+      <p class="decks__tile--owner">By <a href="{% url 'profile' deck.owner.pk %}">{{ deck.owner }}</a></p>
       <p class="decks__tile--description">{{ deck.description }}</p>
       <div class="decks__tile--buttons">
         {% if user.username == deck.owner.username %}

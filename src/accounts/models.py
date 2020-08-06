@@ -8,3 +8,7 @@ class Followers(models.Model):
     
     class Meta:
         unique_together = ("follower_id", "followed_id",)
+        verbose_name_plural = "Followers"
+
+    def __str__(self):
+        return f"{self.follower.username} -> {self.followed.username}"

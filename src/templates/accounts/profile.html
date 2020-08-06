@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}User {{ user_profile.username }}{% endblock title %}
+
+{% block header %}
+  <header class="header">
+    <h1>{{ user_profile.username }}</h1>
+    <p>Following: {{ following_count }}</p>
+    <p>Followers: {{ follower_count }}</p>
+    {% if not is_user and not is_following %}
+        <a class="btn" href="{% url 'follow' user_profile.pk %}">Follow</a>
+    {% elif not is_user %}
+        <a class="btn" href="{% url 'unfollow' user_profile.pk %}">Unfollow</a>
+    {% endif %}
+  </header>
+{% endblock header %}
+
+{% block content %}
+    <section>
+        {% if decks %}
+            {% include 'partials/deck_list.html' %}
+            {% include 'partials/pagination.html' %}
+        {% else %}
+            <p class="center">No decks found.</p>
+        {% endif %}    
+    </section>
+{% endblock content %}

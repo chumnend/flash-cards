@@ -1,18 +1,34 @@
-from django.core.paginator import Paginator
-from django.urls import reverse_lazy
-from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
+from django.db.models import Q
+from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse_lazy
+from django.utils.decorators import method_decorator
 from django.views.generic import DeleteView
-from decks.models import Category, Deck, Card
 from decks.forms import SearchDeckForm, DeckForm, CardForm
+from decks.models import Category, Deck, Card
 
 def home(request):
     if request.user.is_authenticated:
         owner_decks = Deck.objects.filter(owner=request.user)
-        feed_decks = Deck.objects.filter(publish_status="o")[:6] # TO REPLACE WITH FOLLOWED USER DECKS
+        
+        f_list = []
+        for f in request.user.following.all():
+            f_list.append(f.followed.pk)
+        
+        feed_decks = Deck.objects.filter(
+            Q(owner__in=f_list, publish_status="f") |
+            Q(owner__in=f_list, publish_status="o") |
+            Q(owner=request.user) 
+        )
+        
+        deck_paginator = Paginator(feed_decks, 10)
+        page_number = request.GET.get('page')
+        deck_page_obj = deck_paginator.get_page(page_number)
+        
         context = {
             "owner_decks": owner_decks,
-            "decks": feed_decks,
+            "decks": deck_page_obj,
         }
         return render(request, 'decks/dashboard.html', context)
     else:
@@ -23,7 +39,17 @@ def home(request):
         return render(request, 'decks/home.html', context)
 
 def explore(request):
-    decks = Deck.objects.filter(publish_status='o')
+    if request.user.is_authenticated:
+        f_list = []
+        for f in request.user.following.all():
+            f_list.append(f.followed.pk)
+            
+        decks = Deck.objects.filter(
+            Q(owner__in=f_list, publish_status="f") |
+            Q(owner__in=f_list, publish_status="o") 
+        )
+    else:
+        decks = Deck.objects.filter(publish_status='o')
     
     if request.method == 'POST':
         form = SearchDeckForm(request.POST)
@@ -142,6 +168,7 @@ def edit_deck(request, pk):
     
     return render(request, 'decks/edit_deck.html', context)
 
+@method_decorator(login_required, name="dispatch")
 class DeleteDeck(DeleteView):
     model = Deck
     pk_url_kwarg= 'pk'
@@ -197,6 +224,7 @@ def edit_card(request, deck_pk, card_pk):
     
     return render(request, 'decks/edit_card.html', context)
 
+@method_decorator(login_required, name="dispatch")
 class DeleteCard(DeleteView):
     model = Card
     pk_url_kwarg= 'card_pk'

@@ -58,10 +58,10 @@
       {% endif %}
     </aside>
     <section class="dashboard__feed">
-      <h3>Recent Activity</h3>
+      <h3>Feed</h3>
       {% if decks %}
         {% include 'partials/deck_list.html' %}
-        <a class="see-more btn" href="{% url 'explore' %}">See More</a>
+        {% include 'partials/pagination.html' %}
       {% else %}
         <p>No activity found.</p>
       {% endif %}      
