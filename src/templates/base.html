@@ -31,8 +31,8 @@
         </ul>
         <div id="navbar__mobile--menu">
           <a href="{% url 'explore' %}">Explore</a>
-          <a href="#">Decks</a>
-          <a href="#">Profile</a>
+          <a href="{% url 'decks' %}">Decks</a>
+          <a href="{% url 'profile' user.pk %}">Profile</a>
           <a href="{% url 'logout' %}">Logout</a>
         </div>
       {% else %}

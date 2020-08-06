@@ -5,7 +5,6 @@ from django.core.paginator import Paginator
 from django.shortcuts import render, redirect, get_object_or_404
 from accounts.forms import RegisterForm
 from accounts.models import Followers
-from decks.models import Deck
 
 def register(request):
     if request.POST:
@@ -33,13 +32,13 @@ def profile(request, pk):
         is_following = user_profile.followers.filter(follower=request.user)
         
         if is_user:
-            decks = Deck.objects.filter(owner=user_profile)
+            decks = user_profile.decks.all()
         elif not is_user and is_following:
-            decks = Deck.objects.filter(owner=user_profile).exclude(publish_status='x')
+            decks = user_profile.decks.all().exclude(publish_status='x')
         else:
-            decks = Deck.objects.filter(owner=user_profile, publish_status='o')
+            decks = user_profile.decks.filter(publish_status='o')
     else: 
-        decks = Deck.objects.filter(owner=user_profile, publish_status='o')
+        decks = decks = user_profile.decks.filter(publish_status='o')
         is_user = False
         is_following = False
     
