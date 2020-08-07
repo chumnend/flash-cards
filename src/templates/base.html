@@ -26,13 +26,13 @@
         <ul class="navbar__links">
           <li><a href="{% url 'explore' %}">Explore</a></li>
           <li><a href="{% url 'decks' %}">Decks</a></li>
-          <li><a href="{% url 'profile' user.pk %}">Profile</a></li>
+          <li><a href="{% url 'settings' %}">Profile</a></li>
           <li><a href="{% url 'logout' %}">Logout</a></li>
         </ul>
         <div id="navbar__mobile--menu">
           <a href="{% url 'explore' %}">Explore</a>
           <a href="{% url 'decks' %}">Decks</a>
-          <a href="{% url 'profile' user.pk %}">Profile</a>
+          <a href="{% url 'settings' %}">Profile</a>
           <a href="{% url 'logout' %}">Logout</a>
         </div>
       {% else %}

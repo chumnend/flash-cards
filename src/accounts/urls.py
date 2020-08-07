@@ -56,7 +56,8 @@ urlpatterns = [
         ), 
         name='password_change_done',
     ),
+    path('settings/', views.settings, name="settings"),
     path('user/<int:pk>/', views.profile, name="profile"),
-    path('user/<int:pk>/follow', views.follow, name="follow"),
-    path('user/<int:pk>/unfollow', views.unfollow, name="unfollow"),
+    path('user/<int:pk>/follow/', views.follow, name="follow"),
+    path('user/<int:pk>/unfollow/', views.unfollow, name="unfollow"),
 ]

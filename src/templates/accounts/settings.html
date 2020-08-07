@@ -28,6 +28,21 @@
       align-items: center;
     }
     
+    .settings {
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-gap: 1rem;
+    }
+    
+    .settings__follow--list {
+      list-style: none;
+      margin-bottom: 1rem;
+    }
+    
+    .settings__change form {
+      margin-top: 1rem;
+    }
+    
     @media all and (min-width: 768px) {
       .header {
         grid-template-columns: 1fr 1fr 1fr;
@@ -42,8 +57,8 @@
         justify-content: center;
       }
       
-      .right div {
-        padding-bottom: 1rem;
+      .settings {
+        grid-template-columns: 1fr 2fr;
       }
     }
   </style>
@@ -63,22 +78,33 @@
         <p>Following: {{ following_count }}</p>
         <p>Followers: {{ follower_count }}</p>
       </div>
-      {% if is_following %}
-        <a class="btn" href="{% url 'unfollow' current_user.pk %}">Unfollow</a>
-      {% else %}
-        <a class="btn" href="{% url 'follow' current_user.pk %}">Follow</a>
-      {% endif %}
     </div>
   </header>
 {% endblock header %}
 
 {% block content %}
-    <section>
-        {% if decks %}
-            {% include 'partials/deck_list.html' %}
-            {% include 'partials/pagination.html' %}
-        {% else %}
-            <p class="center">No decks found.</p>
-        {% endif %}    
+  <div class="settings">
+    <aside class="settings__follow">
+      <h3>Following</h3>
+      <ul class="settings__follow--list">
+        {% for f in following %}
+          <li><a href="{% url 'profile' f.followed.id %}">{{ f.followed.username }}</a></li>
+        {% endfor %}
+      </ul>
+      <h3>Followers</h3>
+      <ul class="settings__follow--list">
+        {% for f in followers %}
+          <li><a href="{% url 'profile' f.follower.id %}">{{ f.follower.username }}</a></li>
+        {% endfor %}
+      </ul>
+    </aside>
+    <section class="settings__change">
+      <a class="btn" href="{% url 'password_change' %}">Change Password</a>
+      <form class="form" method="post">
+        {% csrf_token %}
+        {% include 'partials/form.html' %}
+        <button type="submit" class="btn">Update</button>
+      </form>
     </section>
+  </div>
 {% endblock content %}

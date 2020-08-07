@@ -22,7 +22,7 @@ def home(request):
             Q(owner=request.user) 
         )
         
-        deck_paginator = Paginator(feed_decks, 10)
+        deck_paginator = Paginator(feed_decks, 4)
         page_number = request.GET.get('page')
         deck_page_obj = deck_paginator.get_page(page_number)
         
@@ -46,7 +46,7 @@ def explore(request):
             
         decks = Deck.objects.filter(
             Q(owner__in=f_list, publish_status="f") |
-            Q(owner__in=f_list, publish_status="o") 
+            Q(publish_status="o") 
         )
     else:
         decks = Deck.objects.filter(publish_status='o')
