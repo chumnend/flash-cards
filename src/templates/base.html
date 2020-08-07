@@ -1,0 +1,70 @@
+{% load static %}
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="flash cards">
+  <meta name="author" content="Nicholas Chumney">
+  <link rel="shortcut icon" href="{% static 'img/favicon.ico' %}" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" />
+  <link rel="stylesheet" href="{% static 'css/base.css' %}">
+  <link rel="stylesheet" href="{% static 'css/partials.css' %}">
+  {% block styles %}{% endblock styles %}
+
+  <title>{% block title %}Home{% endblock title %} | Flash Cards</title>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container">
+      <h1 class="navbar__brand">
+        <a href="{% url 'home' %}">Flash Cards</a>
+      </h1>
+      {% if user.is_authenticated %}
+        <ul class="navbar__links">
+          <li><a href="{% url 'explore' %}">Explore</a></li>
+          <li><a href="{% url 'decks' %}">Decks</a></li>
+          <li><a href="{% url 'settings' %}">Profile</a></li>
+          <li><a href="{% url 'logout' %}">Logout</a></li>
+        </ul>
+        <div id="navbar__mobile--menu">
+          <a href="{% url 'explore' %}">Explore</a>
+          <a href="{% url 'decks' %}">Decks</a>
+          <a href="{% url 'settings' %}">Profile</a>
+          <a href="{% url 'logout' %}">Logout</a>
+        </div>
+      {% else %}
+        <ul class="navbar__links">
+          <li><a href="{% url 'explore' %}">Explore</a></li>
+          <li><a href="{% url 'register' %}">Register</a></li>
+          <li><a href="{% url 'login' %}">Login</a></li>
+        </ul>
+        <div id="navbar__mobile--menu">
+          <a href="{% url 'explore' %}">Explore</a>
+          <a href="{% url 'register' %}">Register</a>
+          <a href="{% url 'login' %}">Login</a>
+        </div>
+      {% endif %}
+      <a class="navbar__mobile--icon" href="javascript:void(0);" onclick="openMobileMenu()">
+        <i class="fa fa-bars"></i>
+      </a>
+    </div>
+  </nav>
+  <main class="content">
+    <div class="container">
+      {% block header %}{% endblock header %}
+      {% block content %}{% endblock content %}
+    </div>
+  </main>
+  <footer class="footer">
+    <div class="container">
+      <span><i class="far fa-copyright"></i> Nicholas Chumney 2020</span>
+    </div>
+  </footer>
+  
+  <script type="text/javascript" src="{% static 'js/base.js' %}"></script>
+  {% block scripts %}{% endblock scripts %}
+</body>
+</html>

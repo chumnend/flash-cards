@@ -130,3 +130,7 @@ dmypy.json
 
 # Visual Studio Code
 .vscode
+
+# c9
+.c9*
+.~c9*

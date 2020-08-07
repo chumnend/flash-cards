@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete {{ deck.name }}{% endblock title %}
+
+{% block content %}
+    <form class="center" method="post">{% csrf_token %}
+        <p>Are you sure you want to delete the deck, "{{ object }}"?</p>
+        <button class="btn">Confirm</button>
+        <a class="btn" href="{% url 'manage_deck' deck.pk %}">Cancel</a>
+    </form>
+{% endblock content %}

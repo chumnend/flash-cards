@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block styles %}
+  <style type="text/css">
+    .dashboard {
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-gap: 1rem;
+    }
+    
+    .dashboard__decks--list {
+      list-style: none;
+    }
+    
+    .decks {
+      grid-template-columns: 1fr;
+    }
+    
+    .see-more {
+      display: block;
+      margin: 1rem auto;
+    }
+
+    @media all and (min-width: 768px) {
+      .dashboard {
+        grid-template-columns: 1fr 2fr;
+      }
+    }
+    
+    @media all and (min-width: 1200px) {
+      .decks {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+  </style>
+{% endblock styles %}
+
+{% block title %}Dashboard{% endblock title %}
+
+{% block header %}
+  <header class="header">
+    <h2>Welcome, {{ user.username }}.</h2>
+  </header>
+{% endblock header %}
+
+{% block content %}
+  <div class="dashboard">
+    <aside class="dashboard__decks">
+      <h3>Decks</h3>
+      {% if owner_decks %}
+        <ul class="dashboard__decks--list">
+          {% for deck in owner_decks %}
+            <li><a href="{% url 'deck' deck.id %}">{{ deck.name }}</a></li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p>No decks found.</p>
+      {% endif %}
+    </aside>
+    <section class="dashboard__feed">
+      <h3>Feed</h3>
+      {% if decks %}
+        {% include 'partials/deck_list.html' %}
+        {% include 'partials/pagination.html' %}
+      {% else %}
+        <p>No activity found.</p>
+      {% endif %}      
+    </section>
+  </div>
+{% endblock content %}

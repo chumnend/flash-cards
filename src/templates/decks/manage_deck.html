@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block styles %}
+    <style>
+        .btn {
+            display: inline-block;
+        }
+    </style>
+{% endblock styles %}
+
+{% block title %}{{ deck.name }}{% endblock title %}
+
+{% block header %}
+  <header class="header">
+    <h2>{{ deck.name }}</h2>
+    <p>{{ deck.description }}</p>
+    <a class="btn" href="{% url 'new_card' deck.pk %}">Create New Card</a>
+    <a class="btn" href="{% url 'deck' deck.pk %}">View</a>
+    <a class="btn" href="{% url 'edit_deck' deck.pk %}">Edit</a>
+    <a class="btn" href="{% url 'delete_deck' deck.pk  %}">Delete</a>
+  </header>
+{% endblock header %}
+
+{% block content %}
+    {% if num_cards == 0 %}
+      <p class="center">No cards are currently in this deck.</p>
+    {% else %}
+        <div class="cards">
+            {% for card in cards %}
+            <div class="cards__tile">
+                <p>{{ card.front_text }} || {{  card.back_text }}</p>
+                <div>
+                    <a class="btn" href="{% url 'edit_card' deck.pk card.pk %}">Edit</a>
+                    <a class="btn" href="{% url 'delete_card' deck.pk card.pk %}">Delete</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endblock content %}

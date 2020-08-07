@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block title %}Login{% endblock title %}
+
+{% block styles %}
+  <style>
+    .header {
+      text-align: center;
+    }
+  
+    .form .forgot {
+     display: block;
+     text-align: center;
+     padding-top: 1rem;
+    }
+  </style>
+{% endblock styles %}
+
+{% block header %}
+  <header class="header">
+    <h2>Welcome Back!</h2>
+  </header>
+{% endblock header %}
+
+{% block content %}
+  <section>
+    <form class="form" method="post" novalidate>
+      {% csrf_token %}
+      {% include 'partials/form.html' %}
+      <button class="btn">Login</button>
+      <a class="forgot" href="{% url 'password_reset'%}">Forgot your password?</a>
+    </form>
+  </section>
+{% endblock content %}

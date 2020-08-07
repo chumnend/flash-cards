@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block styles %}
+  <style>
+    .header {
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-gap: 1rem;
+    }
+    
+    .image {
+      width: 150px;
+      margin: 0 auto;
+      border-radius: 50%;
+    }
+    
+    .left {
+      text-align: center;
+    }
+    
+    .left p {
+      padding: 0.67rem 0;
+    }
+    
+    .right {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+    }
+    
+    .settings {
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-gap: 1rem;
+    }
+    
+    .settings__follow--list {
+      list-style: none;
+      margin-bottom: 1rem;
+    }
+    
+    .settings__change form {
+      margin-top: 1rem;
+    }
+    
+    @media all and (min-width: 768px) {
+      .header {
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+      
+      .left {
+        text-align: left;
+      }
+      
+      .right {
+        flex-direction: column;
+        justify-content: center;
+      }
+      
+      .settings {
+        grid-template-columns: 1fr 2fr;
+      }
+    }
+  </style>
+{% endblock styles %}
+
+{% block title %}User {{ current_user.username }}{% endblock title %}
+
+{% block header %}
+  <header class="header">
+    <img class="image" src="{{ gravatar }}" alt="{{ username }}" />
+    <div class="left">
+      <h2>{{ username }}</h2>
+      <p>{{ about_me }}</p>
+    </div>
+    <div class="right">
+      <div>
+        <p>Following: {{ following_count }}</p>
+        <p>Followers: {{ follower_count }}</p>
+      </div>
+    </div>
+  </header>
+{% endblock header %}
+
+{% block content %}
+  <div class="settings">
+    <aside class="settings__follow">
+      <h3>Following</h3>
+      <ul class="settings__follow--list">
+        {% for f in following %}
+          <li><a href="{% url 'profile' f.followed.id %}">{{ f.followed.username }}</a></li>
+        {% endfor %}
+      </ul>
+      <h3>Followers</h3>
+      <ul class="settings__follow--list">
+        {% for f in followers %}
+          <li><a href="{% url 'profile' f.follower.id %}">{{ f.follower.username }}</a></li>
+        {% endfor %}
+      </ul>
+    </aside>
+    <section class="settings__change">
+      <a class="btn" href="{% url 'password_change' %}">Change Password</a>
+      <form class="form" method="post">
+        {% csrf_token %}
+        {% include 'partials/form.html' %}
+        <button type="submit" class="btn">Update</button>
+      </form>
+    </section>
+  </div>
+{% endblock content %}

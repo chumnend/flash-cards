@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete Card{% endblock title %}
+
+{% block content %}
+    <form class="center" method="post">{% csrf_token %}
+        <p>Are you sure you want to delete this card?</p>
+        <button class="btn">Confirm</button>
+        <a class="btn" href="{% url 'manage_deck' card.deck.pk %}">Cancel</a>
+    </form>
+{% endblock content %}

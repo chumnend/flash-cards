@@ -1,1 +1,1 @@
-web: flask db upgrade; gunicorn flashcards:app
+web: ./run.sh
