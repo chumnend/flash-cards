@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.test import TestCase
 from django.urls import resolve, reverse
+from decks.forms import SearchDeckForm
 from decks.models import Deck
 from decks.views import decks
 
@@ -40,6 +41,11 @@ class DecksView(TestCase):
     def test_contains_link_to_private_deck(self):
         deck_url = reverse('deck', kwargs={'pk': self.private_deck.pk})
         self.assertContains(self.response, f'href="{deck_url}"')
+
+    def test_contains_form(self):
+        form = self.response.context.get('form')
+        self.assertIsInstance(form, SearchDeckForm)
+
 
 class DecksLoginRequiredTests(TestCase):
     def setUp(self):

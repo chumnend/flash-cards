@@ -2,12 +2,6 @@
 
 {% block title %}New Card{% endblock title %}
 
-{% block header %}
-    <header class="header">
-        <h2>New Card</h2>
-    </header>
-{% endblock header %}
-
 {% block content %}
   <form class="form" method="post">
     {% csrf_token %}

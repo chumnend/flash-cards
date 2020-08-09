@@ -13,7 +13,7 @@ class SearchDeckForm(forms.ModelForm):
     category = forms.ModelChoiceField(
         queryset=Category.objects.all(), 
         label="Category",
-        empty_label=" ",
+        empty_label="All",
         required=False,
     )
 
@@ -36,12 +36,14 @@ class DeckForm(forms.ModelForm):
         queryset=Category.objects.all(), 
         label="Category",
         required=False,
+        help_text="Select as many categories you find necessary."
     )
     PUBLISH_STATUS = ( ("x", "Private"), ("f", "Followers Only"), ("o", "Everyone"), )
     publish_status = forms.ChoiceField(
         choices=PUBLISH_STATUS,
         label="Visibility",
         required=False,
+        help_text="Sets who can see this deck."
     )
     
     class Meta:

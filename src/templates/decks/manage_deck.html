@@ -14,7 +14,6 @@
   <header class="header">
     <h2>{{ deck.name }}</h2>
     <p>{{ deck.description }}</p>
-    <a class="btn" href="{% url 'new_card' deck.pk %}">Create New Card</a>
     <a class="btn" href="{% url 'deck' deck.pk %}">View</a>
     <a class="btn" href="{% url 'edit_deck' deck.pk %}">Edit</a>
     <a class="btn" href="{% url 'delete_deck' deck.pk  %}">Delete</a>
@@ -22,6 +21,7 @@
 {% endblock header %}
 
 {% block content %}
+    <a class="btn" href="{% url 'new_card' deck.pk %}">Create New Card</a>
     {% if num_cards == 0 %}
       <p class="center">No cards are currently in this deck.</p>
     {% else %}

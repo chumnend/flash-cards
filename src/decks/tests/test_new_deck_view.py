@@ -57,7 +57,7 @@ class NewDeckSuccessTests(TestCase):
         })
 
     def test_redirection(self):
-        url = reverse('home')
+        url = reverse('decks')
         self.assertRedirects(self.response, url)
     
     def test_create(self):

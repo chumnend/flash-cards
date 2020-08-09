@@ -76,16 +76,23 @@ def explore(request):
 
 @login_required
 def decks(request):
-    if request.POST:
-        pass
-    
     decks = Deck.objects.filter(owner=request.user)
+    
+    if request.POST:
+        form = SearchDeckForm(request.POST)
+        if form.is_valid():
+            decks = decks.filter(name__icontains=form.cleaned_data['name'])
+            if form.cleaned_data['category']:
+                decks = decks.filter(categories__name__contains=form.cleaned_data['category'])
+
     deck_paginator = Paginator(decks, 10)
     page_number = request.GET.get('page')
     deck_page_obj = deck_paginator.get_page(page_number)
     
+    form = SearchDeckForm()
     context = {
         "decks": deck_page_obj,
+        "form": form,
     }
     
     return render(request, 'decks/decks.html', context)
@@ -111,7 +118,7 @@ def new_deck(request):
                 for category in categories:
                     deck.categories.add(category)
             
-            return redirect('home')
+            return redirect('decks')
     
     form = DeckForm()
     context = {

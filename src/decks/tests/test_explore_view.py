@@ -1,9 +1,9 @@
-from django.urls import resolve, reverse
-from django.test import TestCase
 from django.contrib.auth.models import User
-from decks.views import explore
-from decks.models import Deck
+from django.test import TestCase
+from django.urls import resolve, reverse
 from decks.forms import SearchDeckForm
+from decks.models import Deck
+from decks.views import explore
 
 class ExploreViewTests(TestCase):
     def setUp(self):
