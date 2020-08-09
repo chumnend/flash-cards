@@ -26,7 +26,17 @@ Copy env.example into .env file and fill it out,
 cp env.example .env
 ```
 
-Run any migartions,
+Change to source directory,
+```
+cd src/
+```
+
+Collect staticfiles,
+```
+python manage.py collectstatic
+```
+
+Run any migrations,
 ```
 python manage.py migrate
 ```

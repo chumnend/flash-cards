@@ -1,21 +1,29 @@
-from django.urls import resolve, reverse
-from django.test import TestCase
 from django.contrib.auth.models import User
+from django.test import TestCase
+from django.urls import resolve, reverse
 from accounts.models import UserDetails, Followers
 
 class UnfollowViewTests(TestCase):
     def setUp(self):
-        self.user1 = User.objects.create_user(username="johndoe", email="johndoe@example.com", password="test",)
-        self.user1_details = UserDetails.objects.create(user=self.user1)
-        self.user2 = User.objects.create_user(username="chrishanell", email="chrishanell@example.com", password="test",)
+        self.target_user = User.objects.create_user(
+            username="johndoe", 
+            email="johndoe@example.com", 
+            password="test",
+        )
+        self.target_user_details = UserDetails.objects.create(user=self.target_user)
+        self.user = User.objects.create_user(
+            username="chrishanell", 
+            email="chrishanell@example.com", 
+            password="test",
+        )
         self.client.login(username='chrishanell', password='test')
-        url = reverse('follow', kwargs={'pk': 1})
+        url = reverse('follow', kwargs={'pk': self.target_user.pk})
         self.response = self.client.get(url)
-        url = reverse('unfollow', kwargs={'pk': 1})
+        url = reverse('unfollow', kwargs={'pk': self.target_user.pk})
         self.response = self.client.get(url)
     
     def test_redirection(self):
-        url = reverse('profile', kwargs={'pk': self.user1.pk })
+        url = reverse('profile', kwargs={'pk': self.target_user.pk })
         self.assertRedirects(self.response, url)
     
     def test_follow(self):
@@ -23,7 +31,7 @@ class UnfollowViewTests(TestCase):
 
 class UnfollowLoginRequiredTests(TestCase):
     def setUp(self):
-        self.url = reverse('unfollow', kwargs={'pk': 1})
+        self.url = reverse('unfollow', kwargs={'pk': 1 })
         self.response = self.client.get(self.url)
     
     def test_redirection(self):

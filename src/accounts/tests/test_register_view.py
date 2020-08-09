@@ -1,8 +1,8 @@
-from django.urls import resolve, reverse
-from django.test import TestCase
 from django.contrib.auth.models import User
-from accounts.views import register
+from django.test import TestCase
+from django.urls import resolve, reverse
 from accounts.forms import RegisterForm
+from accounts.views import register
 
 class RegisterViewTests(TestCase):
     def setUp(self):

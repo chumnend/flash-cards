@@ -1,13 +1,17 @@
-from django.urls import resolve, reverse
-from django.test import TestCase
 from django.contrib.auth.models import User
-from accounts.models import UserDetails
+from django.test import TestCase
+from django.urls import resolve, reverse
 from accounts.forms import UserForm
+from accounts.models import UserDetails
 from accounts.views import settings
 
 class SettingsViewTests(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user(username="tester", email="tester@example.com", password="test",)
+        self.user = User.objects.create_user(
+            username="tester", 
+            email="tester@example.com", 
+            password="test",
+        )
         self.user_details = UserDetails.objects.create(user=self.user)
         self.client.login(username='tester', password='test')
         self.url = reverse('settings')
@@ -38,8 +42,15 @@ class SettingsLoginRequired(TestCase):
 
 class UserFormSuccessTests(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user(username='tester', email='tester@example.com', password='test')
-        self.user_details = UserDetails.objects.create(user=self.user, about_me='this is a test')
+        self.user = User.objects.create_user(
+            username='tester', 
+            email='tester@example.com', 
+            password='test',
+        )
+        self.user_details = UserDetails.objects.create(
+            user=self.user, 
+            about_me='this is a test',
+        )
         self.client.login(username='tester', password='test')
         url = reverse('settings')
         self.response = self.client.post(url, {

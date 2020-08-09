@@ -1,13 +1,19 @@
-from django.core import mail
 from django.contrib.auth.models import User
+from django.core import mail
 from django.urls import reverse
 from django.test import TestCase
 
 class PasswordResetMailTests(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user('tester', 'tester@example.com', 'test')
+        self.user = User.objects.create_user(
+            username='tester', 
+            email='tester@example.com', 
+            password='test',
+        )
         url = reverse('password_reset')
-        self.response = self.client.post(url, { 'email': self.user.email })
+        self.response = self.client.post(url, { 
+            'email': self.user.email,
+        })
         self.email = mail.outbox[0]
 
     def test_email_subject(self):
