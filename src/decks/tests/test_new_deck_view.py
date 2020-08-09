@@ -1,13 +1,17 @@
-from django.urls import resolve, reverse
-from django.test import TestCase
 from django.contrib.auth.models import User
-from decks.views import new_deck
-from decks.models import Deck, Category
+from django.test import TestCase
+from django.urls import resolve, reverse
 from decks.forms import DeckForm
+from decks.models import Deck, Category
+from decks.views import new_deck
 
 class NewDeckViewTests(TestCase):
     def setUp(self):
-        self.owner = User.objects.create_user('tester', 'tester@example.com', 'test')
+        self.user = User.objects.create_user(
+            username='tester', 
+            email='tester@example.com', 
+            password='test',
+        )
         self.client.login(username='tester', password='test')
         url = reverse('new_deck')
         self.response = self.client.get(url)
@@ -37,7 +41,11 @@ class NewDeckLoginRequiredTests(TestCase):
 
 class NewDeckSuccessTests(TestCase):
     def setUp(self):
-        self.owner = User.objects.create_user('tester', 'tester@example.com', 'test')
+        self.user = User.objects.create_user(
+            username='tester', 
+            email='tester@example.com', 
+            password='test',
+        )
         self.category = Category.objects.create(name="Science")
         self.client.login(username='tester', password='test')
         url = reverse('new_deck')
@@ -57,7 +65,11 @@ class NewDeckSuccessTests(TestCase):
         
 class NewDeckFailTests(TestCase):
     def setUp(self):
-        self.owner = User.objects.create_user('tester', 'tester@example.com', 'test')
+        self.user = User.objects.create_user(
+            username='tester', 
+            email='tester@example.com', 
+            password='test',
+        )
         self.client.login(username='tester', password='test')
         data = {
             'name': '',

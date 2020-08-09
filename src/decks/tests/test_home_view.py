@@ -6,9 +6,23 @@ from decks.models import Deck
 
 class HomeViewTests(TestCase):
     def setUp(self):
-        self.owner = User.objects.create_user('tester', 'tester@example.com', 'test')
-        self.deck = Deck.objects.create(name='Django1', description='Django deck', owner=self.owner, publish_status='o')
-        self.private_deck = Deck.objects.create(name='Django2', description='Django deck', owner=self.owner, publish_status='x')
+        self.user = User.objects.create_user(
+            username='tester', 
+            email='tester@example.com', 
+            password='test',
+        )
+        self.deck = Deck.objects.create(
+            name='Django1', 
+            description='Django deck', 
+            owner=self.user, 
+            publish_status='o',
+        )
+        self.private_deck = Deck.objects.create(
+            name='Django2', 
+            description='Django deck', 
+            owner=self.user, 
+            publish_status='x'
+        )
         url = reverse('home')
         self.response = self.client.get(url)
     
@@ -33,8 +47,16 @@ class HomeViewTests(TestCase):
 
 class DashboardViewTests(TestCase):
     def setUp(self):
-        self.owner = User.objects.create_user('tester', 'tester@example.com', 'test')
-        self.deck = Deck.objects.create(name='Django1', description='Django deck', owner=self.owner)
+        self.user = User.objects.create_user(
+            username='tester', 
+            email='tester@example.com', 
+            password='test',
+        )
+        self.deck = Deck.objects.create(
+            name='Django1', 
+            description='Django deck', 
+            owner=self.user,
+        )
         self.client.login(username='tester', password='test')
         url = reverse('home')
         self.response = self.client.get(url)

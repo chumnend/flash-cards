@@ -1,16 +1,25 @@
-from django.urls import resolve, reverse
-from django.test import TestCase
 from django.contrib.auth.models import User
-from decks.views import edit_deck
-from decks.models import Deck
+from django.test import TestCase
+from django.urls import resolve, reverse
 from decks.forms import DeckForm
+from decks.models import Deck
+from decks.views import edit_deck
 
 class EditDeckViewTests(TestCase):
     def setUp(self):
-        self.owner = User.objects.create_user('tester', 'tester@example.com', 'test')
-        self.deck = Deck.objects.create(name='Django1', description='Django deck', owner=self.owner, publish_status='o')
+        self.user = User.objects.create_user(
+            username='tester', 
+            email='tester@example.com', 
+            password='test',
+        )
+        self.deck = Deck.objects.create(
+            name='Django1', 
+            description='Django deck', 
+            owner=self.user, 
+            publish_status='o',
+        )
         self.client.login(username='tester', password='test')
-        url = reverse('edit_deck', kwargs={'pk': 1})
+        url = reverse('edit_deck', kwargs={'pk': self.deck.pk})
         self.response = self.client.get(url)
 
     def test_status_code(self):
@@ -38,7 +47,7 @@ class EditDeckLoginRequiredTest(TestCase):
 
 class EditDeckSuccessTests(TestCase):
     def setUp(self):
-        self.owner = User.objects.create_user(
+        self.user = User.objects.create_user(
             username='tester', 
             email='tester@example.com', 
             password='test'
@@ -46,14 +55,14 @@ class EditDeckSuccessTests(TestCase):
         self.deck = Deck.objects.create(
             name='Django1', 
             description='Django deck', 
-            owner=self.owner, 
+            owner=self.user, 
             publish_status='o'
         )
         self.client.login(
             username='tester', 
             password='test'
         )
-        url = reverse('edit_deck', kwargs={'pk': 1})
+        url = reverse('edit_deck', kwargs={'pk': self.deck.pk})
         self.response = self.client.post(url, {
             'name': 'Django2',
             'description': 'changed',
@@ -61,7 +70,7 @@ class EditDeckSuccessTests(TestCase):
         })
         
     def test_redirection(self):
-        url = reverse('manage_deck', kwargs={'pk': 1})
+        url = reverse('manage_deck', kwargs={'pk': self.deck.pk})
         self.assertRedirects(self.response, url)
         
     def test_update(self):
@@ -72,12 +81,12 @@ class EditDeckSuccessTests(TestCase):
     
 class EditDeckUnauthorizedTests(TestCase):
     def setUp(self):
-        self.owner = User.objects.create_user(
+        self.user = User.objects.create_user(
             username='tester', 
             email='tester@example.com', 
             password='test'
         )
-        self.otherOwner = User.objects.create_user(
+        self.other_user = User.objects.create_user(
             username='tester1', 
             email='tester1@example.com', 
             password='test1'
@@ -85,14 +94,14 @@ class EditDeckUnauthorizedTests(TestCase):
         self.deck = Deck.objects.create(
             name='Django1', 
             description='Django deck', 
-            owner=self.owner, 
+            owner=self.user, 
             publish_status='o'
         )
         self.client.login(
             username='tester1', 
             password='test1'
         )
-        url = reverse('edit_deck', kwargs={'pk': 1})
+        url = reverse('edit_deck', kwargs={'pk': self.deck.pk})
         self.response = self.client.post(url, {
             'name': 'Django2',
             'description': 'changed',
@@ -120,7 +129,7 @@ class EditDeckFailTests(TestCase):
             username='tester', 
             password='test'
         )
-        url = reverse('edit_deck', kwargs={'pk': 1})
+        url = reverse('edit_deck', kwargs={'pk': self.deck.pk})
         self.response = self.client.post(url, {
             'name': '',
             'description': 'changed',

@@ -1,15 +1,28 @@
-from django.urls import resolve, reverse
-from django.test import TestCase
 from django.contrib.auth.models import User
-from decks.views import decks
+from django.test import TestCase
+from django.urls import resolve, reverse
 from decks.models import Deck
+from decks.views import decks
 
 class DecksView(TestCase):
     def setUp(self):
-        self.owner = User.objects.create_user('tester', 'tester@example.com', 'test')
+        self.user = User.objects.create_user(
+            username='tester', 
+            email='tester@example.com', 
+            password='test'
+        )
         self.client.login(username='tester', password='test')
-        self.deck = Deck.objects.create(name='Django1', description='Django deck', owner=self.owner)
-        self.private_deck = Deck.objects.create(name='Django2', description='Django deck', owner=self.owner, publish_status='x')
+        self.deck = Deck.objects.create(
+            name='Django1', 
+            description='Django deck', 
+            owner=self.user,
+        )
+        self.private_deck = Deck.objects.create(
+            name='Django2', 
+            description='Django deck', 
+            owner=self.user, 
+            publish_status='x',
+        )
         url = reverse('decks')
         self.response = self.client.get(url)
     

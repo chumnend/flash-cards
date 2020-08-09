@@ -1,21 +1,29 @@
-from django.urls import resolve, reverse
-from django.test import TestCase
 from django.contrib.auth.models import User
-from decks.views import deck
+from django.test import TestCase
+from django.urls import resolve, reverse
 from decks.models import Deck
+from decks.views import deck
 
 class DeckViewTests(TestCase):
     def setUp(self):
-        self.owner = User.objects.create_user('tester', 'tester@example.com', 'test')
-        self.deck = Deck.objects.create(name='Django1', description='Django deck', owner=self.owner)
-        url = reverse('deck', kwargs={'pk': 1})
+        self.user = User.objects.create_user(
+            username='tester', 
+            email='tester@example.com', 
+            password='test'
+        )
+        self.deck = Deck.objects.create(
+            name='Django1', 
+            description='Django deck', 
+            owner=self.user,
+        )
+        url = reverse('deck', kwargs={'pk': self.deck.pk})
         self.response = self.client.get(url)
 
     def test_status_code(self):
         self.assertEquals(self.response.status_code, 200)
 
     def test__not_found_status_code(self):
-        url = reverse('deck', kwargs={'pk': 99})
+        url = reverse('deck', kwargs={'pk': self.deck.pk + 1})
         response = self.client.get(url)
         self.assertEquals(response.status_code, 404)
 
