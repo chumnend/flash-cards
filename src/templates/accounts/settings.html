@@ -34,15 +34,29 @@
       grid-gap: 1rem;
     }
     
+    .settings__follow p {
+      margin-bottom: 1rem;
+    }
+    
     .settings__follow--list {
       list-style: none;
       margin-bottom: 1rem;
     }
     
-    .settings__change form {
-      margin-top: 1rem;
+    .settings__change--password {
+      border: 1px solid #000;
+      padding: 1rem;
+      max-width: 480px;
+      margin: 1rem auto;
+      text-align: center;
     }
     
+    .settings__change--password .btn {
+      width: 100%;
+      display: block;
+      margin: 0 auto;
+    }
+
     @media all and (min-width: 768px) {
       .header {
         grid-template-columns: 1fr 1fr 1fr;
@@ -86,25 +100,35 @@
   <div class="settings">
     <aside class="settings__follow">
       <h3>Following</h3>
-      <ul class="settings__follow--list">
-        {% for f in following %}
-          <li><a href="{% url 'profile' f.followed.id %}">{{ f.followed.username }}</a></li>
-        {% endfor %}
-      </ul>
+      {% if following %}
+        <ul class="settings__follow--list">
+          {% for f in following %}
+            <li><a href="{% url 'profile' f.followed.id %}">{{ f.followed.username }}</a></li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p>You are not following anyone.</p>
+      {% endif %}
       <h3>Followers</h3>
-      <ul class="settings__follow--list">
-        {% for f in followers %}
-          <li><a href="{% url 'profile' f.follower.id %}">{{ f.follower.username }}</a></li>
-        {% endfor %}
-      </ul>
+      {% if followers %}
+        <ul class="settings__follow--list">
+          {% for f in followers %}
+            <li><a href="{% url 'profile' f.follower.id %}">{{ f.follower.username }}</a></li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p>You have no followers.</p>
+      {% endif %}
     </aside>
     <section class="settings__change">
-      <a class="btn" href="{% url 'password_change' %}">Change Password</a>
       <form class="form" method="post">
         {% csrf_token %}
         {% include 'partials/form.html' %}
         <button type="submit" class="btn">Update</button>
       </form>
+      <div class="settings__change--password">
+        <a class="btn" href="{% url 'password_change' %}">Change Password</a>
+      </div>
     </section>
   </div>
 {% endblock content %}

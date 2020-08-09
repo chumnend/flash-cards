@@ -29,6 +29,7 @@ body {
   font-size: 0.8rem;
   font-weight: 700;
   color: black;
+  display: inline-block;
 }
 
 .btn:hover {
