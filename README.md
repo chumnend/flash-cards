@@ -26,6 +26,19 @@ Copy env.example into .env file and fill it out,
 cp env.example .env
 ```
 
+```
+# .env example
+SECRET_KEY=secret
+DATABASE_URL=postgres://<db_user>:<db_password>@127.0.0.1:5432/<db_name>
+ALLOWED_HOSTS=*
+EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend
+EMAIL_HOST=
+EMAIL_PORT=
+EMAIL_HOST_USER=
+EMAIL_HOST_PASSWORD=
+EMAIL_USE_TLS=
+```
+
 Change to source directory,
 ```
 cd src/
@@ -49,6 +62,13 @@ python manage.py runserver <PORT>
 ### Test
 ```
 python manage.py test
+```
+
+### Scripts
+The 'run.sh' script can be used to automatically collect static files, migrate 
+the database and run the app in one console call,
+```
+./run.sh
 ```
 
 ### Deploy
