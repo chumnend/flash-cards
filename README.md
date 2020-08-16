@@ -1,5 +1,7 @@
 # Flashcards
-A web app for creating and managing flashcards, built using Django/Python
+A web app for creating and managing flashcards, built using Django/Python. The idea of this 
+project was to experiment with building a social media like application while also learning 
+more about the Django ecosystem.
 
 ## Development Setup
 
