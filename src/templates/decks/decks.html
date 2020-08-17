@@ -1,8 +1,5 @@
 {% extends 'base.html' %}
 
-{% block styles %}
-{% endblock styles %}
-
 {% block title %}{{ user.username }} Decks{% endblock title %}
 
 {% block header %}
@@ -12,13 +9,13 @@
 {% endblock header %}
 
 {% block content %}
-    <section>
-      <a class="btn" href="{% url 'new_deck' %}">Create New Deck</a>
-      {% if decks %}
-        {% include 'partials/deck_list.html' %}
-        {% include 'partials/pagination.html' %}
-      {% else %}
-        <p class="center">No decks found.</p>
-      {% endif %}
-    </section>
+  <section>
+    <a class="btn" href="{% url 'new_deck' %}">Create New Deck</a>
+    {% if decks %}
+      {% include 'partials/deck_list.html' %}
+      {% include 'partials/pagination.html' %}
+    {% else %}
+      <p class="center">No decks found.</p>
+    {% endif %}
+  </section>
 {% endblock content %}

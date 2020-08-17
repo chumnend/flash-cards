@@ -2,14 +2,6 @@
 
 {% block styles %}
   <style>
-    .header .btn {
-      display: inline-block;
-    }
-  
-    .deck__slideshow {
-      text-align: center;
-    }
-
     .slideshow {
       width: 100%;
       height: 200px;
@@ -86,7 +78,7 @@
 {% block header %}
   <header class="header">
     <h2>{{ deck.name }}</h2>
-    <p>{{ deck.description }}</p>
+    <p class="pdv-1">{{ deck.description }}</p>
     {% if user.username == deck.owner.username %}
       <a class="btn" href="{% url 'manage_deck' deck.id %}">Manage</a>
     {% endif %}
@@ -94,7 +86,7 @@
 {% endblock header %}
 
 {% block content %}
-  <section class="deck__slideshow">
+  <section class="deck__slideshow center">
     {% if num_cards == 0 %}
       <p>No cards are currently in this deck.</p>
     {% else %}

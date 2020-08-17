@@ -5,6 +5,7 @@ class Category(models.Model):
     name = models.CharField(max_length=30, unique=True)
     
     class Meta:
+        ordering = ['name']
         verbose_name_plural = "categories"
 
     def __str__(self):
@@ -34,7 +35,7 @@ class Card(models.Model):
     deck = models.ForeignKey("Deck", on_delete=models.CASCADE)
     
     class Meta:
-        ordering = ['-updated_at', '-created_at']
+        ordering = ['created_at']
     
     def __str__(self):
         return f"{self.front_text} | {self.back_text}"

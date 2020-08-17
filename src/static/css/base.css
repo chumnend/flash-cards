@@ -41,6 +41,14 @@ body {
   text-align: center;
 }
 
+.pd-1 {
+  padding: 1rem;
+}
+
+.pdv-1 {
+  padding: 1rem 0;
+}
+
 /* NAVIGATION STYLES */
 .navbar {
   width: 100%;

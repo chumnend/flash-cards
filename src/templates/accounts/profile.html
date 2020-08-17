@@ -73,12 +73,12 @@
 {% endblock header %}
 
 {% block content %}
-    <section>
-        {% if decks %}
-            {% include 'partials/deck_list.html' %}
-            {% include 'partials/pagination.html' %}
-        {% else %}
-            <p class="center">No decks found.</p>
-        {% endif %}    
-    </section>
+  <section>
+    {% if decks %}
+      {% include 'partials/deck_list.html' %}
+      {% include 'partials/pagination.html' %}
+    {% else %}
+      <p class="center">No decks found.</p>
+    {% endif %}    
+  </section>
 {% endblock content %}
