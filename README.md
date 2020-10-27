@@ -11,19 +11,19 @@ more about the Django ecosystem.
 - virtualenv
 - Postgresql
 
-### Start
-Setup virtual environment,
+### Configuration
+1) Setup virtual environment,
 ```
 python3 -m virtualenv venv
 source venv/bin/activate
 ```
 
-Install dependencies,
+2) Install dependencies,
 ```
 pip install -r requirements.txt
 ```
 
-Copy env.example into .env file and fill it out,
+3) Copy env.example into .env file and fill it out,
 ```
 cp env.example .env
 ```
@@ -41,22 +41,22 @@ EMAIL_HOST_PASSWORD=
 EMAIL_USE_TLS=
 ```
 
-Change to source directory,
+4) Change to source directory,
 ```
 cd src/
 ```
 
-Collect staticfiles,
+5) Collect staticfiles,
 ```
 python manage.py collectstatic
 ```
 
-Run any migrations,
+6) Run any migrations,
 ```
 python manage.py migrate
 ```
 
-Start the app,
+7) Start the app,
 ```
 python manage.py runserver <PORT>
 ```
@@ -73,5 +73,5 @@ the database and run the app in one console call,
 ./run.sh
 ```
 
-### Deploy
-Push to master branch to deploy to Heroku
+### Deployment
+Application is deployed to Heroku upon push to stable branch
