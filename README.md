@@ -1,7 +1,10 @@
 # Flashcards
-A web app for creating and managing flashcards, built using Django/Python. The idea of this 
+A web app for creating and managing flashcards, built using **Django/Python**. The idea of this 
 project was to experiment with building a social media like application while also learning 
 more about the Django ecosystem.
+
+## Demo
+![flashcards](flashcards-capture.gif)
 
 ## Development Setup
 
@@ -12,18 +15,20 @@ more about the Django ecosystem.
 - Postgresql
 
 ### Configuration
-1) Setup virtual environment,
+1) Clone the repo
+
+2) Setup virtual environment,
 ```
 python3 -m virtualenv venv
 source venv/bin/activate
 ```
 
-2) Install dependencies,
+3) Install dependencies,
 ```
 pip install -r requirements.txt
 ```
 
-3) Copy env.example into .env file and fill it out,
+4) Copy env.example into .env file and fill it out,
 ```
 cp env.example .env
 ```
@@ -41,22 +46,22 @@ EMAIL_HOST_PASSWORD=
 EMAIL_USE_TLS=
 ```
 
-4) Change to source directory,
+5) Change to source directory,
 ```
 cd src/
 ```
 
-5) Collect staticfiles,
+6) Collect staticfiles,
 ```
 python manage.py collectstatic
 ```
 
-6) Run any migrations,
+7) Run any migrations,
 ```
 python manage.py migrate
 ```
 
-7) Start the app,
+8) Start the app,
 ```
 python manage.py runserver <PORT>
 ```
@@ -67,11 +72,11 @@ python manage.py test
 ```
 
 ### Scripts
-The 'run.sh' script can be used to automatically collect static files, migrate 
+The `run.sh` script can be used to automatically collect static files, migrate 
 the database and run the app in one console call,
 ```
 ./run.sh
 ```
 
-### Deployment
+## Deployment
 Application is deployed to Heroku upon push to stable branch
