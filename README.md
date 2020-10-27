@@ -5,7 +5,7 @@ more about the Django ecosystem.
 
 ## Development Setup
 
-### Prerequistes
+### Prerequisites
 - Python 3
 - Pip
 - virtualenv
