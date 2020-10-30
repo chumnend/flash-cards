@@ -78,5 +78,5 @@ the database and run the app in one console call,
 ./run.sh
 ```
 
-## Deployment
+### Deployment
 Application is deployed to Heroku upon push to stable branch
