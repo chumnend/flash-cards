@@ -79,4 +79,4 @@ the database and run the app in one console call,
 ```
 
 ### Deployment
-Application is deployed to Heroku upon push to stable branch
+Application is deployed to Heroku upon push to `stable` branch
