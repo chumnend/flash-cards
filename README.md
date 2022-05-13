@@ -1,21 +1,25 @@
 # Flashcards
+
+## About This Project
 A web app for creating and managing flashcards, built using **Django/Python**. The idea of this 
 project was to experiment with building a social media like application while also learning 
 more about the Django ecosystem.
 
-## Demo
-![flashcards](flashcards-capture.gif)
+### Demo
+<p align="center">
+  <img src="flashcards-capture.gif" alt="animated" />
+</p>
 
-## Development Setup
-
-### Prerequisites
+### Built With
 - Python 3
-- Pip
-- virtualenv
 - Postgresql
 
-### Configuration
-1) Clone the repo
+## Getting Started
+
+1) Clone the repo,
+```
+git clone git@github.com:chumnend/flash-cards.git
+```
 
 2) Setup virtual environment,
 ```
@@ -66,17 +70,21 @@ python manage.py migrate
 python manage.py runserver <PORT>
 ```
 
-### Test
+9) Test the app by running the following command,
+
 ```
 python manage.py test
 ```
 
-### Scripts
-The `run.sh` script can be used to automatically collect static files, migrate 
+10) The `run.sh` script can be used to automatically collect static files, migrate 
 the database and run the app in one console call,
+
 ```
 ./run.sh
 ```
 
 ### Deployment
 Application is deployed to Heroku upon push to `stable` branch
+
+## Contact
+Nicholas Chumney - [nicholas.chumney@outlook.com](nicholas.chumney@outlook.com) 
