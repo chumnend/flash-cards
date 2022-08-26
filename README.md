@@ -84,7 +84,7 @@ the database and run the app in one console call,
 ```
 
 ### Deployment
-Application is deployed to Heroku upon push to `stable` branch
+Not deployed.
 
 ## Contact
 Nicholas Chumney - [nicholas.chumney@outlook.com](nicholas.chumney@outlook.com) 
