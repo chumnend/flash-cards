@@ -12,25 +12,17 @@ TBD
 
 ## Getting Started
 
-TBD
+1) Install Python 3.7 or newer.
 
-1) Run the following to create the virtual environment and install dependecies,
+2) Create a virtual environment: `python3 -m venv venv`
 
-```sh
-make
-```
+3) Activate the virtual environment: `source venv/bin/activate` (on Linux/macOS)
 
-2) Activate the virtualenv,
+4) Install the application in development mode: `pip install -e ".[testing]"`
 
-```sh
-source ./venv/bin/activate
-```
+5) Run the application: `pserve development.ini --reload`
 
-3) Run in development mode
-
-```sh
-make run
-```
+6) The application should now be running.
 
 ## Deployment
 
