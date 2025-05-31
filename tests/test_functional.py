@@ -5,3 +5,7 @@ def test_root(testapp):
 def test_notfound(testapp):
     res = testapp.get('/badurl', status=404)
     assert res.status_code == 404
+
+def test_status(testapp):
+    res = testapp.get('/status', status=200)
+    assert b'OK' in res.body
