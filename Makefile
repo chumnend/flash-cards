@@ -4,6 +4,9 @@ install:
 dev:
 	@pserve development.ini --reload
 
+client:
+	@cd web && yarn install && yarn run dev
+
 test:
 	@pytest
 
