@@ -1,11 +1,12 @@
 install:
 	@pip install -e ".[testing]"
+	@cd web && yarn install
 
 dev:
 	@pserve development.ini --reload
 
-client:
-	@cd web && yarn install && yarn run dev
+dev-client:
+	@cd web && yarn dev
 
 test:
 	@pytest
