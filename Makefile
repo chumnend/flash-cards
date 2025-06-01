@@ -5,7 +5,7 @@ install:
 dev:
 	@pserve development.ini --reload
 
-dev-client:
+client-dev:
 	@cd web && yarn dev
 
 test:
