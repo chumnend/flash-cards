@@ -1,6 +1,6 @@
 from flashly.views.default import my_view
 from flashly.views.default import status
-from flashly.views.notfound import notfound_view
+from flashly.views.default import notfound_view
 
 
 def test_my_view(app_request):
