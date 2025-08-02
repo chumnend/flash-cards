@@ -15,12 +15,13 @@
     padding: 0 1rem;
 }
 
-.navbar-brand span {
+.navbar-brand a {
     color: white;
     margin: 0;
     font-size: 1.8rem;
     font-weight: bold;
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    text-decoration: none;
 }   
 
 .navbar-menu {

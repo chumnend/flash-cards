@@ -1,22 +1,32 @@
+import { Link, useNavigate } from 'react-router-dom';
+
 import './Navbar.css'
 
 type Props = {
     username: string,
     isLoggedIn: boolean,
-    onLogin: () => void,
     onLogout: () => void,
 }
 
 const Navbar = (props: Props) => {
-    const { username, isLoggedIn, onLogin, onLogout } = props;
+    const { username, isLoggedIn, onLogout } = props;
+    const navigate = useNavigate();
+
+    const handleRegisterClick = () => {
+        navigate('/register');
+    };
+
+    const handleLoginClick = () => {
+        navigate('/login');
+    };
 
     const SignedInNavbarMenu = (
         <div className="navbar-signed-in">
             <span className="navbar-welcome">Welcome, {username}!</span>
             <ul className="navbar-nav">
-                <li><a href="/explore">Explore</a></li>
-                <li><a href="/decks">Decks</a></li>
-                <li><a href="/profile">Profile</a></li>
+                <li><Link to="/explore">Explore</Link></li>
+                <li><Link to="/decks">Decks</Link></li>
+                <li><Link to="/profile">Profile</Link></li>
             </ul>
             <button className="navbar-btn navbar-btn-primary" onClick={onLogout}>Logout</button>
         </div>
@@ -25,10 +35,10 @@ const Navbar = (props: Props) => {
     const SignedOutNavbarMenu = (
         <div className="navbar-signed-out">
             <ul className="navbar-nav">
-                <li><a href="/explore">Explore</a></li>
+                <li><Link to="/explore">Explore</Link></li>
             </ul>
-            <button className="navbar-btn navbar-btn-primary" onClick={onLogin}>Register</button>
-            <button className="navbar-btn navbar-btn-outline" onClick={onLogin}>Login</button>
+            <button className="navbar-btn navbar-btn-primary" onClick={handleRegisterClick}>Register</button>
+            <button className="navbar-btn navbar-btn-outline" onClick={handleLoginClick}>Login</button>
         </div>
     );
 
@@ -36,7 +46,7 @@ const Navbar = (props: Props) => {
         <div className="navbar">
             <div className="navbar-container">
                 <div className="navbar-brand">
-                    <span>Flashly</span>
+                    <Link to="/">Flashly</Link>
                 </div>
 
                 <div className="navbar-menu">
