@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
+import * as api from '../helpers/api';
+
 import './LoginPage.css';
 
 const LoginPage = () => {
@@ -45,15 +47,9 @@ const LoginPage = () => {
     setIsLoading(true);
 
     try {
-      // TODO: Implement actual login logic
-      console.log('Login data:', {
-        email: formData.email,
-        password: formData.password,
-      })
+      const data = await api.login(formData.email, formData.password);
 
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      alert('Login successful');
+      console.log(data);
 
       setFormData({
         email: '',

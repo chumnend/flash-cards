@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
+import * as api from '../helpers/api';
+
 import './RegisterPage.css';
 
 const RegisterPage = () => {
@@ -73,18 +75,9 @@ const RegisterPage = () => {
     setIsSubmitting(true);
     
     try {
-      // TODO: Implement actual registration logic
-      console.log('Registration data:', {
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        email: formData.email,
-        password: formData.password
-      });
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      alert('Registration successful!');
+      const data = await api.register(formData.firstName, formData.lastName, formData.email, formData.password);
+
+      console.log(data);
       
       setFormData({
         firstName: '',
