@@ -1,6 +1,6 @@
 export const users = [
     {
-        ID: 'agew2153',
+        id: 'agew2153',
         firstName: 'Nicholas',
         lastName: 'Chumney',
         email: 'nicholas.chumney@outlook.com',
@@ -10,7 +10,7 @@ export const users = [
         createdAt: new Date(100000),
     }, 
     {
-        ID: 'bvwr4021',
+        id: 'bvwr4021',
         firstName: 'John',
         lastName: 'Doe',
         email: 'johndoe@gmail.com',
@@ -24,12 +24,12 @@ export const users = [
 
 export const userDetails = [
     {
-        ID: 'safv4567',
+        id: 'safv4567',
         aboutMe: 'I am Nicholas!',
         createdAt: new Date(100000),
     },
     {
-        ID: 'resf6578',
+        id: 'resf6578',
         aboutMe: '',
         createdAt: new Date(145600),
     }
@@ -44,7 +44,7 @@ export const followers = [
 
 export const decks = [
     {
-        ID: 'bsd3s2s',
+        id: 'bsd3s2s',
         name: 'Test Deck',
         description: 'A deck in progress',
         publishStatus: 'private',
@@ -56,7 +56,7 @@ export const decks = [
         updatedAt: new Date(100005),
     },
         {
-        ID: 'agfa0921',
+        id: 'agfa0921',
         name: 'Math Basics',
         description: 'A deck for basic math problems',
         publishStatus: 'public',
@@ -71,7 +71,7 @@ export const decks = [
 
 export const cards = [
     {
-        ID: 'red123',
+        id: 'red123',
         frontText: '1 + 1',
         backText: '2',
         difficulty: 'easy',
@@ -85,7 +85,7 @@ export const cards = [
 
 export const categories = [
     {
-        ID: 'edf342',
+        id: 'edf342',
         name: 'Math',
     }
 ]

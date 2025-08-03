@@ -17,7 +17,12 @@ export async function register(
       await new Promise(resolve => setTimeout(resolve, 1000));
 
       return {
-        name: firstName + ' ' + lastName.charAt(0) + '.',
+        message: 'Registration successful',
+        user: {
+            id: '12345',
+            name: `${firstName} ${lastName.charAt(0)}.`,
+            email,
+        },
         token: 'randomtokenforencryption',
       }
 }
@@ -34,13 +39,22 @@ export async function login(email: string, password: string) {
     const foundUser = testDB.users.find(user => user.email === email && user.password === password);
 
     if (!foundUser) {
-        return null;
+        return {
+            message: 'Login failed',
+            user: null,
+            token: null,
+        }
     }
 
     return {
-        name: foundUser.firstName + ' ' + foundUser.lastName + '.',
+        message: 'Login successful',
+        user: {
+            id: '12345',
+            name: `${foundUser.firstName} ${foundUser.lastName.charAt(0)}.`,
+            email,
+        },
         token: 'randomtokenforencryption',
-    };
+    }
 }
 
 export async function explore() {
@@ -49,5 +63,8 @@ export async function explore() {
 
     await new Promise(resolve => setTimeout(resolve, 1000));
     
-    return decks;
+    return {
+        message: 'Public decks found',
+        decks,
+    }
 }

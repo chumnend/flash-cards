@@ -20,9 +20,11 @@ const App = () => {
         isLoggedIn={isLoggedIn}
         onLogout={handleLogout}
       />
+
       <main className='app-main'>
         <Outlet />
       </main>
+
       <footer className='app-footer'>
         Nicholas Chumney, 2025
       </footer>

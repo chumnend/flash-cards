@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import * as api from '../helpers/api';
+import * as api from '../../helpers/api';
 
 const ExplorePage = () => {
   const [isLoading, setIsLoading] = useState(true);
