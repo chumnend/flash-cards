@@ -77,7 +77,7 @@ const RegisterPage = () => {
     try {
       const data = await api.register(formData.firstName, formData.lastName, formData.email, formData.password);
 
-      console.log(data);
+      console.log(data); // TODO: Handle user data
       
       setFormData({
         firstName: '',
@@ -87,8 +87,11 @@ const RegisterPage = () => {
         confirmPassword: ''
       });
     } catch (error) {
-      console.error('Registration failed:', error);
-      alert('Registration failed. Please try again.');
+      const errorMessage = error instanceof Error ? error.message : 'Registration failed. Please try again.';
+      setErrors(prev => ({
+        ...prev,
+        'form': errorMessage,
+      }));
     } finally {
       setIsSubmitting(false);
     }
@@ -101,6 +104,12 @@ const RegisterPage = () => {
         <p>Please fill out the form below to get started.</p>
         
         <form className="register-form" onSubmit={handleSubmit}>
+          {errors.form && (
+            <div className='form-error'>
+              <span className="error-message">{errors.form}</span>
+            </div>
+          )}
+
           <div className="form-row">
             <div className="form-group">
               <label htmlFor="firstName">First Name</label>
