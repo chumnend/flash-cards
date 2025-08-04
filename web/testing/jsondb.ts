@@ -6,6 +6,8 @@ export const users = [
         email: 'nicholas.chumney@outlook.com',
         password: 'test123',
         details: 'safv4567',
+        following: [],
+        followers: ['bvwr4021'],
         decks: ['bsd3s2s', 'agfa0921'],
         createdAt: new Date(100000),
     }, 
@@ -16,6 +18,7 @@ export const users = [
         email: 'johndoe@gmail.com',
         password: 'jd2025',
         details: 'resf6578',
+        following: ['agew2153'],
         followers: [],
         decks: [],
         createdAt: new Date(145600),
@@ -55,7 +58,7 @@ export const decks = [
         createdAt: new Date(100005),
         updatedAt: new Date(100005),
     },
-        {
+    {
         id: 'agfa0921',
         name: 'Math Basics',
         description: 'A deck for basic math problems',

@@ -1,4 +1,4 @@
-import { type IRegisterResponse, type ILoginResponse, type IExploreResponse } from './types';
+import { type IExploreResponse, type IRegisterResponse, type ILoginResponse, type IFeedResponse } from './types';
 
 import * as db from '../../testing/jsondb';
 
@@ -10,7 +10,6 @@ export async function register(
 ): Promise<IRegisterResponse> {
     try {
         // TODO: Implement actual registration logic
-
         await new Promise(resolve => setTimeout(resolve, 1000));
 
         // simulate validation - check if email already exists
@@ -44,9 +43,8 @@ export async function register(
 }
 
 export async function login(email: string, password: string): Promise<ILoginResponse> {
-    // TODO: Implement actual login logic
-
     try {
+        // TODO: Implement actual login logic   
         await new Promise(resolve => setTimeout(resolve, 1000));
 
         // simulate search for user
@@ -59,11 +57,11 @@ export async function login(email: string, password: string): Promise<ILoginResp
         return {
             message: 'Login successful',
             user: {
-                id: '12345',
+                id: foundUser.id,
                 name: `${foundUser.firstName} ${foundUser.lastName.charAt(0)}.`,
                 email,
             },
-            token: 'randomtokenforencryption',
+            token: `${foundUser.id}`,
         }
     } catch (error) {
         console.error('Login Error', error);
@@ -72,9 +70,8 @@ export async function login(email: string, password: string): Promise<ILoginResp
 }
 
 export async function explore(): Promise<IExploreResponse> {
-    // TODO: Implement actual explore logic
-
     try {
+        // TODO: Implement actual explore logic
         await new Promise(resolve => setTimeout(resolve, 1000));
 
         const publicDecks = db.decks.filter(deck => deck.publishStatus === "public");
@@ -101,10 +98,69 @@ export async function explore(): Promise<IExploreResponse> {
             decks: enrichedDecks,
         }
     } catch (error) {
-        console.error('Error fetching public decks:', error);
+        console.error('Explore Error:', error);
         return {
-            message: 'Error fetching public decks',
+            message: 'Explore Error',
             decks: [],
         }
+    }
+}
+
+export async function feed(token: string): Promise<IFeedResponse> {
+    try {
+        // TODO: Implement actual feed logic
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        if (!token || typeof token !== 'string') {
+            throw new Error('Invalid token provided');
+        }
+
+        const currentUser = db.users.find(user => user.id === token);
+        if (!currentUser) {
+            throw new Error('User not found');
+        }
+
+        const userDecks = db.decks.filter(deck => deck.owner === currentUser.id);
+        const userFollowing = currentUser.following as string[];
+        const followingDecks = db.decks.filter(deck => 
+            deck.owner !== currentUser.id &&
+            userFollowing.includes(deck.owner) && 
+            deck.publishStatus !== 'private'
+        );
+        const allDecks = [...userDecks, ...followingDecks];
+
+        // Create maps for efficient lookups to improve performance
+        const categoryMap = new Map(db.categories.map(cat => [cat.id, cat]));
+        const cardMap = new Map(db.cards.map(card => [card.id, card]));
+
+        const enrichedDecks = allDecks.map(deck => {
+            const populatedCategories = deck.categories
+                .map((categoryId: string) => categoryMap.get(categoryId))
+                .filter((category): category is NonNullable<typeof category> => category !== undefined);
+
+            const populatedCards = deck.cards
+                .map((cardId: string) => cardMap.get(cardId))
+                .filter((card): card is NonNullable<typeof card> => card !== undefined);
+
+            return {
+                ...deck,
+                categories: populatedCategories,
+                cards: populatedCards
+            };
+        });
+        enrichedDecks.sort((a, b) => 
+            new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+        );
+
+        return {
+            message: enrichedDecks.length > 0 ? 'Feed loaded successfully' : 'No decks found for your feed',
+            decks: enrichedDecks,
+        };
+    } catch (error) {
+        console.error('Feed Error:', error);
+        return {
+            message: 'Failed to load feed',
+            decks: [],
+        };
     }
 }

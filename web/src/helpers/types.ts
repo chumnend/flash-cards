@@ -59,3 +59,8 @@ export interface IExploreResponse {
     message: string,
     decks: Array<IDeck>,
 }
+
+export interface IFeedResponse {
+    message: string,
+    decks: Array<IDeck>,
+}
