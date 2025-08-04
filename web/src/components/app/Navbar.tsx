@@ -1,15 +1,18 @@
 import { Link, useNavigate } from 'react-router-dom';
 
+import { type IAuthUser } from '../../helpers/types';
+
 import './Navbar.css'
 
-type Props = {
-    username: string,
-    isLoggedIn: boolean,
-    onLogout: () => void,
+
+export type Props = {
+    isLoggedIn: boolean;
+    authUser: IAuthUser | null | undefined;
+    onLogout: () => void;
 }
 
 const Navbar = (props: Props) => {
-    const { username, isLoggedIn, onLogout } = props;
+    const { isLoggedIn, authUser, onLogout } = props;
     const navigate = useNavigate();
 
     const handleRegisterClick = () => {
@@ -20,19 +23,23 @@ const Navbar = (props: Props) => {
         navigate('/login');
     };
 
-    const SignedInNavbarMenu = (
+    const handleLogout = () => {
+        onLogout();
+    }
+
+    const AuthenticatedNavbarMenu = (
         <div className="navbar-signed-in">
-            <span className="navbar-welcome">Welcome, {username}!</span>
+            <span className="navbar-welcome">Welcome, {authUser?.name || 'User'}!</span>
             <ul className="navbar-nav">
                 <li><Link to="/explore">Explore</Link></li>
                 <li><Link to="/decks">Decks</Link></li>
                 <li><Link to="/profile">Profile</Link></li>
             </ul>
-            <button className="navbar-btn navbar-btn-primary" onClick={onLogout}>Logout</button>
+            <button className="navbar-btn navbar-btn-primary" onClick={handleLogout}>Logout</button>
         </div>
     );
 
-    const SignedOutNavbarMenu = (
+    const UnauthenticatedNavbarMenu = (
         <div className="navbar-signed-out">
             <ul className="navbar-nav">
                 <li><Link to="/explore">Explore</Link></li>
@@ -50,7 +57,7 @@ const Navbar = (props: Props) => {
                 </div>
 
                 <div className="navbar-menu">
-                    {isLoggedIn ? SignedInNavbarMenu : SignedOutNavbarMenu}
+                    {isLoggedIn ? AuthenticatedNavbarMenu : UnauthenticatedNavbarMenu}
                 </div>
             </div>
         </div>

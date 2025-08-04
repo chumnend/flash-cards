@@ -1,3 +1,5 @@
+import { type IRegisterResponse, type ILoginResponse } from './types';
+
 import * as testDB from '../../testing/testDB';
 
 export async function register(
@@ -5,7 +7,7 @@ export async function register(
     lastName: string,
     email: string,
     password: string,
-) {
+): Promise<IRegisterResponse> {
     try {
         // TODO: Implement actual registration logic
         console.log('Registration data:', {
@@ -47,7 +49,7 @@ export async function register(
     }
 }
 
-export async function login(email: string, password: string) {
+export async function login(email: string, password: string): Promise<ILoginResponse> {
     // TODO: Implement actual login logic
     console.log('Login data:', {
         email,

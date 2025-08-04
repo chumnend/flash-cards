@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import * as api from '../../helpers/api';
+import { useAuthContext } from '../../helpers/context';
 
 import './RegisterPage.css';
 
@@ -15,6 +16,8 @@ const RegisterPage = () => {
   });
   const [errors, setErrors] = useState<{[key: string]: string}>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { handleRegister } = useAuthContext();
+  const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -76,8 +79,13 @@ const RegisterPage = () => {
     
     try {
       const data = await api.register(formData.firstName, formData.lastName, formData.email, formData.password);
-
-      console.log(data); // TODO: Handle user data
+  
+      if (data.user && data.token) {
+        handleRegister(data.user.id, data.user.name, data.user.email, data.token);
+        navigate("/");
+      } else {
+        throw new Error('Registration succeeded but user data is missing.');
+      }
       
       setFormData({
         firstName: '',

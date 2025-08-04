@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import * as api from '../../helpers/api';
+import { useAuthContext } from '../../helpers/context';
 
 import './LoginPage.css';
 
@@ -12,6 +13,8 @@ const LoginPage = () => {
   });
   const [errors, setErrors] = useState<{[key: string]: string}>({});
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { handleLogin } = useAuthContext();
+  const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const {name, value} = e.target;
@@ -49,7 +52,12 @@ const LoginPage = () => {
     try {
       const data = await api.login(formData.email, formData.password);
 
-      console.log(data);
+      if (data.user && data.token) {
+        handleLogin(data.user.id, data.user.name, data.user.email, data.token);
+        navigate("/");
+      } else {
+        throw new Error('Registration succeeded but user data is missing.');
+      }
 
       setFormData({
         email: '',

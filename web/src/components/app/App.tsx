@@ -2,27 +2,50 @@ import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 
 import Navbar from './Navbar';
+import { type ContextType  } from '../../helpers/context';
+import { type IAuthUser } from '../../helpers/types';
 
 import './App.css'
 
 const App = () => {
-  const [username] = useState('Nicholas C.');
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [authUser, setAuthUser] = useState<IAuthUser | null>(null);
+
+  const handleRegister = (id: string, name: string, email: string, token: string) => {
+      setIsLoggedIn(true);
+      setAuthUser({
+        id,
+        name,
+        email,
+        token,
+      });
+  }
+
+  const handleLogin = (id: string, name: string, email: string, token: string) => {
+      setIsLoggedIn(true);
+      setAuthUser({
+        id,
+        name,
+        email,
+        token,
+      });
+  }
 
   const handleLogout = () => {
     setIsLoggedIn(false);
+    setAuthUser(null);
   }
 
   return (
     <div className='app'>
       <Navbar
-        username={username}
         isLoggedIn={isLoggedIn}
+        authUser={authUser}
         onLogout={handleLogout}
       />
 
       <main className='app-main'>
-        <Outlet />
+        <Outlet context={{ authUser, handleLogin, handleRegister, handleLogout } satisfies ContextType } />
       </main>
 
       <footer className='app-footer'>
