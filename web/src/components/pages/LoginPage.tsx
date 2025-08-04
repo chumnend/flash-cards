@@ -54,7 +54,7 @@ const LoginPage = () => {
 
       if (data.user && data.token) {
         handleLogin(data.user.id, data.user.name, data.user.email, data.token);
-        navigate("/");
+        navigate("/feed");
       } else {
         throw new Error('Registration succeeded but user data is missing.');
       }

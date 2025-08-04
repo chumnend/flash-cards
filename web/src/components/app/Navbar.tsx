@@ -31,6 +31,7 @@ const Navbar = (props: Props) => {
         <div className="navbar-signed-in">
             <span className="navbar-welcome">Welcome, {authUser?.name || 'User'}!</span>
             <ul className="navbar-nav">
+                <li><Link to="/feed">Your Feed</Link></li>
                 <li><Link to="/explore">Explore</Link></li>
                 <li><Link to="/decks">Decks</Link></li>
                 <li><Link to="/profile">Profile</Link></li>
