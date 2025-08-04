@@ -24,3 +24,38 @@ export interface ILoginResponse {
     } | null | undefined,
     token: string | null | undefined,
 }
+
+export interface ICard {
+    id: string,
+    frontText: string,
+    backText: string,
+    difficulty: string,
+    timesReviewed: number,
+    successRate: number,
+    deck: string,
+    createdAt: Date,
+    updatedAt: Date,
+}
+
+export interface ICategory {
+    id: string,
+    name: string,
+}
+
+export interface IDeck {
+    id: string,
+    name: string,
+    description: string,
+    publishStatus: string,
+    categories: Array<ICategory>,
+    owner: string,
+    rating: number,
+    cards: Array<ICard>,
+    createdAt: Date,
+    updatedAt: Date,
+}
+
+export interface IExploreResponse {
+    message: string,
+    decks: Array<IDeck>,
+}
