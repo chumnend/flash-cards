@@ -87,6 +87,7 @@ const RegisterPage = () => {
         confirmPassword: ''
       });
     } catch (error) {
+      console.error('Registration failed:', error);
       const errorMessage = error instanceof Error ? error.message : 'Registration failed. Please try again.';
       setErrors(prev => ({
         ...prev,

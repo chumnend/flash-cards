@@ -57,7 +57,11 @@ const LoginPage = () => {
       });
     } catch (error) {
       console.error('Login failed:', error);
-      alert('Login failed. Please try again.');
+      const errorMessage = error instanceof Error ? error.message : 'Registration failed. Please try again.';
+      setErrors(prev => ({
+        ...prev,
+        'form': errorMessage,
+      }));
     } finally {
       setIsLoading(false);
     }
@@ -71,6 +75,12 @@ const LoginPage = () => {
         <p>Please log in to access your flashcards.</p>
 
         <form className='login-form' onSubmit={handleSubmit}>
+          {errors.form && (
+            <div className='form-error'>
+              <span className="error-message">{errors.form}</span>
+            </div>
+          )}
+
           <div className="form-group">
             <label htmlFor="email">Email Address</label>
             <input
