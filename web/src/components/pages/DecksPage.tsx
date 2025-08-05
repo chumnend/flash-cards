@@ -30,7 +30,7 @@ const DecksPage = () => {
         <div className="decks-page">
           <h1>My Decks</h1>
           <p>Manage your flashcard decks here.</p>
-            {isLoading ? <Loader /> : <DeckList decks={decks} />}
+            {isLoading ? <Loader /> : <DeckList decks={decks} isOwner />}
         </div>
     );
 };

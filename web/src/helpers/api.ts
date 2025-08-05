@@ -79,7 +79,7 @@ export async function explore(): Promise<IExploreResponse> {
         // Transform decks with populated categories and cards
         const enrichedDecks = publicDecks.map(deck => {
             const populatedCategories = deck.categories
-                .map(categoryId => db.categories.find(category => category.id === categoryId))
+                .map(categoryId => db.categories.find(category => category.id === categoryId)?.name)
                 .filter(category => category !== undefined);
 
             const populatedCards = deck.cards
@@ -123,18 +123,14 @@ export async function feed(token: string): Promise<IFeedResponse> {
             deck.publishStatus !== 'private'
         );
 
-        // Create maps for efficient lookups to improve performance
-        const categoryMap = new Map(db.categories.map(cat => [cat.id, cat]));
-        const cardMap = new Map(db.cards.map(card => [card.id, card]));
-
         const enrichedDecks = followingDecks.map(deck => {
             const populatedCategories = deck.categories
-                .map((categoryId: string) => categoryMap.get(categoryId))
-                .filter((category): category is NonNullable<typeof category> => category !== undefined);
+                .map(categoryId => db.categories.find(category => category.id === categoryId)?.name)
+                .filter(category => category !== undefined);
 
             const populatedCards = deck.cards
-                .map((cardId: string) => cardMap.get(cardId))
-                .filter((card): card is NonNullable<typeof card> => card !== undefined);
+                .map(cardId => db.cards.find(card => card.id === cardId))
+                .filter(card => card !== undefined);
 
             return {
                 ...deck,
@@ -173,18 +169,14 @@ export async function decks(token: string): Promise<IDecksResponse> {
 
         const userDecks = db.decks.filter(deck => deck.owner === currentUser.id);
 
-        // Create maps for efficient lookups to improve performance
-        const categoryMap = new Map(db.categories.map(cat => [cat.id, cat]));
-        const cardMap = new Map(db.cards.map(card => [card.id, card]));
-
         const enrichedDecks = userDecks.map(deck => {
             const populatedCategories = deck.categories
-                .map((categoryId: string) => categoryMap.get(categoryId))
-                .filter((category): category is NonNullable<typeof category> => category !== undefined);
+                .map(categoryId => db.categories.find(category => category.id === categoryId)?.name)
+                .filter(category => category !== undefined);
 
             const populatedCards = deck.cards
-                .map((cardId: string) => cardMap.get(cardId))
-                .filter((card): card is NonNullable<typeof card> => card !== undefined);
+                .map(cardId => db.cards.find(card => card.id === cardId))
+                .filter(card => card !== undefined);
 
             return {
                 ...deck,

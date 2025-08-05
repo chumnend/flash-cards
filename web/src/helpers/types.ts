@@ -47,7 +47,7 @@ export interface IDeck {
     name: string,
     description: string,
     publishStatus: string,
-    categories: Array<ICategory>,
+    categories: Array<string>,
     owner: string,
     rating: number,
     cards: Array<ICard>,
