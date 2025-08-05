@@ -64,3 +64,8 @@ export interface IFeedResponse {
     message: string,
     decks: Array<IDeck>,
 }
+
+export interface IDecksResponse {
+    message: string,
+    decks: Array<IDeck>,
+}

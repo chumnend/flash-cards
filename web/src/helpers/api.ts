@@ -1,4 +1,4 @@
-import { type IExploreResponse, type IRegisterResponse, type ILoginResponse, type IFeedResponse } from './types';
+import { type IExploreResponse, type IRegisterResponse, type ILoginResponse, type IFeedResponse, type IDecksResponse } from './types';
 
 import * as db from '../../testing/jsondb';
 
@@ -94,15 +94,12 @@ export async function explore(): Promise<IExploreResponse> {
         });
 
         return {
-            message: 'Public decks found',
+            message: enrichedDecks.length > 0 ? 'Explore loaded successfully' : 'No decks found for the explore page',
             decks: enrichedDecks,
         }
     } catch (error) {
         console.error('Explore Error:', error);
-        return {
-            message: 'Explore Error',
-            decks: [],
-        }
+        throw error;
     }
 }
 
@@ -119,21 +116,18 @@ export async function feed(token: string): Promise<IFeedResponse> {
         if (!currentUser) {
             throw new Error('User not found');
         }
-
-        const userDecks = db.decks.filter(deck => deck.owner === currentUser.id);
         const userFollowing = currentUser.following as string[];
         const followingDecks = db.decks.filter(deck => 
             deck.owner !== currentUser.id &&
             userFollowing.includes(deck.owner) && 
             deck.publishStatus !== 'private'
         );
-        const allDecks = [...userDecks, ...followingDecks];
 
         // Create maps for efficient lookups to improve performance
         const categoryMap = new Map(db.categories.map(cat => [cat.id, cat]));
         const cardMap = new Map(db.cards.map(card => [card.id, card]));
 
-        const enrichedDecks = allDecks.map(deck => {
+        const enrichedDecks = followingDecks.map(deck => {
             const populatedCategories = deck.categories
                 .map((categoryId: string) => categoryMap.get(categoryId))
                 .filter((category): category is NonNullable<typeof category> => category !== undefined);
@@ -148,6 +142,7 @@ export async function feed(token: string): Promise<IFeedResponse> {
                 cards: populatedCards
             };
         });
+
         enrichedDecks.sort((a, b) => 
             new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
         );
@@ -158,9 +153,56 @@ export async function feed(token: string): Promise<IFeedResponse> {
         };
     } catch (error) {
         console.error('Feed Error:', error);
+        throw error;
+    }
+}
+
+export async function decks(token: string): Promise<IDecksResponse> {
+    try {
+        // TODO: Implement actual decks logic
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        if (!token || typeof token !== 'string') {
+            throw new Error('Invalid token provided');
+        }
+
+        const currentUser = db.users.find(user => user.id === token);
+        if (!currentUser) {
+            throw new Error('User not found');
+        }
+
+        const userDecks = db.decks.filter(deck => deck.owner === currentUser.id);
+
+        // Create maps for efficient lookups to improve performance
+        const categoryMap = new Map(db.categories.map(cat => [cat.id, cat]));
+        const cardMap = new Map(db.cards.map(card => [card.id, card]));
+
+        const enrichedDecks = userDecks.map(deck => {
+            const populatedCategories = deck.categories
+                .map((categoryId: string) => categoryMap.get(categoryId))
+                .filter((category): category is NonNullable<typeof category> => category !== undefined);
+
+            const populatedCards = deck.cards
+                .map((cardId: string) => cardMap.get(cardId))
+                .filter((card): card is NonNullable<typeof card> => card !== undefined);
+
+            return {
+                ...deck,
+                categories: populatedCategories,
+                cards: populatedCards
+            };
+        });
+
+        enrichedDecks.sort((a, b) => 
+            new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+        );
+
         return {
-            message: 'Failed to load feed',
-            decks: [],
+            message: enrichedDecks.length > 0 ? 'Feed loaded successfully' : 'No decks found for your decks',
+            decks: enrichedDecks,
         };
+    } catch (error) {
+        console.error('Deck Error:', error);
+        throw error;
     }
 }

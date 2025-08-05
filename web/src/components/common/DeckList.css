@@ -8,7 +8,7 @@
 
 .deck {
     border: 1px;
-    padding: 1rem 0.5rem;
+    padding: 2rem 1rem;
     border: 1px solid rgba(0, 0, 0, 0.1);
     box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
     display: flex;
