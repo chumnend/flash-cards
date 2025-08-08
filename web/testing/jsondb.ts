@@ -66,7 +66,19 @@ export const decks = [
         categories: ['edf342'],
         owner: 'agew2153',
         rating: 4.8,
-        cards: ['red123'],
+        cards: ['red123', 'agt520'],
+        createdAt: new Date(100005),
+        updatedAt: new Date(100005),
+    },
+    {
+        id: 'dech5321',
+        name: 'Francais debutant',
+        description: '',
+        publishStatus: 'public',
+        categories: [],
+        owner: 'agew2153',
+        rating: 0.0,
+        cards: [],
         createdAt: new Date(100005),
         updatedAt: new Date(100005),
     },
@@ -83,7 +95,18 @@ export const cards = [
         deck: 'bsd3s2s',
         createdAt: new Date(),
         updatedAt: new Date(),
-    }
+    },
+    {
+        id: 'agt520',
+        frontText: '6 + 8',
+        backText: '14',
+        difficulty: 'easy',
+        timesReviewed: 0,
+        successRate: 0,
+        deck: 'bsd3s2s',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+    },
 ]
 
 export const categories = [

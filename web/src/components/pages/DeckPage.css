@@ -1,0 +1,76 @@
+.deck-page {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.slideshow {
+    width: 80%;
+    height: 70vh;
+    max-width: 500px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.slideshow-cards {
+    width: 100%;
+    height: 200px;
+    border: 3px solid #000;
+    margin-bottom: 1rem;
+}
+
+.card {
+    width: 100%;
+    height: 100%;
+    user-select: none;
+}
+
+.card-frame {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+}
+
+.card-face {
+    height: 100%;
+    width: 100%;
+    padding: 0 0.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    background: #ffffff;
+    position: absolute;
+    backface-visibility: hidden;
+    cursor: pointer;
+}
+
+.card-face-text {
+    font-size: 2rem; 
+}
+
+.card-face-extra {
+    padding: 0.5rem;
+    font-size: 0.8rem;
+    opacity: 0.8;
+    user-select: none;
+}
+
+.slideshow-controls {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.slideshow-controls button {
+    padding: 1rem;
+    background-color: #fff;
+    cursor: pointer;
+    user-select: none;
+}
+
+.slide-index {
+    user-select: none;
+}

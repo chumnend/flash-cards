@@ -1,4 +1,11 @@
-import { type IExploreResponse, type IRegisterResponse, type ILoginResponse, type IFeedResponse, type IDecksResponse } from './types';
+import { 
+    type IExploreResponse, 
+    type IRegisterResponse, 
+    type ILoginResponse, 
+    type IFeedResponse, 
+    type IDecksResponse,
+    type IDeckResponse,
+} from './types';
 
 import * as db from '../../testing/jsondb';
 
@@ -9,7 +16,7 @@ export async function register(
     password: string,
 ): Promise<IRegisterResponse> {
     try {
-        // TODO: Implement actual registration logic
+        // TODO: Implement actual logic
         await new Promise(resolve => setTimeout(resolve, 1000));
 
         // simulate validation - check if email already exists
@@ -37,14 +44,14 @@ export async function register(
             token: 'randomtokenforencryption',
         }
     } catch (error) {
-        console.error('Register error', error);
+        console.error(error);
         throw error;
     }
 }
 
 export async function login(email: string, password: string): Promise<ILoginResponse> {
     try {
-        // TODO: Implement actual login logic   
+        // TODO: Implement actual logic  
         await new Promise(resolve => setTimeout(resolve, 1000));
 
         // simulate search for user
@@ -64,14 +71,14 @@ export async function login(email: string, password: string): Promise<ILoginResp
             token: `${foundUser.id}`,
         }
     } catch (error) {
-        console.error('Login Error', error);
+        console.error(error);
         throw error;
     }
 }
 
 export async function explore(): Promise<IExploreResponse> {
     try {
-        // TODO: Implement actual explore logic
+        // TODO: Implement actual logic
         await new Promise(resolve => setTimeout(resolve, 1000));
 
         const publicDecks = db.decks.filter(deck => deck.publishStatus === "public");
@@ -98,14 +105,14 @@ export async function explore(): Promise<IExploreResponse> {
             decks: enrichedDecks,
         }
     } catch (error) {
-        console.error('Explore Error:', error);
+        console.error(error);
         throw error;
     }
 }
 
 export async function feed(token: string): Promise<IFeedResponse> {
     try {
-        // TODO: Implement actual feed logic
+        // TODO: Implement actual logic
         await new Promise(resolve => setTimeout(resolve, 1000));
 
         if (!token || typeof token !== 'string') {
@@ -148,14 +155,14 @@ export async function feed(token: string): Promise<IFeedResponse> {
             decks: enrichedDecks,
         };
     } catch (error) {
-        console.error('Feed Error:', error);
+        console.error(error);
         throw error;
     }
 }
 
 export async function decks(token: string): Promise<IDecksResponse> {
     try {
-        // TODO: Implement actual decks logic
+        // TODO: Implement actual logic
         await new Promise(resolve => setTimeout(resolve, 1000));
 
         if (!token || typeof token !== 'string') {
@@ -194,7 +201,42 @@ export async function decks(token: string): Promise<IDecksResponse> {
             decks: enrichedDecks,
         };
     } catch (error) {
-        console.error('Deck Error:', error);
-        throw error;
+        console.error(error);
+        throw error; 
+    }
+}
+
+
+export async function deck(id: string): Promise<IDeckResponse> {
+    try {
+        // TODO: Implement actual logic
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        const deck = db.decks.find(deck => deck.id === id);
+        if (!deck) {
+            throw new Error('Deck not found');
+        }
+
+        const populatedCategories = deck.categories
+            .map(categoryId => db.categories.find(category => category.id === categoryId)?.name)
+            .filter(category => category !== undefined);
+
+        const populatedCards = deck.cards
+                .map(cardId => db.cards.find(card => card.id === cardId))
+                .filter(card => card !== undefined);
+        
+        const enrichedDeck = {
+            ...deck,
+            categories: populatedCategories,
+            cards: populatedCards,
+        }
+
+        return {
+            message: 'testing',
+            deck: enrichedDeck,
+        }
+    } catch (error) {
+        console.error(error);
+        throw error; 
     }
 }

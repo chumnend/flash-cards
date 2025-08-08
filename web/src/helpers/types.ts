@@ -69,3 +69,8 @@ export interface IDecksResponse {
     message: string,
     decks: Array<IDeck>,
 }
+
+export interface IDeckResponse {
+    message: string,
+    deck: IDeck,
+}

@@ -6,6 +6,7 @@ import App from './components/app/App';
 import ProtectedRoute from './components/common/ProtectedRoute';
 
 import ExplorePage from './components/pages/ExplorePage';
+import DeckPage from './components/pages/DeckPage';
 import ErrorPage from './components/pages/ErrorPage';
 
 import HomePage from './components/pages/HomePage';
@@ -55,6 +56,10 @@ const router = createBrowserRouter([
             <DecksPage />
           </ProtectedRoute>
         )
+      },
+      {
+        path: 'decks/:deckId',
+        element: <DeckPage />,
       },
       {
         path: "profile",

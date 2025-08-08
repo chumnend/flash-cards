@@ -15,7 +15,7 @@ const DeckList = (props: Props) => {
     const navigate = useNavigate();
 
     const handleViewClick = (id: string) => {
-        navigate(`/decks/:${id}`);
+        navigate(`/decks/${id}`);
     }
 
     if (decks.length === 0) {
