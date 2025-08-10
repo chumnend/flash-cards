@@ -7,12 +7,12 @@ import { useAuthContext } from '../../helpers/context';
 import './LoginPage.css';
 
 const LoginPage = () => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [formData, setFormData] = useState<{[key: string]: string}>({
     email: '',
     password: '',
   });
   const [errors, setErrors] = useState<{[key: string]: string}>({});
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const { handleLogin } = useAuthContext();
   const navigate = useNavigate();
 
@@ -24,7 +24,7 @@ const LoginPage = () => {
     }));
   }
 
-  const validateForm = () => {
+  const validateForm = (): boolean => {
     const newErrors: {[key: string]: string} = {};
 
     if (!formData.email.trim()) {

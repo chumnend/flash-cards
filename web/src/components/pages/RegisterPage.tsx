@@ -7,6 +7,7 @@ import { useAuthContext } from '../../helpers/context';
 import './RegisterPage.css';
 
 const RegisterPage = () => {
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<{[key: string]: string}>({
     firstName: '',
     lastName: '',
@@ -15,7 +16,6 @@ const RegisterPage = () => {
     confirmPassword: ''
   });
   const [errors, setErrors] = useState<{[key: string]: string}>({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const { handleRegister } = useAuthContext();
   const navigate = useNavigate();
 
@@ -75,7 +75,7 @@ const RegisterPage = () => {
       return;
     }
 
-    setIsSubmitting(true);
+    setIsLoading(true);
     
     try {
       const data = await api.register(formData.firstName, formData.lastName, formData.email, formData.password);
@@ -102,7 +102,7 @@ const RegisterPage = () => {
         'form': errorMessage,
       }));
     } finally {
-      setIsSubmitting(false);
+      setIsLoading(false);
     }
   };
 
@@ -194,9 +194,9 @@ const RegisterPage = () => {
           <button 
             type="submit" 
             className="submit-button"
-            disabled={isSubmitting}
+            disabled={isLoading}
           >
-            {isSubmitting ? 'Creating Account...' : 'Create Account'}
+            {isLoading ? 'Creating Account...' : 'Create Account'}
           </button>
         </form>
         

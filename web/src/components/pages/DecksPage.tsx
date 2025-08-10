@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import DeckList from '../common/DeckList';
 import Loader from '../common/Loader';
@@ -13,7 +14,14 @@ const DecksPage = () => {
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [decks, setDecks] = useState<IDeck[]>([]);
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [isFormSubmitting, setIsFormSubmitting] = useState<boolean>(false);
+    const [formData, setFormData] = useState<{[key: string]: string}>({
+        name: '',
+        description: '',
+    });
+    const [formErrors, setFormErrors] = useState<{[key: string]: string}>({});
     const { authUser } = useAuthContext();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchDecks = async () => {
@@ -31,6 +39,45 @@ const DecksPage = () => {
     const handleNewDeckClick = () => {
         setIsModalOpen(true);
     }
+    
+    const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const {name, value} = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: value,
+        }));
+    }
+
+    const validateForm = (): boolean => {
+        const newErrors: {[key: string]: string} = {};
+
+        if (!formData.name.trim()) {
+            newErrors.name = 'Deck name is required';
+        }
+
+        setFormErrors(newErrors);
+
+        return Object.keys(newErrors).length === 0;
+    }
+
+    const handleFormSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        if (!validateForm()) {
+            return;
+        }
+
+        setIsFormSubmitting(true);
+
+        try {
+            alert('Creating...');
+            navigate('/decks');
+        } catch (error) {
+            console.error('New deck submission failed', error);
+        } finally {
+            setIsFormSubmitting(false);
+        }
+    }
 
     const newDeckModal = (
         <Modal
@@ -38,7 +85,41 @@ const DecksPage = () => {
             isOpen={isModalOpen}
             onClose={() => setIsModalOpen(false)}
         >
-            testing...
+            <form className="new-deck-form" onSubmit={handleFormSubmit}>
+                <div className="form-group">
+                    <label htmlFor="name">Deck Name:</label>
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleFormChange}
+                        className={formErrors.name ? 'error' : ''}
+                        placeholder="Enter new deck name"
+                    />
+                    {formErrors.name && <span className="error-message">{formErrors.name}</span>}
+                </div>
+
+                <div className="form-group">
+                    <label htmlFor="description">Description:</label>
+                    <input
+                        type="text"
+                        id="description"
+                        name="description"
+                        value={formData.description}
+                        onChange={handleFormChange}
+                        placeholder="Enter description of this deck"
+                    />
+                </div>
+
+                <button 
+                    type="submit" 
+                    className="submit-button"
+                    disabled={isFormSubmitting}
+                >
+                    {isFormSubmitting ? 'Creating...' : 'Create'}
+                </button>
+            </form>
         </Modal>
     );
 
