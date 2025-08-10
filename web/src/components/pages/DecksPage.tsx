@@ -26,10 +26,19 @@ const DecksPage = () => {
         fetchDecks();
     }, [authUser]);
 
+    const handleNewDeck = () => {
+        alert('creating deck...')
+    }
+
     return (
         <div className="decks-page">
-          <h1>My Decks</h1>
-          <p>Manage your flashcard decks here.</p>
+            <div className="decks-header">
+                <div>
+                    <h1>My Decks</h1>
+                    <p>Manage your flashcard decks here.</p>
+                </div>
+                <button onClick={handleNewDeck}>+ New Deck</button>
+            </div>
             {isLoading ? <Loader /> : <DeckList decks={decks} isOwner />}
         </div>
     );
