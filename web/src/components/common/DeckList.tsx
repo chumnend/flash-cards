@@ -14,6 +14,10 @@ const DeckList = (props: Props) => {
 
     const navigate = useNavigate();
 
+    const handleManageClick = (id: string) => {
+        alert(`TODO: manage link to ${id}`)
+    }
+
     const handleViewClick = (id: string) => {
         navigate(`/decks/${id}`);
     }
@@ -34,7 +38,7 @@ const DeckList = (props: Props) => {
             <p className='deck-rating'>{`${deck.rating} / 5.0`}</p>
             <p className='deck-categories'>{deck.categories.join(', ')}</p>
             <div className='deck-btns'>
-                {isOwner && <button>Manage</button>}
+                {isOwner && <button onClick={() => handleManageClick(deck.id)}>Manage</button>}
                 <button onClick={() => handleViewClick(deck.id)}>View</button>
             </div>
         </div>

@@ -27,7 +27,7 @@ const DecksPage = () => {
     }, [authUser]);
 
     const handleNewDeck = () => {
-        alert('creating deck...')
+        alert(`TODO: link to new deck`)
     }
 
     return (
