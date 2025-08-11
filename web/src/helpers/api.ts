@@ -5,6 +5,7 @@ import {
     type IFeedResponse, 
     type IDecksResponse,
     type IDeckResponse,
+    type INewDeckResponse,
 } from './types';
 
 import * as db from '../../testing/jsondb';
@@ -234,6 +235,36 @@ export async function deck(id: string): Promise<IDeckResponse> {
         return {
             message: 'testing',
             deck: enrichedDeck,
+        }
+    } catch (error) {
+        console.error(error);
+        throw error; 
+    }
+}
+
+export async function newDeck(name: string, description: string): Promise<INewDeckResponse> {
+    try {
+        // TODO: Implement actual logic
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        const newDeck = {
+            id: Math.random().toString(36).substring(2, 10),
+            name,
+            description,
+            publishStatus: 'private',
+            categories: [],
+            owner: '',
+            rating: 0.0,
+            cards: [],
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        }
+
+        db.decks.push(newDeck);
+
+        return {
+            message: 'Deck successfully created',
+            deck: newDeck,
         }
     } catch (error) {
         console.error(error);

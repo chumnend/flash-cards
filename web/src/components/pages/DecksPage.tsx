@@ -70,8 +70,8 @@ const DecksPage = () => {
         setIsFormSubmitting(true);
 
         try {
-            alert('Creating...');
-            navigate('/decks');
+            const data = await api.newDeck(formData.name, formData.description);
+            navigate(`/decks/${data.deck.id}`);
         } catch (error) {
             console.error('New deck submission failed', error);
         } finally {
