@@ -18,6 +18,7 @@ import DecksPage from './components/pages/DecksPage';
 import ProfilePage from './components/pages/ProfilePage';
 
 import './index.css';
+import DeckManager from './components/pages/DeckManager';
 
 const router = createBrowserRouter([
   {
@@ -60,6 +61,14 @@ const router = createBrowserRouter([
       {
         path: 'decks/:deckId',
         element: <DeckPage />,
+      },
+      {
+        path: 'decks/:deckId/manage',
+        element: (
+          <ProtectedRoute>
+            <DeckManager />
+          </ProtectedRoute>
+        )
       },
       {
         path: "profile",

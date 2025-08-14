@@ -3,9 +3,9 @@ import { useParams, useNavigate } from 'react-router-dom';
 
 import Loader from '../common/Loader';
 import * as api from '../../helpers/api';
+import type { ICard, IDeck } from '../../helpers/types';
 
 import './DeckPage.css';
-import type { ICard, IDeck } from '../../helpers/types';
 
 const Deck = () => {
     const [isLoading, setIsLoading] = useState<boolean>(true);

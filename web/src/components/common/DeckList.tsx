@@ -15,7 +15,7 @@ const DeckList = (props: Props) => {
     const navigate = useNavigate();
 
     const handleManageClick = (id: string) => {
-        alert(`TODO: manage link to ${id}`)
+        navigate(`/decks/${id}/manage`);
     }
 
     const handleViewClick = (id: string) => {
