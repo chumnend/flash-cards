@@ -85,3 +85,8 @@ export interface INewCardResponse {
     card: ICard,
 }
 
+
+export interface IModifyCardResponse {
+    message: string,
+    card: ICard,
+}

@@ -14,6 +14,7 @@ const DeckManager = () => {
     const [cards, setCards] = useState<Array<ICard>>([]);
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [isCardFormSubmitting, setIsCardFormSubmitting] = useState<boolean>(false);
+    const [editingCardId, setEditingCardId] = useState<string | null>(null);
     const [cardFormData, setCardFormData] = useState<{[key: string]: string}>({
         frontText: '',
         backText: '',
@@ -53,12 +54,21 @@ const DeckManager = () => {
     }
 
     const handleNewCardClick = () => {
+        setEditingCardId(null);
+        clearCardFormData();
         setIsModalOpen(true);
     }
 
     const handleModifyCardClick = (id: string) => {
-        alert(`modifying card with id: ${id}`)
-        setIsModalOpen(true);  
+        const cardToModify = cards.find(card => card.id === id);
+        if (cardToModify) {
+            setEditingCardId(id);
+            setCardFormData({
+                frontText: cardToModify.frontText,
+                backText: cardToModify.backText,
+            });
+            setIsModalOpen(true);
+        }
     }
 
     const handleDeleteCardClick = (id: string) => {
@@ -78,6 +88,7 @@ const DeckManager = () => {
             frontText: '',
             backText: '',
         });
+        setEditingCardId(null);
     }
 
     const handleCardSubmit = async (e: React.FormEvent) => {
@@ -86,10 +97,19 @@ const DeckManager = () => {
         setIsCardFormSubmitting(true);
 
         try {
-            const data = await api.newCard(cardFormData.frontText, cardFormData.backText, deck!.id);
-            clearCardFormData();
-            setCards(prev => [...prev, data.card]);
-            setIsModalOpen(false);
+            if (editingCardId) {
+                const data = await api.modifyCard(editingCardId, cardFormData.frontText, cardFormData.backText);
+                setCards(prev => prev.map(card => 
+                    card.id === editingCardId ? data.card : card
+                ));
+                clearCardFormData();
+                setIsModalOpen(false);
+            } else {
+                const data = await api.newCard(cardFormData.frontText, cardFormData.backText, deck!.id);
+                clearCardFormData();
+                setCards(prev => [...prev, data.card]);
+                setIsModalOpen(false);
+            }
         } catch(error) {
             console.error('Unable to create card', error);
         } finally {
@@ -123,9 +143,12 @@ const DeckManager = () => {
 
     const cardModal = (
         <Modal
-            title="Create a new card"
+            title={editingCardId ? "Modify card" : "Create a new card"}
             isOpen={isModalOpen}
-            onClose={() => setIsModalOpen(false)}
+            onClose={() => {
+                setIsModalOpen(false);
+                clearCardFormData();
+            }}
         >
             {isCardFormSubmitting ? (
                 <div className="card-loader">
@@ -155,7 +178,7 @@ const DeckManager = () => {
                                 placeholder='Text on back side of card'
                             />
                         </div>
-                        <button type="submit">Create</button>
+                        <button type="submit">{editingCardId ? "Modify" : "Create"}</button>
                     </form>
             )}
 

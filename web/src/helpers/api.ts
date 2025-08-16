@@ -7,6 +7,7 @@ import {
     type IDeckResponse,
     type INewDeckResponse,
     type INewCardResponse,
+    type IModifyCardResponse,
 } from './types';
 
 import * as db from '../../testing/jsondb';
@@ -303,6 +304,36 @@ export async function newCard(frontText: string, backText: string, deckId: strin
         return {
             message: 'Card successfully created',
             card: newCard,
+        }
+    } catch (error) {
+        console.error(error);
+        throw error; 
+    }
+}
+
+
+export async function modifyCard(id: string, frontText: string, backText: string): Promise<IModifyCardResponse> {
+    try {
+        // TODO: Implement actual logic
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        const card = db.cards.find(card => card.id === id);
+        if (!card) {
+            throw new Error('Card not found');
+        }
+
+        card.frontText = frontText;
+        card.backText = backText;
+        card.updatedAt = new Date();
+
+        const parentDeck = db.decks.find(deck => deck.id === card.deck);
+        if (parentDeck) {
+            parentDeck.updatedAt = new Date();
+        }
+
+        return {
+            message: 'Card successfully modified',
+            card,
         }
     } catch (error) {
         console.error(error);
