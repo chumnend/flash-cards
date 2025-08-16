@@ -6,8 +6,10 @@ import {
     type IDecksResponse,
     type IDeckResponse,
     type INewDeckResponse,
+    type IDeleteDeckResponse,
     type INewCardResponse,
     type IModifyCardResponse,
+    type IDeleteCardResponse,
 } from './types';
 
 import * as db from '../../testing/jsondb';
@@ -274,6 +276,46 @@ export async function newDeck(name: string, description: string): Promise<INewDe
     }
 }
 
+export async function deleteDeck(id: string): Promise<IDeleteDeckResponse> {
+    try {
+        // TODO: Implement actual logic
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        const deckIndex = db.decks.findIndex(deck => deck.id === id);
+        if (deckIndex === -1) {
+            throw new Error('Deck not found');
+        }
+
+        const deck = db.decks[deckIndex];
+        
+        // Delete all cards associated with this deck
+        const cardIdsToDelete = deck.cards;
+        for (let i = db.cards.length - 1; i >= 0; i--) {
+            if (cardIdsToDelete.includes(db.cards[i].id)) {
+                db.cards.splice(i, 1);
+            }
+        }
+
+        // Remove deck from users' deck arrays
+        db.users.forEach(user => {
+            const userDeckIndex = (user.decks as string[]).indexOf(id);
+            if (userDeckIndex > -1) {
+                (user.decks as string[]).splice(userDeckIndex, 1);
+            }
+        });
+
+        // Delete the deck itself
+        db.decks.splice(deckIndex, 1);
+
+        return {
+            message: 'Deck successfully deleted',
+        }
+    } catch (error) {
+        console.error(error);
+        throw error; 
+    } 
+}
+
 export async function newCard(frontText: string, backText: string, deckId: string): Promise<INewCardResponse> {
     try {
         // TODO: Implement actual logic
@@ -339,4 +381,39 @@ export async function modifyCard(id: string, frontText: string, backText: string
         console.error(error);
         throw error; 
     }
+}
+
+export async function deleteCard(id: string): Promise<IDeleteCardResponse> {
+    try {
+        // TODO: Implement actual logic
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        const cardIndex = db.cards.findIndex(card => card.id === id);
+        if (cardIndex === -1) {
+            throw new Error('Card not found');
+        }
+
+        const card = db.cards[cardIndex];
+        const deckId = card.deck;
+
+        // Remove card from the database
+        db.cards.splice(cardIndex, 1);
+
+        // Remove card reference from its parent deck
+        const parentDeck = db.decks.find(deck => deck.id === deckId);
+        if (parentDeck) {
+            const cardIdIndex = parentDeck.cards.indexOf(id);
+            if (cardIdIndex > -1) {
+                parentDeck.cards.splice(cardIdIndex, 1);
+            }
+            parentDeck.updatedAt = new Date();
+        }
+
+        return {
+            message: 'Card successfully deleted',
+        }
+    } catch (error) {
+        console.error(error);
+        throw error; 
+    } 
 }

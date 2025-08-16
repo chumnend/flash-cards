@@ -80,6 +80,10 @@ export interface INewDeckResponse {
     deck: IDeck,
 }
 
+export interface IDeleteDeckResponse {
+    message: string,
+}
+
 export interface INewCardResponse {
     message: string,
     card: ICard,
@@ -89,4 +93,8 @@ export interface INewCardResponse {
 export interface IModifyCardResponse {
     message: string,
     card: ICard,
+}
+
+export interface IDeleteCardResponse {
+    message: string,
 }

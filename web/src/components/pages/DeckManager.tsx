@@ -11,14 +11,19 @@ import './DeckManager.css';
 const DeckManager = () => {
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [deck, setDeck] = useState<IDeck | null>(null)
+    const [isDeckDeleteModalOpen, setIsDeckDeleteModalOpen] = useState<boolean>(false);
+    const [isDeckDeleting, setIsDeckDeleting] = useState<boolean>(false);
     const [cards, setCards] = useState<Array<ICard>>([]);
-    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [isCardModalOpen, setIsCardModalOpen] = useState<boolean>(false);
     const [isCardFormSubmitting, setIsCardFormSubmitting] = useState<boolean>(false);
     const [editingCardId, setEditingCardId] = useState<string | null>(null);
     const [cardFormData, setCardFormData] = useState<{[key: string]: string}>({
         frontText: '',
         backText: '',
     });
+    const [isCardDeleteModalOpen, setIsCardDeleteModalOpen] = useState<boolean>(false);
+    const [cardToDelete, setCardToDelete] = useState<string | null>(null);
+    const [isCardDeleting, setIsCardDeleting] = useState<boolean>(false);
     const params = useParams();
     const navigate = useNavigate();
 
@@ -50,13 +55,13 @@ const DeckManager = () => {
     }
 
     const handleDeckDeleteClick = () => {
-        alert(`deleting deck with id: ${deck!.id}`)
+        setIsDeckDeleteModalOpen(true);
     }
 
     const handleNewCardClick = () => {
         setEditingCardId(null);
         clearCardFormData();
-        setIsModalOpen(true);
+        setIsCardModalOpen(true);
     }
 
     const handleModifyCardClick = (id: string) => {
@@ -67,12 +72,13 @@ const DeckManager = () => {
                 frontText: cardToModify.frontText,
                 backText: cardToModify.backText,
             });
-            setIsModalOpen(true);
+            setIsCardModalOpen(true);
         }
     }
 
     const handleDeleteCardClick = (id: string) => {
-        alert(`deleting card with id: ${id}`)
+        setCardToDelete(id);
+        setIsCardDeleteModalOpen(true);
     }
 
     const handleCardFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -103,18 +109,59 @@ const DeckManager = () => {
                     card.id === editingCardId ? data.card : card
                 ));
                 clearCardFormData();
-                setIsModalOpen(false);
+                setIsCardModalOpen(false);
             } else {
                 const data = await api.newCard(cardFormData.frontText, cardFormData.backText, deck!.id);
                 clearCardFormData();
                 setCards(prev => [...prev, data.card]);
-                setIsModalOpen(false);
+                setIsCardModalOpen(false);
             }
         } catch(error) {
             console.error('Unable to create card', error);
         } finally {
             setIsCardFormSubmitting(false);
         }
+    }
+
+    const handleConfirmDeckDelete = async () => {
+        if (!deck) return;
+
+        setIsDeckDeleting(true);
+        try {
+            await api.deleteDeck(deck.id);
+            // Navigate back to decks page after successful deletion
+            navigate('/decks');
+        } catch (error) {
+            console.error('Unable to delete deck', error);
+        } finally {
+            setIsDeckDeleting(false);
+            setIsDeckDeleteModalOpen(false);
+        }
+    }
+
+    const handleCancelDeckDelete = () => {
+        setIsDeckDeleteModalOpen(false);
+    }
+
+    const handleConfirmCardDelete = async () => {
+        if (!cardToDelete) return;
+
+        setIsCardDeleting(true);
+        try {
+            await api.deleteCard(cardToDelete);
+            setCards(prev => prev.filter(card => card.id !== cardToDelete));
+        } catch (error) {
+            console.error('Unable to delete card', error);
+        } finally {
+            setIsCardDeleting(false);
+            setIsCardDeleteModalOpen(false);
+            setCardToDelete(null);
+        }
+    }
+
+    const handleCancelCardDelete = () => {
+        setIsCardDeleteModalOpen(false);
+        setCardToDelete(null);
     }
 
     if (isLoading) return <Loader />
@@ -141,50 +188,6 @@ const DeckManager = () => {
         <p>No cards are currently in this deck.</p>
     );
 
-    const cardModal = (
-        <Modal
-            title={editingCardId ? "Modify card" : "Create a new card"}
-            isOpen={isModalOpen}
-            onClose={() => {
-                setIsModalOpen(false);
-                clearCardFormData();
-            }}
-        >
-            {isCardFormSubmitting ? (
-                <div className="card-loader">
-                    <Loader />
-                </div>
-            ) : (
-                <form className="card-form" onSubmit={handleCardSubmit}>
-                        <div className='form-group'>
-                            <label htmlFor='frontText'>Front Card Text</label>
-                            <input 
-                                type="text"
-                                id="frontText"
-                                name="frontText"
-                                value={cardFormData.frontText}
-                                onChange={handleCardFormChange}
-                                placeholder='Text on front side of card'
-                            />
-                        </div>
-                        <div className='form-group'>
-                            <label htmlFor='backText'>Back Card Text</label>
-                            <input 
-                                type="text"
-                                id="backText"
-                                name="backText"
-                                value={cardFormData.backText}
-                                onChange={handleCardFormChange}
-                                placeholder='Text on back side of card'
-                            />
-                        </div>
-                        <button type="submit">{editingCardId ? "Modify" : "Create"}</button>
-                    </form>
-            )}
-
-        </Modal>
-    )
-
     return (
         <div className="deck-manager">
             <div className="deck-manager-header">
@@ -204,7 +207,112 @@ const DeckManager = () => {
                 {areCards ? cardsComponent : noCardsComponent}
             </div>
 
-            {cardModal}
+            {/* Card Modal */}
+            <Modal
+                title={editingCardId ? "Modify card" : "Create a new card"}
+                isOpen={isCardModalOpen}
+                onClose={() => {
+                    setIsCardModalOpen(false);
+                    clearCardFormData();
+                }}
+            >
+                {isCardFormSubmitting ? (
+                    <div className="card-loader">
+                        <Loader />
+                    </div>
+                ) : (
+                    <form className="card-form" onSubmit={handleCardSubmit}>
+                            <div className='form-group'>
+                                <label htmlFor='frontText'>Front Card Text</label>
+                                <input 
+                                    type="text"
+                                    id="frontText"
+                                    name="frontText"
+                                    value={cardFormData.frontText}
+                                    onChange={handleCardFormChange}
+                                    placeholder='Text on front side of card'
+                                />
+                            </div>
+                            <div className='form-group'>
+                                <label htmlFor='backText'>Back Card Text</label>
+                                <input 
+                                    type="text"
+                                    id="backText"
+                                    name="backText"
+                                    value={cardFormData.backText}
+                                    onChange={handleCardFormChange}
+                                    placeholder='Text on back side of card'
+                                />
+                            </div>
+                            <button type="submit">{editingCardId ? "Modify" : "Create"}</button>
+                        </form>
+                )}
+
+            </Modal>
+
+            {/* Deck Delete Confirmation Modal */}
+            <Modal
+                title="Confirm Deck Deletion"
+                isOpen={isDeckDeleteModalOpen}
+                onClose={handleCancelDeckDelete}
+            >
+                {isDeckDeleting ? (
+                    <div className="delete-loader">
+                        <Loader />
+                    </div>
+                ) : (
+                    <div className="delete-confirmation">
+                        <p>Are you sure you want to delete "{deck?.name}"?</p>
+                        <p>This action cannot be undone and will permanently delete the deck and all its cards.</p>
+                        <div className="delete-actions">
+                            <button 
+                                onClick={handleCancelDeckDelete}
+                                className="cancel-button"
+                            >
+                                Cancel
+                            </button>
+                            <button 
+                                onClick={handleConfirmDeckDelete}
+                                className="delete-button"
+                            >
+                                Delete Deck
+                            </button>
+                        </div>
+                    </div>
+                )}
+            </Modal>
+
+            {/* Card Delete Confirmation Modal */}
+            <Modal
+                title="Confirm Card Deletion"
+                isOpen={isCardDeleteModalOpen}
+                onClose={handleCancelCardDelete}
+            >
+                {isCardDeleting ? (
+                    <div className="delete-loader">
+                        <Loader />
+                    </div>
+                ) : (
+                    <div className="delete-confirmation">
+                        <p>Are you sure you want to delete this card?</p>
+                        <p>This action cannot be undone.</p>
+                        <div className="delete-actions">
+                            <button 
+                                onClick={handleCancelCardDelete}
+                                className="cancel-button"
+                            >
+                                Cancel
+                            </button>
+                            <button 
+                                onClick={handleConfirmCardDelete}
+                                className="delete-button"
+                            >
+                                Delete Card
+                            </button>
+                        </div>
+                    </div>
+                )}
+            </Modal>
         </div>
     );
 }
