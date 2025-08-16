@@ -71,7 +71,9 @@
     gap: 0.5rem;
 }
 
-.deck-manager button {
+.deck-manager-header button,
+.deck-manager-content button,
+.card-form button {
     padding: 0.75rem 1.5rem;
     background-color: #007bff;
     color: white;
@@ -90,4 +92,9 @@
 .deck-manager button:disabled {
     background-color: #6c757d;
     cursor: not-allowed;
+}
+
+.card-form {
+    display: flex;
+    flex-direction: column;
 }
