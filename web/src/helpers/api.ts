@@ -278,6 +278,11 @@ export async function newCard(frontText: string, backText: string, deckId: strin
         // TODO: Implement actual logic
         await new Promise(resolve => setTimeout(resolve, 1000));
 
+        const deck = db.decks.find(d => d.id === deckId);
+        if (!deck) {
+            throw new Error('Deck not found');
+        }
+
         const newCard = {
             id: Math.random().toString(36).substring(2, 10),
             frontText,
@@ -291,6 +296,9 @@ export async function newCard(frontText: string, backText: string, deckId: strin
         }
 
         db.cards.push(newCard);
+
+        deck.cards.push(newCard.id);
+        deck.updatedAt = new Date();
 
         return {
             message: 'Card successfully created',
