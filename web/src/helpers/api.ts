@@ -6,6 +6,7 @@ import {
     type IDecksResponse,
     type IDeckResponse,
     type INewDeckResponse,
+    type INewCardResponse,
 } from './types';
 
 import * as db from '../../testing/jsondb';
@@ -265,6 +266,35 @@ export async function newDeck(name: string, description: string): Promise<INewDe
         return {
             message: 'Deck successfully created',
             deck: newDeck,
+        }
+    } catch (error) {
+        console.error(error);
+        throw error; 
+    }
+}
+
+export async function newCard(frontText: string, backText: string, deckId: string): Promise<INewCardResponse> {
+    try {
+        // TODO: Implement actual logic
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        const newCard = {
+            id: Math.random().toString(36).substring(2, 10),
+            frontText,
+            backText,
+            difficulty: 'easy',
+            timesReviewed: 0,
+            successRate: 0,
+            deck: deckId,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        }
+
+        db.cards.push(newCard);
+
+        return {
+            message: 'Card successfully created',
+            card: newCard,
         }
     } catch (error) {
         console.error(error);

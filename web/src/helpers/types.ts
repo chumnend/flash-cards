@@ -79,3 +79,9 @@ export interface INewDeckResponse {
     message: string,
     deck: IDeck,
 }
+
+export interface INewCardResponse {
+    message: string,
+    card: ICard,
+}
+

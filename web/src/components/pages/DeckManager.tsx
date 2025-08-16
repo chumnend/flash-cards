@@ -63,13 +63,23 @@ const DeckManager = () => {
         }));
     }
 
-    const handleCardSubmit = (e: React.FormEvent) => {
+    const clearCardFormData = () => {
+        setCardFormData({
+            frontText: '',
+            backText: '',
+        });
+    }
+
+    const handleCardSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
         setIsCardFormSubmitting(true);
 
         try {
-            alert('submitting...');
+            const data = await api.newCard(cardFormData.frontText, cardFormData.backText, deck!.id);
+            clearCardFormData();
+            setCards(prev => [...prev, data.card]);
+            setIsModalOpen(false);
         } catch(error) {
             console.error('Unable to create card', error);
         } finally {
@@ -107,7 +117,11 @@ const DeckManager = () => {
             isOpen={isModalOpen}
             onClose={() => setIsModalOpen(false)}
         >
-            {isCardFormSubmitting ? <Loader /> : (
+            {isCardFormSubmitting ? (
+                <div className="card-loader">
+                    <Loader />
+                </div>
+            ) : (
                 <form className="card-form" onSubmit={handleCardSubmit}>
                         <div className='form-group'>
                             <label htmlFor='frontText'>Front Card Text</label>
