@@ -42,6 +42,16 @@ const DeckManager = () => {
         fetchDeck();
     }, [params.deckId, navigate]);
 
+    const handleDeckViewClick = () => {
+        if (deck) {
+            navigate(`/decks/${deck.id}`);
+        }
+    }
+
+    const handleDeckDeleteClick = () => {
+        alert(`deleting deck with id: ${deck!.id}`)
+    }
+
     const handleNewCardClick = () => {
         setIsModalOpen(true);
     }
@@ -161,8 +171,8 @@ const DeckManager = () => {
                     <p>Number of Cards: {totalCards}</p>
                 </div>
                 <div>
-                    <button>View</button>
-                    <button>Delete</button>
+                    <button onClick={handleDeckViewClick}>View</button>
+                    <button onClick={handleDeckDeleteClick}>Delete</button>
                 </div>
             </div>
 
