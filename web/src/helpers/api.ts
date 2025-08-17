@@ -11,6 +11,8 @@ import {
     type IModifyCardResponse,
     type IDeleteCardResponse,
     type IProfileResponse,
+    type IFollowResponse,
+    type IUnfollowResponse,
     type IUser,
 } from './types';
 
@@ -576,6 +578,109 @@ export async function profile(id: string): Promise<IProfileResponse> {
             message: 'Profile successfully retrieved',
             user: completeUser,
         }
+    } catch (error) {
+        console.error(error);
+        throw error; 
+    }
+}
+
+export async function follow(currentUserId: string, userToFollowId: string): Promise<IFollowResponse> {
+    try {
+        // TODO: Implement actual logic
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        // validate inputs
+        if (!currentUserId || !userToFollowId) {
+            throw new Error('Both user IDs are required');
+        }
+
+        if (currentUserId === userToFollowId) {
+            throw new Error('You cannot follow yourself');
+        }
+
+        // check if current user exists
+        const currentUser = db.users.find(user => user.id === currentUserId);
+        if (!currentUser) {
+            throw new Error('Current user not found');
+        }
+
+        // check if user to follow exists
+        const userToFollow = db.users.find(user => user.id === userToFollowId);
+        if (!userToFollow) {
+            throw new Error('User to follow not found');
+        }
+
+        // check if already following
+        const currentUserFollowing = currentUser.following as string[];
+        if (currentUserFollowing.includes(userToFollowId)) {
+            throw new Error('You are already following this user');
+        }
+
+        // add userToFollowId to current user's following list
+        (currentUser.following as string[]).push(userToFollowId);
+        currentUser.updatedAt = new Date();
+
+        // add currentUserId to the other user's followers list
+        (userToFollow.followers as string[]).push(currentUserId);
+        userToFollow.updatedAt = new Date();
+
+        return {
+            message: 'Successfully followed user',
+        };
+    } catch (error) {
+        console.error(error);
+        throw error; 
+    }
+}
+
+export async function unfollow(currentUserId: string, userToUnfollowId: string): Promise<IUnfollowResponse> {
+    try {
+        // TODO: Implement actual logic
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        // validate inputs
+        if (!currentUserId || !userToUnfollowId) {
+            throw new Error('Both user IDs are required');
+        }
+
+        if (currentUserId === userToUnfollowId) {
+            throw new Error('You cannot unfollow yourself');
+        }
+
+        // check if current user exists
+        const currentUser = db.users.find(user => user.id === currentUserId);
+        if (!currentUser) {
+            throw new Error('Current user not found');
+        }
+
+        // check if user to unfollow exists
+        const userToUnfollow = db.users.find(user => user.id === userToUnfollowId);
+        if (!userToUnfollow) {
+            throw new Error('User to unfollow not found');
+        }
+
+        // check if currently following
+        const currentUserFollowing = currentUser.following as string[];
+        const followingIndex = currentUserFollowing.indexOf(userToUnfollowId);
+        if (followingIndex === -1) {
+            throw new Error('You are not following this user');
+        }
+
+        // remove userToUnfollowId from current user's following list
+        (currentUser.following as string[]).splice(followingIndex, 1);
+        currentUser.updatedAt = new Date();
+
+        // remove currentUserId from the other user's followers list
+        const userToUnfollowFollowers = userToUnfollow.followers as string[];
+        const followerIndex = userToUnfollowFollowers.indexOf(currentUserId);
+        if (followerIndex > -1) {
+            (userToUnfollow.followers as string[]).splice(followerIndex, 1);
+            userToUnfollow.updatedAt = new Date();
+        }
+
+        return {
+            message: 'Successfully unfollowed user',
+        };
     } catch (error) {
         console.error(error);
         throw error; 

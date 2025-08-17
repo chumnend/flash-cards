@@ -124,3 +124,11 @@ export interface IProfileResponse {
     message: string,
     user: IUser,
 }
+
+export interface IFollowResponse {
+    message: string,
+}
+
+export interface IUnfollowResponse {
+    message: string,
+}

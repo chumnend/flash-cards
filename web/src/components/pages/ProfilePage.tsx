@@ -5,16 +5,19 @@ import Loader from '../common/Loader';
 import DeckList from '../common/DeckList';
 import * as api from '../../helpers/api';
 import type { IUser } from '../../helpers/types';
+import { useAuthContext } from '../../helpers/context';
 
 import './ProfilePage.css';
 
 const ProfilePage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState<IUser | null>(null);
+  const [isFollowLoading, setIsFollowLoading] = useState(false);
+  const [isFollowing, setIsFollowing] = useState(false);
 
   const params = useParams();
-
   const navigate = useNavigate();
+  const { authUser } = useAuthContext();
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -24,6 +27,11 @@ const ProfilePage = () => {
         }
         const data = await api.profile(params.userId);
         setUser(data.user);
+
+        if (authUser) {
+          const isUserFollowing = data.user.followers.some(follower => follower.id === authUser.id);
+          setIsFollowing(isUserFollowing);
+        }
       } catch (error) { 
         console.error(error);
         navigate('/error');
@@ -32,12 +40,56 @@ const ProfilePage = () => {
       }
     }
     fetchProfile();
-  }, [params.userId, navigate])
+  }, [params.userId, navigate, authUser])
+
+  const handleFollowToggle = async () => {
+    if (!authUser || !user) return;
+    
+    setIsFollowLoading(true);
+
+    try {
+      if (isFollowing) {
+        await api.unfollow(authUser.id, user.id);
+        setIsFollowing(false);
+        // Mettre à jour la liste des followers localement
+        setUser(prev => prev ? {
+          ...prev,
+          followers: prev.followers.filter(follower => follower.id !== authUser.id)
+        } : null);
+      } else {
+        await api.follow(authUser.id, user.id);
+        setIsFollowing(true);
+        // Mettre à jour la liste des followers localement
+        const followerUser = {
+          id: authUser.id,
+          firstName: authUser.name.split(' ')[0],
+          lastName: authUser.name.split(' ')[1] || '',
+          email: authUser.email,
+          password: '',
+          details: { id: '', aboutMe: '', createdAt: new Date(), updatedAt: new Date() },
+          following: [],
+          followers: [],
+          decks: [],
+          createdAt: new Date(),
+          updatedAt: new Date()
+        };
+        setUser(prev => prev ? {
+          ...prev,
+          followers: [...prev.followers, followerUser]
+        } : null);
+      }
+    } catch (error) {
+      console.error('Error with follow/unfollow:', error);
+    } finally {
+      setIsFollowLoading(false);
+    }
+  };
 
   if (isLoading) {
     return <Loader />
   }
 
+  const isOwnProfile = authUser?.id === user?.id;
   const fullname = `${user?.firstName} ${user?.lastName}`;
   const publicDecks = user?.decks.filter(deck => deck.publishStatus === 'public') || [];
   const joinDate = new Date(user?.createdAt || '').toLocaleDateString('en-US', { 
@@ -57,6 +109,15 @@ const ProfilePage = () => {
             <p className="profile-about">{user?.details.aboutMe || 'No description available'}</p>
             <p className="profile-join-date">Member since: {joinDate}</p>
           </div>
+          {!isOwnProfile && authUser && (
+            <button 
+              className={isFollowing ? 'unfollow-button' : 'follow-button'}
+              onClick={handleFollowToggle}
+              disabled={isFollowLoading}
+            >
+              {isFollowLoading ? 'Loading...' : (isFollowing ? 'Unfollow' : 'Follow')}
+            </button>
+          )}
         </div>
 
         <div className="profile-stats">

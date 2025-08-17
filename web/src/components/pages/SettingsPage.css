@@ -1,0 +1,10 @@
+.settings-page {
+    min-height: 100vh;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+    background-color: #f8f9fa;
+}
