@@ -98,3 +98,29 @@ export interface IModifyCardResponse {
 export interface IDeleteCardResponse {
     message: string,
 }
+
+export interface IUser {
+    id: string,
+    firstName: string,
+    lastName: string,
+    email: string,
+    password: string,
+    details: IUserDetails,
+    following: Array<IUser>,
+    followers: Array<IUser>,
+    decks: Array<IDeck>,
+    createdAt: Date,
+    updatedAt: Date,
+}
+
+export interface IUserDetails {
+    id: string,
+    aboutMe: string,
+    createdAt: Date,
+    updatedAt: Date,
+}
+
+export interface IProfileResponse {
+    message: string,
+    user: IUser,
+}

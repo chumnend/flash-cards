@@ -10,6 +10,8 @@ import {
     type INewCardResponse,
     type IModifyCardResponse,
     type IDeleteCardResponse,
+    type IProfileResponse,
+    type IUser,
 } from './types';
 
 import * as db from '../../testing/jsondb';
@@ -416,4 +418,108 @@ export async function deleteCard(id: string): Promise<IDeleteCardResponse> {
         console.error(error);
         throw error; 
     } 
+}
+
+export async function profile(id: string): Promise<IProfileResponse> {
+    try {
+        // TODO: Implement actual logic
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        // Find the main user
+        const user = db.users.find(u => u.id === id);
+        if (!user) {
+            throw new Error('User not found');
+        }
+
+        // Find user details
+        const userDetails = db.userDetails.find(details => details.id === user.details);
+        
+        // Helper function to create a simplified user object (to avoid circular references)
+        const createSimplifiedUser = (userId: string): IUser | null => {
+            const u = db.users.find(user => user.id === userId);
+            if (!u) return null;
+
+            const uDetails = db.userDetails.find(details => details.id === u.details);
+            
+            return {
+                id: u.id,
+                firstName: u.firstName,
+                lastName: u.lastName,
+                email: u.email,
+                password: u.password,
+                details: uDetails || {
+                    id: u.details,
+                    aboutMe: '',
+                    createdAt: u.createdAt,
+                    updatedAt: u.updatedAt,
+                },
+                following: [], // Empty to avoid circular references
+                followers: [], // Empty to avoid circular references
+                decks: [], // Empty to avoid circular references  
+                createdAt: u.createdAt,
+                updatedAt: u.updatedAt,
+            };
+        };
+
+        // Populate following list with simplified user objects
+        const populatedFollowing = user.following
+            .map(followingId => createSimplifiedUser(followingId))
+            .filter((u): u is IUser => u !== null);
+
+        // Populate followers list with simplified user objects
+        const populatedFollowers = user.followers
+            .map(followerId => createSimplifiedUser(followerId))
+            .filter((u): u is IUser => u !== null);
+
+        // Populate decks list with full deck objects
+        const populatedDecks = (user.decks as string[])
+            .map(deckId => {
+                const deck = db.decks.find(d => d.id === deckId);
+                if (!deck) return null;
+
+                // Enrich deck with categories and cards
+                const populatedCategories = deck.categories
+                    .map(categoryId => db.categories.find(category => category.id === categoryId)?.name)
+                    .filter(category => category !== undefined);
+
+                const populatedCards = deck.cards
+                    .map(cardId => db.cards.find(card => card.id === cardId))
+                    .filter(card => card !== undefined);
+
+                return {
+                    ...deck,
+                    categories: populatedCategories,
+                    cards: populatedCards
+                };
+            })
+            .filter(deck => deck !== null);
+
+        // Build the complete user object
+        const completeUser: IUser = {
+            id: user.id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            password: user.password,
+            details: userDetails || {
+                id: user.details,
+                aboutMe: '',
+                createdAt: user.createdAt,
+                updatedAt: user.updatedAt,
+            },
+            following: populatedFollowing,
+            followers: populatedFollowers,
+            decks: populatedDecks,
+            createdAt: user.createdAt,
+            updatedAt: user.updatedAt,
+        };
+
+        return {
+            message: 'Profile successfully retrieved',
+            user: completeUser,
+        }
+    } catch (error) {
+        console.error(error);
+        throw error; 
+    }
 }

@@ -10,6 +10,7 @@ export const users = [
         followers: ['bvwr4021'],
         decks: ['bsd3s2s', 'agfa0921'],
         createdAt: new Date(100000),
+        updatedAt: new Date(100000),
     }, 
     {
         id: 'bvwr4021',
@@ -22,6 +23,7 @@ export const users = [
         followers: [],
         decks: [],
         createdAt: new Date(145600),
+        updatedAt: new Date(145600),
     }
 ]
 
@@ -30,11 +32,13 @@ export const userDetails = [
         id: 'safv4567',
         aboutMe: 'I am Nicholas!',
         createdAt: new Date(100000),
+        updatedAt: new Date(100000),
     },
     {
         id: 'resf6578',
         aboutMe: '',
         createdAt: new Date(145600),
+        updatedAt: new Date(145600),
     }
 ]
 
