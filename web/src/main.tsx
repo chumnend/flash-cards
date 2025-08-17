@@ -19,6 +19,7 @@ import ProfilePage from './components/pages/ProfilePage';
 
 import './index.css';
 import DeckManager from './components/pages/DeckManager';
+import SettingsPage from './components/pages/SettingsPage';
 
 const router = createBrowserRouter([
   {
@@ -75,6 +76,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <ProfilePage />
+          </ProtectedRoute>
+        )
+      },
+      {
+        path: "settings",
+        element: (
+          <ProtectedRoute>
+            <SettingsPage />
           </ProtectedRoute>
         )
       },

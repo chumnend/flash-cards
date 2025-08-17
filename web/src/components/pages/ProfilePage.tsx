@@ -4,7 +4,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import Loader from '../common/Loader';
 import * as api from '../../helpers/api';
 import type { IUser } from '../../helpers/types';
-import { useAuthContext } from '../../helpers/context';
 
 import './ProfilePage.css';
 
@@ -13,7 +12,6 @@ const ProfilePage = () => {
   const [user, setUser] = useState<IUser | null>(null);
 
   const params = useParams();
-  const { authUser } = useAuthContext();
 
   const navigate = useNavigate();
 
@@ -39,22 +37,30 @@ const ProfilePage = () => {
     return <Loader />
   }
 
-  const isUserProfile = authUser?.id === params.userId;
+  const fullname = `${user?.firstName} ${user?.lastName}`;
 
   return (
     <div className="profile-page">
       <h1>Profile</h1>
       <p>Manage your account settings and preferences.</p>
-      <div>
-        <div>
-          <h2>{user?.firstName} {user?.lastName}</h2>
-          <p>{user?.details.aboutMe}</p>
-        </div>
-        <div>
+
+      <div className="profile-header">
+        <img className='profile-avatar' src="https://avatar.iran.liara.run/public" alt={fullname} />
+        <h2>{fullname}</h2>
+        <p>{user?.details.aboutMe}</p>
+      </div>
+
+      <div className='follow-list'>
+        <div className='following'>
           <p>Following: {user?.following.length}</p>
+        </div>
+        <div className='followers'>
           <p>Followers: {user?.followers.length}</p>
         </div>
-        {isUserProfile && <button>Edit Profile</button>}
+      </div>
+
+      <div className='decks'>
+        Decks go here
       </div>
     </div>
   );

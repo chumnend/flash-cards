@@ -34,7 +34,7 @@ const Navbar = (props: Props) => {
                 <li><Link to="/feed">Your Feed</Link></li>
                 <li><Link to="/explore">Explore</Link></li>
                 <li><Link to="/decks">Decks</Link></li>
-                <li><Link to={`/profile/${authUser?.id}`}>Profile</Link></li>
+                <li><Link to={`/settings`}>Settings</Link></li>
             </ul>
             <button className="navbar-btn navbar-btn-primary" onClick={handleLogout}>Logout</button>
         </div>
