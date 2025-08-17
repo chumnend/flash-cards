@@ -26,29 +26,61 @@ export async function register(
         // TODO: Implement actual logic
         await new Promise(resolve => setTimeout(resolve, 1000));
 
-        // simulate validation - check if email already exists
+        // check if email already exists
         const existingUser = db.users.find(user => user.email === email);
         if (existingUser) {
             throw new Error('A user with this username already exists');
         }
         
-        // simulate basic validation
+        // validate the all required fields were provided
         if (!firstName.trim() || !lastName.trim() || !email.trim() || !password.trim()) {
             throw new Error('All fields are required');
         }
         
+        // validate the password has the correct format
         if (password.length < 6) {
             throw new Error('The password contains less than 6 characters');
         }
 
+        // generate unique user ids
+        const userId = Math.random().toString(36).substring(2, 10);
+        const userDetailsId = Math.random().toString(36).substring(2, 10);
+        
+        // create user details entry
+        const newUserDetails = {
+            id: userDetailsId,
+            aboutMe: '',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        };
+
+        // create new user
+        const newUser = {
+            id: userId,
+            firstName,
+            lastName,
+            email,
+            password,
+            details: userDetailsId,
+            following: [],
+            followers: [],
+            decks: [],
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        };
+
+        // add to database
+        db.userDetails.push(newUserDetails);
+        db.users.push(newUser);
+
         return {
             message: 'Registration successful',
             user: {
-                id: '12345',
+                id: userId,
                 name: `${firstName} ${lastName.charAt(0)}.`,
                 email,
             },
-            token: 'randomtokenforencryption',
+            token: userId,
         }
     } catch (error) {
         console.error(error);
@@ -61,9 +93,8 @@ export async function login(email: string, password: string): Promise<ILoginResp
         // TODO: Implement actual logic  
         await new Promise(resolve => setTimeout(resolve, 1000));
 
-        // simulate search for user
+        // check if user exists and compare passwords
         const foundUser = db.users.find(user => user.email === email && user.password === password);
-
         if (!foundUser) {
              throw new Error('User not found');
         }
@@ -88,9 +119,10 @@ export async function explore(): Promise<IExploreResponse> {
         // TODO: Implement actual logic
         await new Promise(resolve => setTimeout(resolve, 1000));
 
+        // fetch all public decks
         const publicDecks = db.decks.filter(deck => deck.publishStatus === "public");
 
-        // Transform decks with populated categories and cards
+        // hydrate the decks with populated categories and cards
         const enrichedDecks = publicDecks.map(deck => {
             const populatedCategories = deck.categories
                 .map(categoryId => db.categories.find(category => category.id === categoryId)?.name)
@@ -122,14 +154,18 @@ export async function feed(token: string): Promise<IFeedResponse> {
         // TODO: Implement actual logic
         await new Promise(resolve => setTimeout(resolve, 1000));
 
+        // check if token was provided
         if (!token || typeof token !== 'string') {
             throw new Error('Invalid token provided');
         }
 
+        // check if user exists
         const currentUser = db.users.find(user => user.id === token);
         if (!currentUser) {
             throw new Error('User not found');
         }
+
+        // get followeds users decks
         const userFollowing = currentUser.following as string[];
         const followingDecks = db.decks.filter(deck => 
             deck.owner !== currentUser.id &&
@@ -137,6 +173,7 @@ export async function feed(token: string): Promise<IFeedResponse> {
             deck.publishStatus !== 'private'
         );
 
+        // hydate the following decks with categories and cards
         const enrichedDecks = followingDecks.map(deck => {
             const populatedCategories = deck.categories
                 .map(categoryId => db.categories.find(category => category.id === categoryId)?.name)
@@ -153,6 +190,7 @@ export async function feed(token: string): Promise<IFeedResponse> {
             };
         });
 
+        // sort decks by update time
         enrichedDecks.sort((a, b) => 
             new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
         );
@@ -172,17 +210,21 @@ export async function decks(token: string): Promise<IDecksResponse> {
         // TODO: Implement actual logic
         await new Promise(resolve => setTimeout(resolve, 1000));
 
+        // check if token was provided
         if (!token || typeof token !== 'string') {
             throw new Error('Invalid token provided');
         }
 
+        // check if user exists
         const currentUser = db.users.find(user => user.id === token);
         if (!currentUser) {
             throw new Error('User not found');
         }
 
+        // get the current user's decks
         const userDecks = db.decks.filter(deck => deck.owner === currentUser.id);
 
+        // hydrate the user's decks with categories and cards
         const enrichedDecks = userDecks.map(deck => {
             const populatedCategories = deck.categories
                 .map(categoryId => db.categories.find(category => category.id === categoryId)?.name)
@@ -199,6 +241,7 @@ export async function decks(token: string): Promise<IDecksResponse> {
             };
         });
 
+        // sort decks by update time
         enrichedDecks.sort((a, b) => 
             new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
         );
@@ -219,11 +262,13 @@ export async function deck(id: string): Promise<IDeckResponse> {
         // TODO: Implement actual logic
         await new Promise(resolve => setTimeout(resolve, 1000));
 
+        // check if deck exists
         const deck = db.decks.find(deck => deck.id === id);
         if (!deck) {
             throw new Error('Deck not found');
         }
 
+        // hydrate the deck with categories and cards
         const populatedCategories = deck.categories
             .map(categoryId => db.categories.find(category => category.id === categoryId)?.name)
             .filter(category => category !== undefined);
@@ -253,6 +298,7 @@ export async function newDeck(name: string, description: string): Promise<INewDe
         // TODO: Implement actual logic
         await new Promise(resolve => setTimeout(resolve, 1000));
 
+        // create new deck
         const newDeck = {
             id: Math.random().toString(36).substring(2, 10),
             name,
@@ -266,6 +312,7 @@ export async function newDeck(name: string, description: string): Promise<INewDe
             updatedAt: new Date(),
         }
 
+        // append deck to db
         db.decks.push(newDeck);
 
         return {
@@ -283,14 +330,16 @@ export async function deleteDeck(id: string): Promise<IDeleteDeckResponse> {
         // TODO: Implement actual logic
         await new Promise(resolve => setTimeout(resolve, 1000));
 
+        // check if deck exists
         const deckIndex = db.decks.findIndex(deck => deck.id === id);
         if (deckIndex === -1) {
             throw new Error('Deck not found');
         }
 
+        // retrieve the deck to delete
         const deck = db.decks[deckIndex];
         
-        // Delete all cards associated with this deck
+        // delete all cards associated with this deck
         const cardIdsToDelete = deck.cards;
         for (let i = db.cards.length - 1; i >= 0; i--) {
             if (cardIdsToDelete.includes(db.cards[i].id)) {
@@ -298,7 +347,7 @@ export async function deleteDeck(id: string): Promise<IDeleteDeckResponse> {
             }
         }
 
-        // Remove deck from users' deck arrays
+        // remove deck from users' deck arrays
         db.users.forEach(user => {
             const userDeckIndex = (user.decks as string[]).indexOf(id);
             if (userDeckIndex > -1) {
@@ -306,7 +355,7 @@ export async function deleteDeck(id: string): Promise<IDeleteDeckResponse> {
             }
         });
 
-        // Delete the deck itself
+        // delete the deck itself
         db.decks.splice(deckIndex, 1);
 
         return {
@@ -323,11 +372,13 @@ export async function newCard(frontText: string, backText: string, deckId: strin
         // TODO: Implement actual logic
         await new Promise(resolve => setTimeout(resolve, 1000));
 
+        // check if deck exists
         const deck = db.decks.find(d => d.id === deckId);
         if (!deck) {
             throw new Error('Deck not found');
         }
 
+        // create new card
         const newCard = {
             id: Math.random().toString(36).substring(2, 10),
             frontText,
@@ -340,8 +391,10 @@ export async function newCard(frontText: string, backText: string, deckId: strin
             updatedAt: new Date(),
         }
 
+        // add card to db
         db.cards.push(newCard);
 
+        // add card to the associated deck
         deck.cards.push(newCard.id);
         deck.updatedAt = new Date();
 
@@ -361,15 +414,18 @@ export async function modifyCard(id: string, frontText: string, backText: string
         // TODO: Implement actual logic
         await new Promise(resolve => setTimeout(resolve, 1000));
 
+        // check if card exists
         const card = db.cards.find(card => card.id === id);
         if (!card) {
             throw new Error('Card not found');
         }
 
+        // update the card
         card.frontText = frontText;
         card.backText = backText;
         card.updatedAt = new Date();
 
+        // update the associated deck's update time
         const parentDeck = db.decks.find(deck => deck.id === card.deck);
         if (parentDeck) {
             parentDeck.updatedAt = new Date();
@@ -390,18 +446,20 @@ export async function deleteCard(id: string): Promise<IDeleteCardResponse> {
         // TODO: Implement actual logic
         await new Promise(resolve => setTimeout(resolve, 1000));
 
+        // check if card exists
         const cardIndex = db.cards.findIndex(card => card.id === id);
         if (cardIndex === -1) {
             throw new Error('Card not found');
         }
 
+        // retrive the card and the parent deck id
         const card = db.cards[cardIndex];
         const deckId = card.deck;
 
-        // Remove card from the database
+        // remove card from the database
         db.cards.splice(cardIndex, 1);
 
-        // Remove card reference from its parent deck
+        // remove card reference from its parent deck
         const parentDeck = db.decks.find(deck => deck.id === deckId);
         if (parentDeck) {
             const cardIdIndex = parentDeck.cards.indexOf(id);
@@ -425,16 +483,16 @@ export async function profile(id: string): Promise<IProfileResponse> {
         // TODO: Implement actual logic
         await new Promise(resolve => setTimeout(resolve, 1000));
 
-        // Find the main user
+        // find the main user
         const user = db.users.find(u => u.id === id);
         if (!user) {
             throw new Error('User not found');
         }
 
-        // Find user details
+        // find user details
         const userDetails = db.userDetails.find(details => details.id === user.details);
         
-        // Helper function to create a simplified user object (to avoid circular references)
+        // helper function to create a simplified user object (to avoid circular references)
         const createSimplifiedUser = (userId: string): IUser | null => {
             const u = db.users.find(user => user.id === userId);
             if (!u) return null;
@@ -461,17 +519,17 @@ export async function profile(id: string): Promise<IProfileResponse> {
             };
         };
 
-        // Populate following list with simplified user objects
+        // populate following list with simplified user objects
         const populatedFollowing = user.following
             .map(followingId => createSimplifiedUser(followingId))
             .filter((u): u is IUser => u !== null);
 
-        // Populate followers list with simplified user objects
+        // populate followers list with simplified user objects
         const populatedFollowers = user.followers
             .map(followerId => createSimplifiedUser(followerId))
             .filter((u): u is IUser => u !== null);
 
-        // Populate decks list with full deck objects
+        // populate decks list with full deck objects
         const populatedDecks = (user.decks as string[])
             .map(deckId => {
                 const deck = db.decks.find(d => d.id === deckId);
@@ -494,7 +552,7 @@ export async function profile(id: string): Promise<IProfileResponse> {
             })
             .filter(deck => deck !== null);
 
-        // Build the complete user object
+        // build the complete user object
         const completeUser: IUser = {
             id: user.id,
             firstName: user.firstName,

@@ -3,10 +3,10 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import Loader from '../common/Loader';
 import * as api from '../../helpers/api';
-
-import './ProfilePage.css';
 import type { IUser } from '../../helpers/types';
 import { useAuthContext } from '../../helpers/context';
+
+import './ProfilePage.css';
 
 const ProfilePage = () => {
   const [isLoading, setIsLoading] = useState(true);
