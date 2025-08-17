@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, Link } from 'react-router-dom';
 
 import Loader from '../common/Loader';
+import DeckList from '../common/DeckList';
 import * as api from '../../helpers/api';
 import type { IUser } from '../../helpers/types';
 
@@ -38,29 +39,103 @@ const ProfilePage = () => {
   }
 
   const fullname = `${user?.firstName} ${user?.lastName}`;
+  const publicDecks = user?.decks.filter(deck => deck.publishStatus === 'public') || [];
+  const joinDate = new Date(user?.createdAt || '').toLocaleDateString('en-US', { 
+    year: 'numeric', 
+    month: 'long', 
+    day: 'numeric' 
+  });
 
   return (
     <div className="profile-page">
-      <h1>Profile</h1>
-      <p>Manage your account settings and preferences.</p>
-
-      <div className="profile-header">
-        <img className='profile-avatar' src="https://avatar.iran.liara.run/public" alt={fullname} />
-        <h2>{fullname}</h2>
-        <p>{user?.details.aboutMe}</p>
-      </div>
-
-      <div className='follow-list'>
-        <div className='following'>
-          <p>Following: {user?.following.length}</p>
+      <div className="profile-container">
+        <div className="profile-header">
+          <img className='profile-avatar' src="https://avatar.iran.liara.run/public" alt={fullname} />
+          <div className="profile-info">
+            <h1 className="profile-name">{fullname}</h1>
+            <p className="profile-email">{user?.email}</p>
+            <p className="profile-about">{user?.details.aboutMe || 'No description available'}</p>
+            <p className="profile-join-date">Member since: {joinDate}</p>
+          </div>
         </div>
-        <div className='followers'>
-          <p>Followers: {user?.followers.length}</p>
-        </div>
-      </div>
 
-      <div className='decks'>
-        Decks go here
+        <div className="profile-stats">
+          <div className="stat-item">
+            <span className="stat-number">{user?.following.length || 0}</span>
+            <span className="stat-label">Following</span>
+          </div>
+          <div className="stat-item">
+            <span className="stat-number">{user?.followers.length || 0}</span>
+            <span className="stat-label">Followers</span>
+          </div>
+          <div className="stat-item">
+            <span className="stat-number">{user?.decks.length || 0}</span>
+            <span className="stat-label">Total Decks</span>
+          </div>
+          <div className="stat-item">
+            <span className="stat-number">{publicDecks.length}</span>
+            <span className="stat-label">Public Decks</span>
+          </div>
+        </div>
+
+        <div className="profile-connections">
+          <div className="connections-section">
+            <h3>Following ({user?.following.length || 0})</h3>
+            {user?.following && user.following.length > 0 ? (
+              <div className="users-list">
+                {user.following.map((followingUser) => (
+                  <Link key={followingUser.id} to={`/profile/${followingUser.id}`} className="user-card">
+                    <img 
+                      className="user-avatar" 
+                      src="https://avatar.iran.liara.run/public" 
+                      alt={`${followingUser.firstName} ${followingUser.lastName}`} 
+                    />
+                    <div className="user-info">
+                      <span className="user-name">{followingUser.firstName} {followingUser.lastName}</span>
+                      <span className="user-email">{followingUser.email}</span>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            ) : (
+              <p className="no-connections">Not following anyone yet.</p>
+            )}
+          </div>
+
+          <div className="connections-section">
+            <h3>Followers ({user?.followers.length || 0})</h3>
+            {user?.followers && user.followers.length > 0 ? (
+              <div className="users-list">
+                {user.followers.map((follower) => (
+                  <Link key={follower.id} to={`/profile/${follower.id}`} className="user-card">
+                    <img 
+                      className="user-avatar" 
+                      src="https://avatar.iran.liara.run/public" 
+                      alt={`${follower.firstName} ${follower.lastName}`} 
+                    />
+                    <div className="user-info">
+                      <span className="user-name">{follower.firstName} {follower.lastName}</span>
+                      <span className="user-email">{follower.email}</span>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            ) : (
+              <p className="no-connections">No followers yet.</p>
+            )}
+          </div>
+        </div>
+
+        <div className="profile-decks-section">
+          <h2>Public Decks ({publicDecks.length})</h2>
+          {publicDecks.length > 0 ? (
+            <DeckList decks={publicDecks} />
+          ) : (
+            <div className="no-decks">
+              <p>This user doesn't have any public decks yet.</p>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
