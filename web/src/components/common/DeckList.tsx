@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 import type { IDeck } from '../../helpers/types';
 
@@ -33,7 +33,7 @@ const DeckList = (props: Props) => {
     const deckComponents = decks.map(deck => (
         <div key={deck.id} className="deck">
             <h2 className='deck-title'>{deck.name}</h2>
-            <p className='deck-owner'>By {deck.owner}</p>
+            <Link className='deck-owner'to={`/profile/${deck.owner}`}>By {deck.owner}</Link>
             <p className='deck-description'>{deck.description}</p>
             <p className='deck-rating'>{`${deck.rating} / 5.0`}</p>
             <p className='deck-categories'>{deck.categories.join(', ')}</p>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import Loader from '../common/Loader';
 import * as api from '../../helpers/api';
@@ -12,14 +12,18 @@ const ProfilePage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState<IUser | null>(null);
 
-  const  { authUser } = useAuthContext();
+  const params = useParams();
+  const { authUser } = useAuthContext();
 
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const data = await api.profile(authUser!.id);
+        if (!params.userId) {
+            throw new Error('User ID is missing');
+        }
+        const data = await api.profile(params.userId);
         setUser(data.user);
       } catch (error) { 
         console.error(error);
@@ -29,11 +33,13 @@ const ProfilePage = () => {
       }
     }
     fetchProfile();
-  }, [authUser, navigate])
+  }, [params.userId, navigate])
 
   if (isLoading) {
     return <Loader />
   }
+
+  const isUserProfile = authUser?.id === params.userId;
 
   return (
     <div className="profile-page">
@@ -48,6 +54,7 @@ const ProfilePage = () => {
           <p>Following: {user?.following.length}</p>
           <p>Followers: {user?.followers.length}</p>
         </div>
+        {isUserProfile && <button>Edit Profile</button>}
       </div>
     </div>
   );
