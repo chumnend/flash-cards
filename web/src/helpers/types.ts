@@ -125,6 +125,15 @@ export interface IProfileResponse {
     user: IUser,
 }
 
+export interface ISettingsResponse {
+    message: string,
+    user: IUser,
+}
+
+export interface IChangePasswordResponse {
+    message: string,
+}
+
 export interface IFollowResponse {
     message: string,
 }

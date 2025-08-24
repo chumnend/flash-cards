@@ -51,7 +51,7 @@ const ProfilePage = () => {
       if (isFollowing) {
         await api.unfollow(authUser.id, user.id);
         setIsFollowing(false);
-        // Mettre à jour la liste des followers localement
+        // Update local list of followerss
         setUser(prev => prev ? {
           ...prev,
           followers: prev.followers.filter(follower => follower.id !== authUser.id)
@@ -59,7 +59,7 @@ const ProfilePage = () => {
       } else {
         await api.follow(authUser.id, user.id);
         setIsFollowing(true);
-        // Mettre à jour la liste des followers localement
+        // Update local list of followers
         const followerUser = {
           id: authUser.id,
           firstName: authUser.name.split(' ')[0],

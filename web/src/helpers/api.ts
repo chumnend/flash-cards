@@ -11,9 +11,11 @@ import {
     type IModifyCardResponse,
     type IDeleteCardResponse,
     type IProfileResponse,
+    type ISettingsResponse,
     type IFollowResponse,
     type IUnfollowResponse,
     type IUser,
+    type IChangePasswordResponse,
 } from './types';
 
 import * as db from '../../testing/jsondb';
@@ -581,6 +583,180 @@ export async function profile(id: string): Promise<IProfileResponse> {
     } catch (error) {
         console.error(error);
         throw error; 
+    }
+}
+
+export async function settings(
+    id: string,
+    firstName?: string,
+    lastName?: string,
+    email?: string,
+    aboutMe?: string,
+): Promise<ISettingsResponse> {
+    try {
+        // TODO: Implement actual logic
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        // check if user exists
+        const user = db.users.find(u => u.id === id);
+        if (!user) {
+            throw new Error('User not found');
+        }
+
+        // find user details
+        const userDetails = db.userDetails.find(details => details.id === user.details);
+        if (!userDetails) {
+            throw new Error('User details not found');
+        }
+
+        // validate email uniqueness if email is being updated
+        if (email && email !== user.email) {
+            const existingUserWithEmail = db.users.find(u => u.email === email && u.id !== id);
+            if (existingUserWithEmail) {
+                throw new Error('A user with this email already exists');
+            }
+        }
+
+        // validate required fields
+        const updatedFirstName = firstName !== undefined ? firstName.trim() : user.firstName;
+        const updatedLastName = lastName !== undefined ? lastName.trim() : user.lastName;
+        const updatedEmail = email !== undefined ? email.trim() : user.email;
+        const updatedAboutMe = aboutMe !== undefined ? aboutMe.trim() : userDetails.aboutMe;
+        if (!updatedFirstName || !updatedLastName || !updatedEmail) {
+            throw new Error('First name, last name, and email are required');
+        }
+
+         // update user information
+        if (firstName !== undefined) user.firstName = updatedFirstName;
+        if (lastName !== undefined) user.lastName = updatedLastName;
+        if (email !== undefined) user.email = updatedEmail;
+        user.updatedAt = new Date();
+
+        // update user details
+        if (aboutMe !== undefined) userDetails.aboutMe = updatedAboutMe;
+        userDetails.updatedAt = new Date();
+
+         // helper function to create a simplified user object (to avoid circular references)
+        const createSimplifiedUser = (userId: string): IUser | null => {
+            const u = db.users.find(user => user.id === userId);
+            if (!u) return null;
+
+            const uDetails = db.userDetails.find(details => details.id === u.details);
+            
+            return {
+                id: u.id,
+                firstName: u.firstName,
+                lastName: u.lastName,
+                email: u.email,
+                password: u.password,
+                details: uDetails || {
+                    id: u.details,
+                    aboutMe: '',
+                    createdAt: u.createdAt,
+                    updatedAt: u.updatedAt,
+                },
+                following: [], // Empty to avoid circular references
+                followers: [], // Empty to avoid circular references
+                decks: [], // Empty to avoid circular references  
+                createdAt: u.createdAt,
+                updatedAt: u.updatedAt,
+            };
+        };
+
+        // populate following list with simplified user objects
+        const populatedFollowing = user.following
+            .map(followingId => createSimplifiedUser(followingId))
+            .filter((u): u is IUser => u !== null);
+
+        // populate followers list with simplified user objects
+        const populatedFollowers = user.followers
+            .map(followerId => createSimplifiedUser(followerId))
+            .filter((u): u is IUser => u !== null);
+
+        // populate decks list with full deck objects
+        const populatedDecks = (user.decks as string[])
+            .map(deckId => {
+                const deck = db.decks.find(d => d.id === deckId);
+                if (!deck) return null;
+
+                // Enrich deck with categories and cards
+                const populatedCategories = deck.categories
+                    .map(categoryId => db.categories.find(category => category.id === categoryId)?.name)
+                    .filter(category => category !== undefined);
+
+                const populatedCards = deck.cards
+                    .map(cardId => db.cards.find(card => card.id === cardId))
+                    .filter(card => card !== undefined);
+
+                return {
+                    ...deck,
+                    categories: populatedCategories,
+                    cards: populatedCards
+                };
+            })
+            .filter(deck => deck !== null);
+
+        // build the complete updated user object
+        const completeUser: IUser = {
+            id: user.id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            password: user.password,
+            details: userDetails,
+            following: populatedFollowing,
+            followers: populatedFollowers,
+            decks: populatedDecks,
+            createdAt: user.createdAt,
+            updatedAt: user.updatedAt,
+        };
+
+        return {
+            message: 'Settings updated successfully',
+            user: completeUser,
+        };
+    } catch (error) {
+        console.error(error);
+        throw error; 
+    }
+}
+
+export async function changePassword(id: string, newPassword: string): Promise<IChangePasswordResponse> {
+    try {
+        // TODO: Implement actual logic
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        // validate inputs
+        if (!id || !newPassword) {
+            throw new Error('All fields are required');
+        }
+
+        // validate new password format
+        if (newPassword.length < 6) {
+            throw new Error('The password must contain at least 6 characters');
+        }
+
+        // check if current user exists
+        const currentUser = db.users.find(user => user.id === id);
+        if (!currentUser) {
+            throw new Error('User not found');
+        }
+
+        // check if new password is different from current password
+        if (currentUser.password === newPassword) {
+            throw new Error('New password must be different from current password');
+        }
+
+        // update password
+        currentUser.password = newPassword;
+        currentUser.updatedAt = new Date();
+
+        return {
+            message: 'Password changed successfully',
+        };
+    } catch (error) {
+        console.error(error);
+        throw error;
     }
 }
 
