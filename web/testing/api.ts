@@ -27,7 +27,6 @@ export async function register(
     password: string,
 ): Promise<IRegisterResponse> {
     try {
-        // TODO: Implement actual logic
         await new Promise(resolve => setTimeout(resolve, 1000));
 
         // check if email already exists
@@ -94,7 +93,6 @@ export async function register(
 
 export async function login(email: string, password: string): Promise<ILoginResponse> {
     try {
-        // TODO: Implement actual logic  
         await new Promise(resolve => setTimeout(resolve, 1000));
 
         // check if user exists and compare passwords
@@ -120,7 +118,6 @@ export async function login(email: string, password: string): Promise<ILoginResp
 
 export async function explore(): Promise<IExploreResponse> {
     try {
-        // TODO: Implement actual logic
         await new Promise(resolve => setTimeout(resolve, 1000));
 
         // fetch all public decks
@@ -155,7 +152,6 @@ export async function explore(): Promise<IExploreResponse> {
 
 export async function feed(token: string): Promise<IFeedResponse> {
     try {
-        // TODO: Implement actual logic
         await new Promise(resolve => setTimeout(resolve, 1000));
 
         // check if token was provided
@@ -211,7 +207,6 @@ export async function feed(token: string): Promise<IFeedResponse> {
 
 export async function decks(token: string): Promise<IDecksResponse> {
     try {
-        // TODO: Implement actual logic
         await new Promise(resolve => setTimeout(resolve, 1000));
 
         // check if token was provided
@@ -263,7 +258,6 @@ export async function decks(token: string): Promise<IDecksResponse> {
 
 export async function deck(id: string): Promise<IDeckResponse> {
     try {
-        // TODO: Implement actual logic
         await new Promise(resolve => setTimeout(resolve, 1000));
 
         // check if deck exists
@@ -299,7 +293,6 @@ export async function deck(id: string): Promise<IDeckResponse> {
 
 export async function newDeck(name: string, description: string): Promise<INewDeckResponse> {
     try {
-        // TODO: Implement actual logic
         await new Promise(resolve => setTimeout(resolve, 1000));
 
         // create new deck
@@ -331,7 +324,6 @@ export async function newDeck(name: string, description: string): Promise<INewDe
 
 export async function deleteDeck(id: string): Promise<IDeleteDeckResponse> {
     try {
-        // TODO: Implement actual logic
         await new Promise(resolve => setTimeout(resolve, 1000));
 
         // check if deck exists
@@ -373,7 +365,6 @@ export async function deleteDeck(id: string): Promise<IDeleteDeckResponse> {
 
 export async function newCard(frontText: string, backText: string, deckId: string): Promise<INewCardResponse> {
     try {
-        // TODO: Implement actual logic
         await new Promise(resolve => setTimeout(resolve, 1000));
 
         // check if deck exists
@@ -415,7 +406,6 @@ export async function newCard(frontText: string, backText: string, deckId: strin
 
 export async function modifyCard(id: string, frontText: string, backText: string): Promise<IModifyCardResponse> {
     try {
-        // TODO: Implement actual logic
         await new Promise(resolve => setTimeout(resolve, 1000));
 
         // check if card exists
@@ -447,7 +437,6 @@ export async function modifyCard(id: string, frontText: string, backText: string
 
 export async function deleteCard(id: string): Promise<IDeleteCardResponse> {
     try {
-        // TODO: Implement actual logic
         await new Promise(resolve => setTimeout(resolve, 1000));
 
         // check if card exists
@@ -484,7 +473,6 @@ export async function deleteCard(id: string): Promise<IDeleteCardResponse> {
 
 export async function profile(id: string): Promise<IProfileResponse> {
     try {
-        // TODO: Implement actual logic
         await new Promise(resolve => setTimeout(resolve, 1000));
 
         // find the main user
@@ -594,7 +582,6 @@ export async function settings(
     aboutMe?: string,
 ): Promise<ISettingsResponse> {
     try {
-        // TODO: Implement actual logic
         await new Promise(resolve => setTimeout(resolve, 1000));
 
         // check if user exists
@@ -723,7 +710,6 @@ export async function settings(
 
 export async function changePassword(id: string, newPassword: string): Promise<IChangePasswordResponse> {
     try {
-        // TODO: Implement actual logic
         await new Promise(resolve => setTimeout(resolve, 1000));
 
         // validate inputs
@@ -762,7 +748,6 @@ export async function changePassword(id: string, newPassword: string): Promise<I
 
 export async function follow(currentUserId: string, userToFollowId: string): Promise<IFollowResponse> {
     try {
-        // TODO: Implement actual logic
         await new Promise(resolve => setTimeout(resolve, 1000));
 
         // validate inputs
@@ -811,7 +796,6 @@ export async function follow(currentUserId: string, userToFollowId: string): Pro
 
 export async function unfollow(currentUserId: string, userToUnfollowId: string): Promise<IUnfollowResponse> {
     try {
-        // TODO: Implement actual logic
         await new Promise(resolve => setTimeout(resolve, 1000));
 
         // validate inputs
