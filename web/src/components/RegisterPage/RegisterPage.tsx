@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
-import * as api from '../../helpers/api';
+import * as api from '../../../testing/api';
 import { useAuthContext } from '../../helpers/context';
 
 import './RegisterPage.css';

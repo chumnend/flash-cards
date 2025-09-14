@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
-import Loader from '../common/Loader';
-import * as api from '../../helpers/api';
+import Loader from '../Loader/Loader';
+import * as api from '../../../testing/api';
 import type { ICard, IDeck } from '../../helpers/types';
 
 import './DeckPage.css';

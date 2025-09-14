@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
-import Loader from '../common/Loader';
-import Modal from '../common/Modal';
-import * as api from '../../helpers/api';
+import Loader from '../Loader'
+import Modal from '../Modal/Modal';
+import * as api from '../../../testing/api';
 import type { ICard, IDeck } from '../../helpers/types';
 
-import './DeckManager.css';
+import './DeckManagerPage.css';
 
-const DeckManager = () => {
+const DeckManagerPage = () => {
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [deck, setDeck] = useState<IDeck | null>(null)
     const [isDeckDeleteModalOpen, setIsDeckDeleteModalOpen] = useState<boolean>(false);
@@ -317,4 +317,4 @@ const DeckManager = () => {
     );
 }
 
-export default DeckManager;
+export default DeckManagerPage;

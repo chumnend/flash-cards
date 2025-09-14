@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 
-import DeckList from '../common/DeckList';
-import Loader from '../common/Loader';
-import * as api from '../../helpers/api';
+import DeckList from '../DeckList';
+import Loader from '../Loader';
+import * as api from '../../../testing/api';
 import type { IDeck } from '../../helpers/types';
 
 import './ExplorePage.css';

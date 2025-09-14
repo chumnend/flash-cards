@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import DeckList from '../common/DeckList';
-import Loader from '../common/Loader';
-import Modal from '../common/Modal';
-import * as api from '../../helpers/api';
+import DeckList from '../DeckList';
+import Loader from '../Loader';
+import Modal from '../Modal';
+import * as api from '../../../testing/api';
 import { useAuthContext } from '../../helpers/context';
 import type { IDeck } from '../../helpers/types';
 

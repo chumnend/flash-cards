@@ -16,9 +16,9 @@ import {
     type IUnfollowResponse,
     type IUser,
     type IChangePasswordResponse,
-} from './types';
+} from '../src/helpers/types';
 
-import * as db from '../../testing/jsondb';
+import * as db from './jsondb';
 
 export async function register(
     firstName: string,

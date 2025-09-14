@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 
-import Navbar from './Navbar';
+import Navbar from '../Navbar/Navbar';
 import { type ContextType  } from '../../helpers/context';
 import { type IAuthUser } from '../../helpers/types';
 

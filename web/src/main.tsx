@@ -2,24 +2,24 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
-import App from './components/app/App';
-import ProtectedRoute from './components/common/ProtectedRoute';
+import App from './components/App';
+import ProtectedRoute from './components/ProtectedRoute';
 
-import ExplorePage from './components/pages/ExplorePage';
-import DeckPage from './components/pages/DeckPage';
-import ErrorPage from './components/pages/ErrorPage';
+import ExplorePage from './components/ExplorePage';
+import DeckPage from './components/DeckPage';
+import ErrorPage from './components/ErrorPage';
 
-import HomePage from './components/pages/HomePage';
-import LoginPage from './components/pages/LoginPage';
-import RegisterPage from './components/pages/RegisterPage';
+import HomePage from './components/HomePage';
+import LoginPage from './components/LoginPage';
+import RegisterPage from './components/RegisterPage';
 
-import FeedPage from './components/pages/FeedPage';
-import DecksPage from './components/pages/DecksPage';
-import ProfilePage from './components/pages/ProfilePage';
+import FeedPage from './components/FeedPage/FeedPage';
+import DecksPage from './components/DecksPage/DecksPage';
+import ProfilePage from './components/ProfilePage/ProfilePage';
 
 import './index.css';
-import DeckManager from './components/pages/DeckManager';
-import SettingsPage from './components/pages/SettingsPage';
+import DeckManagerPage from './components/DeckManagerPage';
+import SettingsPage from './components/SettingsPage';
 
 const router = createBrowserRouter([
   {
@@ -67,7 +67,7 @@ const router = createBrowserRouter([
         path: 'decks/:deckId/manage',
         element: (
           <ProtectedRoute>
-            <DeckManager />
+            <DeckManagerPage />
           </ProtectedRoute>
         )
       },

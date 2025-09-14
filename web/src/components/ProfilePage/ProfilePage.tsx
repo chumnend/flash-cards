@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 
-import Loader from '../common/Loader';
-import DeckList from '../common/DeckList';
-import * as api from '../../helpers/api';
+import Loader from '../Loader';
+import DeckList from '../DeckList';
+import * as api from '../../../testing/api';
 import type { IUser } from '../../helpers/types';
 import { useAuthContext } from '../../helpers/context';
 

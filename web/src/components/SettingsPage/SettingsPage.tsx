@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import Loader from '../common/Loader';
-import * as api from '../../helpers/api';
+import Loader from '../Loader';
+import * as api from '../../../testing/api';
 import type { IUser } from '../../helpers/types';
 import { useAuthContext } from '../../helpers/context';
 
