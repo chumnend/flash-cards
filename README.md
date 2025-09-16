@@ -18,7 +18,7 @@ TBD
 
 3) Activate the virtual environment: `source venv/bin/activate` (on Linux/macOS)
 
-4) Install the application in development mode: `pip install -e ".[testing]"`
+4) Install the project dependencies: `poetry install`
 
 5) Run the application: `pserve development.ini --reload`
 
