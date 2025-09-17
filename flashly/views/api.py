@@ -7,6 +7,11 @@ from pyramid.view import view_config
         renderer='json',
 )
 def hello_world(request: Request):
+    """
+    Returns a message. 
+
+    :param request: a pyramid request object
+    """
     return {
         'message': 'Hello World!',
     }

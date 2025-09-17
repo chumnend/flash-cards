@@ -1,7 +1,3 @@
-venv:
-	@python -m virtualenv venv
-	@source ./venv/bin/activate
-
 dev:
 	@python run.py --host=0.0.0.0 --port=8080 --reload
 

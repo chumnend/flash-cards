@@ -20,7 +20,7 @@ TBD
 
 4) Install the project dependencies: `poetry install`
 
-5) Run the application: `pserve development.ini --reload`
+5) Run the application in development mode: `make dev`
 
 6) The application should now be running.
 
