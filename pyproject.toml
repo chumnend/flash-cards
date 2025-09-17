@@ -10,6 +10,8 @@ packages = [{include = "flashly"}]
 python = "^3.10"
 waitress = "^3.0.2"
 pyramid = "^2.0.2"
+psycopg2-binary = "^2.9.10"
+python-dotenv = "^1.1.1"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.4.2"
