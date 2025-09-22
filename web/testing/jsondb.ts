@@ -44,8 +44,10 @@ export const userDetails = [
 
 export const followers = [
     {
+        id: 'ffag2431',
         followerId: 'bvwr4021',
         followingId: 'agew2153',
+        createdAt: new Date(145600),
     }
 ]
 

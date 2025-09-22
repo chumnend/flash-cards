@@ -4,6 +4,9 @@ dev:
 test:
 	@pytest
 
+migrate:
+	@python ./migrations/createdb.py
+
 client-dev:
 	@cd web && yarn dev
 
