@@ -5,6 +5,17 @@ from pyramid.config import Configurator
 from psycopg2.pool import SimpleConnectionPool
 
 
+def get_db_connection(request):
+    pool = request.registry.settings['db_pool']
+    conn = pool.getconn()
+
+    def cleanup(request):
+        pool.putconn(conn)
+    
+    request.add_finished_callback(cleanup)
+    return conn
+
+
 def main(global_config, **settings):
     # load enviroment variables
     load_dotenv()
@@ -31,16 +42,6 @@ def main(global_config, **settings):
         port=settings.get('db.port', 5432),
     )
 
-    def get_db_connection(request):
-        pool = request.registry.settings['db_pool']
-        conn = pool.getconn()
-
-        def cleanup(request):
-            pool.putconn(conn)
-        
-        request.add_finished_callback(cleanup)
-        return conn
-    
     config = Configurator(settings=settings)
     config.registry.settings['db_pool'] = db_pool
     config.add_request_method(get_db_connection, 'db_conn', reify=True)
