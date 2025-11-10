@@ -9,6 +9,7 @@ from pyramid.httpexceptions import HTTPBadRequest
     renderer='json',
 )
 def register(request: Request):
+    # Get JSON request
     try:
         data = request.json_body
     except (ValueError, UnicodeDecodeError):
@@ -42,6 +43,7 @@ def register(request: Request):
     firstname = data['firstName'].strip().title()
     lastname = data['lastName'].strip().title()
 
+    # Fetch database connector
     db_conn = request.db_conn
 
     # TODO: Verify email does not already exists
@@ -65,6 +67,43 @@ def register(request: Request):
     renderer="json"
 )
 def login(request: Request):
+    # Get JSON request
+    try:
+        data = request.json_body
+    except (ValueError, UnicodeDecodeError):
+        raise HTTPBadRequest("Invalid JSON")
+
+    # Validate that all required fields are present
+    required_fields = ["email", "password"]
+    missing_fields = [field for field in required_fields if field not in data or not data[field].strip()]
+    if missing_fields:
+        return {
+            'error': f"Missing required fields: {', '.join(missing_fields)}",
+            'status': 'error'
+        }
+    
+    # Fetch email and validate that is looks correct, if it has wrong format no need to hit DB
+    email = data['email'].strip().lower()
+    if '@' not in email or '.' not in email:
+        return {
+            'error': 'Invalid email format',
+            'status': 'error'
+        }
+    
+    # Fetch password and validate that is looks correct, if it has wrong format no need to hit DB
+    password = data['password']
+    if len(password) < 6:
+        return {
+            'error': 'Password must be at least 6 characters long',
+            'status': 'error'
+        }
+    
+    # Fetch database connector
+    db_conn = request.db_conn
+
+    # TODO: Check if user exists
+    # TODO: Compare passwords
+
     return {
         'message': '/login route hit'
     }
