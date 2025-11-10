@@ -2,7 +2,7 @@ import pytest
 from pyramid.testing import DummyRequest
 from unittest import TestCase
 
-from flashly.views.api import hello_world
+from flashly.views.hello import hello_world
 
 class TestHelloWorld(TestCase):
     def test_hello_world(self):

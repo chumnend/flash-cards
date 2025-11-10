@@ -4,24 +4,6 @@ from pyramid.httpexceptions import HTTPBadRequest
 
 
 @view_config(
-        route_name="hello",
-        request_method="GET",
-        renderer='json',
-)
-def hello_world(request: Request):
-    """
-    Returns a message. 
-
-    :param request: a pyramid request object
-    """
-    return {
-        'message': 'Hello World!',
-    }
-
-
-# ----------------------------- Authentication Routes 
-
-@view_config(
     route_name="register",
     request_method="POST",
     renderer='json',
@@ -108,6 +90,3 @@ def change_password(request: Request):
     return {
         'message': '/change_password route hit'
     }
-# ----------------------------- User Routes           
-# ----------------------------- Deck Routes
-# ----------------------------- Card Routes
