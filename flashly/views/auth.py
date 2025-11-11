@@ -1,6 +1,6 @@
+from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.request import Request
 from pyramid.view import view_config
-from pyramid.httpexceptions import HTTPBadRequest
 
 
 @view_config(
@@ -117,15 +117,4 @@ def login(request: Request):
 def logout(request: Request):
     return {
         'message': '/logout route hit'
-    }
-
-
-@view_config(
-    route_name="change_password",
-    request_method="PUT",
-    renderer="json"
-)
-def change_password(request: Request):
-    return {
-        'message': '/change_password route hit'
     }
