@@ -1,3 +1,6 @@
+import uuid
+
+import bcrypt
 from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.request import Request
 from pyramid.view import view_config
@@ -40,21 +43,48 @@ def register(request: Request):
             'status': 'error'
         }
     
-    firstname = data['firstName'].strip().title()
-    lastname = data['lastName'].strip().title()
+    first_name = data['firstName'].strip().title()
+    last_name = data['lastName'].strip().title()
+    username = data['username'].strip().title()
 
     # Fetch database connector
     db_conn = request.db_conn
 
-    # TODO: Verify email does not already exists
-    # TODO: hash the password
-    # TODO: Add new user to DB
+    with db_conn.cursor() as cur:
+        # Check if email or username already exists, if it does send error
+        cur.execute(
+            "SELECT * FROM users WHERE email = %s OR username = %s",
+            (email, username))
+        record = cur.fetchone()
+
+        if record is not None:
+            return {
+                'error': 'Email or username already taken',
+                'status': 'error',
+            }
+
+        # Hash the password
+        password_bytes = password.encode('utf-8')
+        salt = bcrypt.gensalt()
+        hashed_password = bcrypt.hashpw(password_bytes, salt)
+
+        # Generate UUID for the new user
+        user_id = str(uuid.uuid4())
+
+        # Add new user to DB
+        cur.execute(
+            """INSERT INTO users (id, first_name, last_name, username, email, password_hash) 
+               VALUES (%s, %s, %s, %s, %s, %s)""",
+            (user_id, first_name, last_name, username, email, hashed_password.decode('utf-8'))
+        )
+        db_conn.commit()
 
     return {
         'message': 'User registered successfully',
         'user': {
-            'firstname': firstname,
-            'lastname': lastname,
+            'firstName': first_name,
+            'lastName': last_name,
+            'username': username,
             'email': email
         },
         'status': 'success'
@@ -101,12 +131,39 @@ def login(request: Request):
     # Fetch database connector
     db_conn = request.db_conn
 
-    # TODO: Check if user exists
-    # TODO: Compare passwords
+    with db_conn.cursor() as cur:
+        # Check if user exists
+        cur.execute(
+            "SELECT id, first_name, last_name, username, email, password_hash FROM users WHERE email = %s",
+            (email,)
+        )
+        user = cur.fetchone()
 
-    return {
-        'message': '/login route hit'
-    }
+        if user is None:
+            return {
+                'error': 'Invalid credentials',
+                'status': 'error'
+            }
+
+        # Compare passwords
+        stored_hash = user[5].encode('utf-8')
+        if bcrypt.checkpw(password.encode('utf-8'), stored_hash):
+            return {
+                'message': 'Login successful',
+                'user': {
+                    'id': user[0],
+                    'firstName': user[1],
+                    'lastName': user[2],
+                    'username': user[3],
+                    'email': user[4]
+                },
+                'status': 'success'
+            }
+        else:
+            return {
+                'error': 'Invalid credentials',
+                'status': 'error'
+            }
 
 
 @view_config(

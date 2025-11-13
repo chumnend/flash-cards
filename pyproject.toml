@@ -12,6 +12,7 @@ waitress = "^3.0.2"
 pyramid = "^2.0.2"
 psycopg2-binary = "^2.9.10"
 python-dotenv = "^1.1.1"
+bcrypt = "^5.0.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.4.2"
