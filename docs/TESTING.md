@@ -1,4 +1,6 @@
-# Test POST /register
+# cURL Command for testing
+
+## Test POST /register
 
 curl -X POST http://localhost:8080/register \
   -H "Content-Type: application/json" \
@@ -10,7 +12,7 @@ curl -X POST http://localhost:8080/register \
     "password": "password123"
   }'
 
-# Test POST /login
+## Test POST /login
 
 curl -X POST http://localhost:8080/login \
   -H "Content-Type: application/json" \
@@ -19,7 +21,7 @@ curl -X POST http://localhost:8080/login \
     "password": "password123"
   }'
 
-# Test POST /logut
+## Test POST /logut
 
 curl -X POST http://localhost:8080/logout \
   -H "Content-Type: application/json"
