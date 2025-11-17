@@ -73,10 +73,25 @@ def register(request: Request):
 
         # Add new user to DB
         cur.execute(
-            """INSERT INTO users (id, first_name, last_name, username, email, password_hash) 
-               VALUES (%s, %s, %s, %s, %s, %s)""",
+            """
+            INSERT INTO users (id, first_name, last_name, username, email, password_hash) 
+               VALUES (%s, %s, %s, %s, %s, %s)
+            """,
             (user_id, first_name, last_name, username, email, hashed_password.decode('utf-8'))
         )
+
+        # Generate user details id
+        details_id = str(uuid.uuid4())
+
+        # Generate empty user details row
+        cur.execute(
+            """
+            INSERT INTO user_details (id, user_id, about_me)
+                VALUES (%s, %s, %s)
+            """,
+            (details_id, user_id, "")
+        )
+
         db_conn.commit()
 
     return {
