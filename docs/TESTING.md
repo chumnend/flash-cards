@@ -26,6 +26,12 @@ curl -X POST http://localhost:8080/login \
 curl -X POST http://localhost:8080/logout \
   -H "Content-Type: application/json"
 
+## Test GET /users/{user_id}
+
+curl -X GET http://localhost:8080/users/{user_id} \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json"
+
 ## Test GET /explore
 
 curl -X GET http://localhost:8080/decks/explore \
