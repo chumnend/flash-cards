@@ -8,7 +8,7 @@ migrate:
 	@python ./migrations/createdb.py
 
 client-dev:
-	@cd web && yarn dev
+	@cd flashly-client && yarn dev
 
 clean:
 	@find . -type d -name "__pycache__" -exec rm -rf {} +
