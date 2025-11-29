@@ -16,32 +16,27 @@ def register(request: Request):
     try:
         data = request.json_body
     except (ValueError, UnicodeDecodeError):
-        raise HTTPBadRequest("Invalid JSON")
-    
+        request.response.status = 400
+        return {"error": "Invalid JSON"}
+
     # Validate that all required fields are present
     required_fields = ["firstName", "lastName", "email", "password"]
     missing_fields = [field for field in required_fields if field not in data or not data[field].strip()]
     if missing_fields:
-        return {
-            'error': f"Missing required fields: {', '.join(missing_fields)}",
-            'status': 'error'
-        }
-    
-    # Valdiate the email has the correct format
+        request.response.status = 400
+        return {"error": f"Missing required fields: {', '.join(missing_fields)}"}
+
+    # Validate the email has the correct format
     email = data['email'].strip().lower()
     if '@' not in email or '.' not in email:
-        return {
-            'error': 'Invalid email format',
-            'status': 'error'
-        }
-    
+        request.response.status = 400
+        return {"error": "Invalid email format"}
+
     # Validate the password has the correct format
     password = data['password']
     if len(password) < 6:
-        return {
-            'error': 'Password must be at least 6 characters long',
-            'status': 'error'
-        }
+        request.response.status = 400
+        return {"error": "Password must be at least 6 characters long"}
     
     first_name = data['firstName'].strip().title()
     last_name = data['lastName'].strip().title()
@@ -58,10 +53,8 @@ def register(request: Request):
         record = cur.fetchone()
 
         if record is not None:
-            return {
-                'error': 'Email or username already taken',
-                'status': 'error',
-            }
+            request.response.status = 400
+            return {"error": "Email or username already taken"}
 
         # Hash the password
         password_bytes = password.encode('utf-8')
@@ -102,7 +95,7 @@ def register(request: Request):
             'username': username,
             'email': email
         },
-        'status': 'success'
+        'token': user_id,
     }
 
 
@@ -116,32 +109,27 @@ def login(request: Request):
     try:
         data = request.json_body
     except (ValueError, UnicodeDecodeError):
-        raise HTTPBadRequest("Invalid JSON")
+        request.response.status = 400
+        return {"error": "Invalid JSON"}
 
     # Validate that all required fields are present
     required_fields = ["email", "password"]
     missing_fields = [field for field in required_fields if field not in data or not data[field].strip()]
     if missing_fields:
-        return {
-            'error': f"Missing required fields: {', '.join(missing_fields)}",
-            'status': 'error'
-        }
-    
+        request.response.status = 400
+        return {"error": f"Missing required fields: {', '.join(missing_fields)}"}
+
     # Fetch email and validate that is looks correct, if it has wrong format no need to hit DB
     email = data['email'].strip().lower()
     if '@' not in email or '.' not in email:
-        return {
-            'error': 'Invalid email format',
-            'status': 'error'
-        }
+        request.response.status = 400
+        return {"error": "Invalid credentials"}
     
     # Fetch password and validate that is looks correct, if it has wrong format no need to hit DB
     password = data['password']
     if len(password) < 6:
-        return {
-            'error': 'Password must be at least 6 characters long',
-            'status': 'error'
-        }
+        request.response.status = 400
+        return {"error": "Invalid credentials"}
     
     # Fetch database connector
     db_conn = request.db_conn
@@ -155,30 +143,28 @@ def login(request: Request):
         user = cur.fetchone()
 
         if user is None:
-            return {
-                'error': 'Invalid credentials',
-                'status': 'error'
-            }
+            request.response.status = 400
+            return {"error": "Invalid credentials"}
 
         # Compare passwords
         stored_hash = user[5].encode('utf-8')
-        if bcrypt.checkpw(password.encode('utf-8'), stored_hash):
-            return {
-                'message': 'Login successful',
-                'user': {
-                    'id': user[0],
-                    'firstName': user[1],
-                    'lastName': user[2],
-                    'username': user[3],
-                    'email': user[4]
-                },
-                'status': 'success'
-            }
-        else:
-            return {
-                'error': 'Invalid credentials',
-                'status': 'error'
-            }
+        is_same = bcrypt.checkpw(password.encode('utf-8'), stored_hash)
+        
+        if not is_same:
+            request.response.status = 400
+            return {"error": "Invalid credentials"}
+
+        return {
+            'message': 'Login successful',
+            'user': {
+                'id': user[0],
+                'firstName': user[1],
+                'lastName': user[2],
+                'username': user[3],
+                'email': user[4]
+            },
+            'token': user[0],
+        }
 
 
 @view_config(

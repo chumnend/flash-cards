@@ -37,14 +37,12 @@ def explore_decks(request: Request):
 
             return {
                 'message': 'Explore loaded successfully',
-                'status': 'success',
                 'decks': decks,
             }
         except Exception as e:
+            request.response.status_code = 500
             return {
-                'message': 'Error loading decks',
-                'status': 'error',
-                'decks': []
+                'error': 'Unable to load explore page',
             }
 
 

@@ -28,7 +28,6 @@ def get_profile(request: Request):
             request.response.status_code = 404
             return {
                 'error': 'User not found',
-                'status': 'error',
             }
 
         # Fetch user details
