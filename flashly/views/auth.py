@@ -83,10 +83,11 @@ def register(request: Request):
     return {
         'message': 'User registered successfully',
         'user': {
-            'firstName': first_name,
-            'lastName': last_name,
-            'username': username,
-            'email': email
+            'id': str(user.id),
+            'firstName': user.first_name,
+            'lastName': user.last_name,
+            'username': user.username,
+            'email': user.email
         },
         'token': str(user.id),
     }

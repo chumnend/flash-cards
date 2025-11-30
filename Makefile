@@ -5,7 +5,13 @@ test:
 	@pytest
 
 migrate:
-	@python ./migrations/createdb.py
+	@python ./migrations/scripts/dropdb.py && python ./migrations/scripts/createdb.py
+
+createdb:
+	@python ./migrations/scripts/createdb.py
+
+dropdb:
+	@python ./migrations/scripts/dropdb.py
 
 client-dev:
 	@cd flashly-client && yarn dev
