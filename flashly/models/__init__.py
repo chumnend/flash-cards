@@ -1,5 +1,8 @@
 from psycopg2.pool import SimpleConnectionPool
 
+from .user import UserModel
+from .user_details import UserDetailsModel
+
 def includeme(config):
     """
     Initiailize the modal for the Pyramid App

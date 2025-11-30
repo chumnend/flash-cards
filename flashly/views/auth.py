@@ -1,9 +1,11 @@
 import uuid
+from datetime import datetime
 
-import bcrypt
-from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.request import Request
 from pyramid.view import view_config
+
+from flashly.models import UserModel
+from flashly.models import UserDetailsModel
 
 
 @view_config(
@@ -45,47 +47,38 @@ def register(request: Request):
     # Fetch database connector
     db_conn = request.db_conn
 
-    with db_conn.cursor() as cur:
-        # Check if email or username already exists, if it does send error
-        cur.execute(
-            "SELECT * FROM users WHERE email = %s OR username = %s",
-            (email, username))
-        record = cur.fetchone()
+    # Check if email or username already exists
+    existing_user_email = UserModel.find_by_email(db_conn, email)
+    existing_user_username = UserModel.find_by_username(db_conn, username)
+    if existing_user_email or existing_user_username:
+        request.response.status = 400
+        return {"error": "Email or username already taken"}
 
-        if record is not None:
-            request.response.status = 400
-            return {"error": "Email or username already taken"}
+    # Create new user
+    user = UserModel(
+        id=uuid.uuid4(),
+        first_name=first_name,
+        last_name=last_name,
+        username=username,
+        email=email,
+        password_hash="",  # Will be set by set_password
+        created_at=datetime.now(),
+        updated_at=datetime.now()
+    )
+    user.set_password(password) # Set password (this will hash it)
 
-        # Hash the password
-        password_bytes = password.encode('utf-8')
-        salt = bcrypt.gensalt()
-        hashed_password = bcrypt.hashpw(password_bytes, salt)
+    # Create new user details
+    user_details = UserDetailsModel(
+        id=uuid.uuid4(),
+        user_id=user.id,
+        about_me="",
+        created_at=datetime.now(),
+        updated_at=datetime.now()
+    )
 
-        # Generate UUID for the new user
-        user_id = str(uuid.uuid4())
-
-        # Add new user to DB
-        cur.execute(
-            """
-            INSERT INTO users (id, first_name, last_name, username, email, password_hash) 
-               VALUES (%s, %s, %s, %s, %s, %s)
-            """,
-            (user_id, first_name, last_name, username, email, hashed_password.decode('utf-8'))
-        )
-
-        # Generate user details id
-        details_id = str(uuid.uuid4())
-
-        # Generate empty user details row
-        cur.execute(
-            """
-            INSERT INTO user_details (id, user_id, about_me)
-                VALUES (%s, %s, %s)
-            """,
-            (details_id, user_id, "")
-        )
-
-        db_conn.commit()
+    # Save user to database
+    user.save(db_conn)
+    user_details.save(db_conn)
 
     return {
         'message': 'User registered successfully',
@@ -95,7 +88,7 @@ def register(request: Request):
             'username': username,
             'email': email
         },
-        'token': user_id,
+        'token': str(user.id),
     }
 
 
@@ -134,37 +127,28 @@ def login(request: Request):
     # Fetch database connector
     db_conn = request.db_conn
 
-    with db_conn.cursor() as cur:
-        # Check if user exists
-        cur.execute(
-            "SELECT id, first_name, last_name, username, email, password_hash FROM users WHERE email = %s",
-            (email,)
-        )
-        user = cur.fetchone()
+    # Find user by email using the model
+    user = UserModel.find_by_email(db_conn, email)
+    if user is None:
+        request.response.status = 400
+        return {"error": "Invalid credentials"}
+    
+    # Check password using the model method
+    if not user.check_password(password):
+        request.response.status = 400
+        return {"error": "Invalid credentials"}
 
-        if user is None:
-            request.response.status = 400
-            return {"error": "Invalid credentials"}
-
-        # Compare passwords
-        stored_hash = user[5].encode('utf-8')
-        is_same = bcrypt.checkpw(password.encode('utf-8'), stored_hash)
-        
-        if not is_same:
-            request.response.status = 400
-            return {"error": "Invalid credentials"}
-
-        return {
-            'message': 'Login successful',
-            'user': {
-                'id': user[0],
-                'firstName': user[1],
-                'lastName': user[2],
-                'username': user[3],
-                'email': user[4]
-            },
-            'token': user[0],
-        }
+    return {
+        'message': 'Login successful',
+        'user': {
+            'id': str(user.id),
+            'firstName': user.first_name,
+            'lastName': user.last_name,
+            'username': user.username,
+            'email': user.email
+        },
+        'token': str(user.id),
+    }
 
 
 @view_config(
