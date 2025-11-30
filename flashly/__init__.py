@@ -18,10 +18,10 @@ def main(global_config, **settings):
         'secret_key': os.getenv('SECRET_KEY'),
     }
     settings.update(env_vars)
-    
-    config = Configurator(settings=settings)
-    config.include('.routes')
-    config.include('.models')
-    config.scan()
+
+    with Configurator(settings=settings) as config:
+        config.include('.routes')
+        config.include('.models')
+        config.scan()
 
     return config.make_wsgi_app()
