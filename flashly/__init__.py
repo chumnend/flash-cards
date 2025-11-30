@@ -4,7 +4,15 @@ from dotenv import load_dotenv
 from pyramid.config import Configurator
 
 
-def main(global_config, **settings):
+def main(global_config=None, **settings):
+    """
+    This function creates and configures a Pyramid WSGI application
+
+    :param global_config: unused in this application
+    :param settings: Configuration key/value pairs
+    :returns: a Pyramid WSGI application
+    """
+
     # load enviroment variables
     load_dotenv()
 
