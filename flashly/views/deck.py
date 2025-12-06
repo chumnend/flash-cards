@@ -1,6 +1,8 @@
 from pyramid.request import Request
 from pyramid.view import view_config
 
+from flashly.models import DeckModel
+
 
 @view_config(
     route_name="explore_decks",
@@ -11,39 +13,18 @@ def explore_decks(request: Request):
     # Fetch database connector
     db_conn = request.db_conn
 
-    with db_conn.cursor() as cur:
-        try:
-            # Fetch all public decks with cards and categories
-            query = """
-            SELECT
-                d.id,
-                d.name,
-                d.description,
-                d.rating,
-                d.created_at,
-                d.updated_at,
-                u.username as owner,
-                COUNT(c.id) as card_count
-            FROM decks d
-            JOIN users u on d.owner_id = u.id
-            LEFT JOIN cards c ON d.id = c.deck_id
-            WHERE d.publish_status = 'public'
-            GROUP BY d.id, d.name, d.description, d.rating, d.created_at, d.updated_at, u.username
-            ORDER BY d.rating DESC, d.created_at DESC
-            """
+    # Fetch explore feed
+    decks = DeckModel.find_explore_decks(db_conn)
+    if decks is None:
+        request.response.status_code = 500
+        return {
+            'error': 'Unable to load explore page',
+        }
 
-            cur.execute(query)
-            decks = cur.fetchall()
-
-            return {
-                'message': 'Explore loaded successfully',
-                'decks': decks,
-            }
-        except Exception as e:
-            request.response.status_code = 500
-            return {
-                'error': 'Unable to load explore page',
-            }
+    return {
+        'message': 'Explore loaded successfully',
+        'decks': decks,
+    }
 
 
 @view_config(

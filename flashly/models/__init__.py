@@ -2,6 +2,7 @@ from psycopg2.pool import SimpleConnectionPool
 
 from .user import UserModel
 from .user_details import UserDetailsModel
+from .deck import DeckModel
 
 def includeme(config):
     """

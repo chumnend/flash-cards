@@ -21,7 +21,7 @@ curl -X POST http://localhost:8080/login \
     "password": "password123"
   }'
 
-## Test POST /logut
+## Test POST /logout
 
 curl -X POST http://localhost:8080/logout \
   -H "Content-Type: application/json"
