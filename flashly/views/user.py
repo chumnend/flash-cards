@@ -14,141 +14,116 @@ def get_profile(request: Request):
     db_conn = request.db_conn
 
     with db_conn.cursor() as cur:
-        # Find the user in database
+        # Single comprehensive query to get all user profile data
         cur.execute(
             """
-            SELECT id, first_name, last_name, username, email, created_at, updated_at
-            FROM users
-            WHERE id = %s
+            SELECT 
+                u.id, u.first_name, u.last_name, u.username, u.email, u.created_at, u.updated_at,
+                ud.about_me,
+                COALESCE(following.following_count, 0) as following_count,
+                COALESCE(followers.followers_count, 0) as followers_count,
+                d.id as deck_id, d.name as deck_name, d.description as deck_description, 
+                d.publish_status, d.rating as deck_rating, d.created_at as deck_created_at, 
+                d.updated_at as deck_updated_at,
+                c.id as card_id, c.front_text, c.back_text, c.difficulty, c.times_reviewed, 
+                c.success_rate as card_success_rate, c.created_at as card_created_at, 
+                c.updated_at as card_updated_at,
+                cat.id as category_id, cat.name as category_name, 
+                cat.created_at as category_created_at, cat.updated_at as category_updated_at
+            FROM users u
+            LEFT JOIN user_details ud ON u.id = ud.user_id
+            LEFT JOIN (
+                SELECT follower_id, COUNT(*) as following_count 
+                FROM followers 
+                GROUP BY follower_id
+            ) following ON u.id = following.follower_id
+            LEFT JOIN (
+                SELECT following_id, COUNT(*) as followers_count 
+                FROM followers 
+                GROUP BY following_id
+            ) followers ON u.id = followers.following_id
+            LEFT JOIN decks d ON u.id = d.owner_id
+            LEFT JOIN cards c ON d.id = c.deck_id
+            LEFT JOIN deck_categories dc ON d.id = dc.deck_id
+            LEFT JOIN categories cat ON dc.category_id = cat.id
+            WHERE u.id = %s
+            ORDER BY d.id, c.id, cat.id
             """,
             (user_id,)
         )
-        user = cur.fetchone()
-        if not user:
+        
+        results = cur.fetchall()
+        
+        if not results or not results[0][0]:  # Check if user exists
             request.response.status_code = 404
             return {
                 'error': 'User not found',
             }
 
-        # Fetch user details
-        cur.execute(
-            """
-            SELECT about_me
-            FROM user_details
-            WHERE user_id = %s
-            """,
-            (user_id,)
-        )
-        user_details = cur.fetchone()
+        # Process the results to build the profile structure
+        user_data = results[0]
+        profile = {
+            'id': user_data[0],
+            'first_name': user_data[1],
+            'last_name': user_data[2],
+            'username': user_data[3],
+            'email': user_data[4],
+            'created_at': user_data[5].isoformat() if user_data[5] else None,
+            'updated_at': user_data[6].isoformat() if user_data[6] else None,
+            'about_me': user_data[7],
+            'following_count': user_data[8],
+            'followers_count': user_data[9],
+            'decks': []
+        }
 
-        # Fetch following
-        cur.execute(
-            """
-            SELECT COUNT(*) as following_count
-            FROM followers 
-            WHERE follower_id = %s
-            """,
-            (user_id,)
-        )
-        following_count = cur.fetchone()[0]
+        # Group results by deck
+        decks_dict = {}
+        for row in results:
+            deck_id = row[10]  # deck_id
+            if deck_id and deck_id not in decks_dict:
+                decks_dict[deck_id] = {
+                    'id': deck_id,
+                    'name': row[11],  # deck_name
+                    'description': row[12],  # deck_description
+                    'publish_status': row[13],
+                    'rating': float(row[14]) if row[14] else 0.0,
+                    'created_at': row[15].isoformat() if row[15] else None,
+                    'updated_at': row[16].isoformat() if row[16] else None,
+                    'cards': {},
+                    'categories': {}
+                }
 
-        # Fetch followers
-        cur.execute(
-            """
-            SELECT COUNT(*) as followers_count
-            FROM followers 
-            WHERE following_id = %s
-            """,
-            (user_id,)
-        )
-        followers_count = cur.fetchone()[0]
-
-        # Fetch decks
-        cur.execute(
-            """
-            SELECT id, name, description, publish_status, rating, created_at, updated_at
-            FROM decks 
-            WHERE owner_id = %s
-            """, 
-            (user_id,)
-        )
-        decks = cur.fetchall()
-
-        # Build decks with cards and categories
-        decks_with_details = []
-        for deck in decks:
-            deck_id = deck[0]
-            
-            # Fetch cards for this deck
-            cur.execute(
-                """
-                SELECT id, front_text, back_text, difficulty, times_reviewed, success_rate, created_at, updated_at
-                FROM cards
-                WHERE deck_id = %s
-                """,
-                (deck_id,)
-            )
-            cards = cur.fetchall()
-            
-            # Fetch categories for this deck
-            cur.execute(
-                """
-                SELECT c.id, c.name, c.created_at, c.updated_at
-                FROM categories c
-                JOIN deck_categories dc ON c.id = dc.category_id
-                WHERE dc.deck_id = %s
-                """,
-                (deck_id,)
-            )
-            categories = cur.fetchall()
-            
-            deck_obj = {
-                'id': deck[0],
-                'name': deck[1],
-                'description': deck[2],
-                'publish_status': deck[3],
-                'rating': float(deck[4]) if deck[4] else 0.0,
-                'created_at': deck[5].isoformat() if deck[5] else None,
-                'updated_at': deck[6].isoformat() if deck[6] else None,
-                'cards': [
-                    {
-                        'id': card[0],
-                        'front_text': card[1],
-                        'back_text': card[2],
-                        'difficulty': card[3],
-                        'times_reviewed': card[4],
-                        'success_rate': float(card[5]) if card[5] else 0.0,
-                        'created_at': card[6].isoformat() if card[6] else None,
-                        'updated_at': card[7].isoformat() if card[7] else None
+            if deck_id:
+                # Add cards
+                card_id = row[17]  # card_id
+                if card_id and card_id not in decks_dict[deck_id]['cards']:
+                    decks_dict[deck_id]['cards'][card_id] = {
+                        'id': card_id,
+                        'front_text': row[18],
+                        'back_text': row[19],
+                        'difficulty': row[20],
+                        'times_reviewed': row[21],
+                        'success_rate': float(row[22]) if row[22] else 0.0,
+                        'created_at': row[23].isoformat() if row[23] else None,
+                        'updated_at': row[24].isoformat() if row[24] else None
                     }
-                    for card in cards
-                ],
-                'categories': [
-                    {
-                        'id': category[0],
-                        'name': category[1],
-                        'created_at': category[2].isoformat() if category[2] else None,
-                        'updated_at': category[3].isoformat() if category[3] else None
-                    }
-                    for category in categories
-                ]
-            }
-            decks_with_details.append(deck_obj)
 
-    # build complete user profile
-    profile = {
-        'id': user[0],
-        'first_name': user[1],
-        'last_name': user[2],
-        'username': user[3],
-        'email': user[4],
-        'created_at': user[5].isoformat() if user[5] else None,
-        'updated_at': user[6].isoformat() if user[6] else None,
-        'about_me': user_details[0] if user_details else None,
-        'following_count': following_count,
-        'followers_count': followers_count,
-        'decks': decks_with_details
-    }
+                # Add categories
+                category_id = row[25]  # category_id
+                if category_id and category_id not in decks_dict[deck_id]['categories']:
+                    decks_dict[deck_id]['categories'][category_id] = {
+                        'id': category_id,
+                        'name': row[26],
+                        'created_at': row[27].isoformat() if row[27] else None,
+                        'updated_at': row[28].isoformat() if row[28] else None
+                    }
+
+        # Convert dictionaries to lists
+        for deck in decks_dict.values():
+            deck['cards'] = list(deck['cards'].values())
+            deck['categories'] = list(deck['categories'].values())
+
+        profile['decks'] = list(decks_dict.values())
 
     return {
         'message': f'/users/{user_id} route hit',
