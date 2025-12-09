@@ -18,11 +18,11 @@ def explore_decks(request: Request):
     if decks is None:
         request.response.status_code = 500
         return {
-            'error': 'Unable to load explore page',
+            'error': 'Unable to load explore feed',
         }
 
     return {
-        'message': 'Explore loaded successfully',
+        'message': 'Explore feed loaded successfully',
         'decks': decks,
     }
 
@@ -33,8 +33,23 @@ def explore_decks(request: Request):
     renderer="json"
 )
 def feed(request: Request):
+    # Fetch database connector
+    db_conn = request.db_conn
+
+    # Get token from request
+    token = request.params.get('token')
+
+    # Fetch feed of user
+    decks = DeckModel.find_feed_decks(db_conn, token)
+    if decks is None:
+        request.response.status_code = 500
+        return {
+            'error': 'Unable to load  user feed',
+        }
+
     return {
-        'message': '/decks/feed route hit'
+        'message': 'User feed loaded successfully',
+        'decks': decks,
     }
 
 

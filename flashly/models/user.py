@@ -88,10 +88,6 @@ class UserModel:
 
     @classmethod
     def get_profile_with_details(cls, db_conn, user_id: str) -> Optional[Dict[str, Any]]:
-        """
-        Récupère le profil complet d'un utilisateur avec ses détails, 
-        ses statistiques de followers/following, et ses decks avec cartes et catégories.
-        """
         with db_conn.cursor() as cur:
             # Single comprehensive query to get all user profile data
             cur.execute(

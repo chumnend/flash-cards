@@ -48,17 +48,104 @@ class DeckModel:
                 decks = cur.fetchall()
 
                 return decks
-        except:
+        except Exception as e:
+            print(f"Error in find_explore_decks: {e}")
             return None
 
     @classmethod
-    def find_feed_decks(cls, db_conn):
-        pass
+    def find_feed_decks(cls, db_conn, user_id):
+        try:
+            with db_conn.cursor() as cur:
+                cur.execute(
+                    """
+                    SELECT
+                        d.id,
+                        d.name,
+                        d.description,
+                        d.rating,
+                        d.created_at,
+                        d.updated_at,
+                        u.username as owner,
+                        COUNT(c.id) as card_count
+                    FROM decks d
+                    JOIN users u ON d.owner_id = u.id
+                    JOIN followers f ON d.owner_id = f.following_id
+                    LEFT JOIN cards c ON d.id = c.deck_id
+                    WHERE d.publish_status = 'public'
+                    AND f.follower_id = %s
+                    GROUP BY d.id, d.name, d.description, d.rating, d.created_at, d.updated_at, u.username
+                    ORDER BY d.created_at DESC, d.rating DESC
+                    """,
+                    (user_id,)
+                )
+                decks = cur.fetchall()
 
-    @classmethod
-    def find_decks_by_user_id(cls, db_conn, user_id: str):
-        pass
+                return decks
+        except Exception as e:
+            print(f"Error in find_feed_decks: {e}")
+            return None
 
-    @classmethod
-    def find_deck_by_id(cls, db_conn, id: str):
-        pass
+@classmethod
+def find_decks_by_user_id(cls, db_conn, user_id: str):
+    try:
+        with db_conn.cursor() as cur:
+            cur.execute(
+                """
+                SELECT
+                    d.id,
+                    d.name,
+                    d.description,
+                    d.publish_status,
+                    d.rating,
+                    d.created_at,
+                    d.updated_at,
+                    u.username as owner,
+                    COUNT(c.id) as card_count
+                FROM decks d
+                JOIN users u ON d.owner_id = u.id
+                LEFT JOIN cards c ON d.id = c.deck_id
+                WHERE d.owner_id = %s
+                GROUP BY d.id, d.name, d.description, d.publish_status, d.rating, d.created_at, d.updated_at, u.username
+                ORDER BY d.created_at DESC
+                """,
+                (user_id,)
+            )
+            decks = cur.fetchall()
+            
+            return decks
+    except Exception as e:
+        print(f"Error in find_decks_by_user_id: {e}")
+        return None
+
+
+@classmethod
+def find_deck_by_id(cls, db_conn, id: str):
+    try:
+        with db_conn.cursor() as cur:
+            cur.execute(
+                """
+                SELECT
+                    d.id,
+                    d.name,
+                    d.description,
+                    d.publish_status,
+                    d.owner_id,
+                    d.rating,
+                    d.created_at,
+                    d.updated_at,
+                    u.username as owner,
+                    COUNT(c.id) as card_count
+                FROM decks d
+                JOIN users u ON d.owner_id = u.id
+                LEFT JOIN cards c ON d.id = c.deck_id
+                WHERE d.id = %s
+                GROUP BY d.id, d.name, d.description, d.publish_status, d.owner_id, d.rating, d.created_at, d.updated_at, u.username
+                """,
+                (id,)
+            )
+            deck = cur.fetchone()
+            
+            return deck
+    except Exception as e:
+        print(f"Error in find_deck_by_id: {e}")
+        return None

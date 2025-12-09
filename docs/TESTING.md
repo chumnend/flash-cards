@@ -37,3 +37,9 @@ curl -X GET http://localhost:8080/users/{user_id} \
 curl -X GET http://localhost:8080/decks/explore \
   -H "Content-Type: application/json" \
   -H "Accept: application/json"
+
+## Test GET /decks/feed
+
+curl -X GET http://localhost:8080/decks/feed?token={user_id} \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json"
