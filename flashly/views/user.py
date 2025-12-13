@@ -55,7 +55,7 @@ def register(request: Request):
 
     # Create new user
     user = UserModel(
-        id=uuid.uuid4(),
+        id=str(uuid.uuid4()),
         first_name=first_name,
         last_name=last_name,
         username=username,
@@ -68,7 +68,7 @@ def register(request: Request):
 
     # Create new user details
     user_details = UserDetailsModel(
-        id=uuid.uuid4(),
+        id=str(uuid.uuid4()),
         user_id=user.id,
         about_me="",
         created_at=datetime.now(),

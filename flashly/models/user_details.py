@@ -21,6 +21,6 @@ class UserDetailsModel:
                 INSERT INTO user_details (id, user_id, about_me)
                     VALUES (%s, %s, %s)
                 """,
-                (str(self.id), str(self.user_id), self.about_me)
+                (self.id, self.user_id, self.about_me)
             )
         db_conn.commit()

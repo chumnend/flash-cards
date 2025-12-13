@@ -40,9 +40,9 @@ class UserModel:
                 INSERT INTO users (id, first_name, last_name, username, email, password_hash) 
                    VALUES (%s, %s, %s, %s, %s, %s)
                 """,
-                (str(self.id), self.first_name, self.last_name, self.username, self.email, self.password_hash)
+                (self.id, self.first_name, self.last_name, self.username, self.email, self.password_hash)
             )
-        db_conn.commit()
+            db_conn.commit()
     
     @classmethod
     def find_by_email(cls, db_conn, email: str) -> Optional['UserModel']:
