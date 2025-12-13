@@ -77,8 +77,6 @@ def get_decks(request: Request):
             'error': "Unable to load user's decks",
         }
 
-    print(decks)
-
     return {
         'message': 'User feed loaded successfully',
         'decks': serialize_deck_data(decks),
