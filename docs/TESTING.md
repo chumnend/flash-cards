@@ -34,6 +34,53 @@ curl -X GET http://localhost:8080/users/{user_id} \
   -H "Content-Type: application/json" \
   -H "Accept: application/json"
 
+## Test PUT /users/{user_id}
+
+curl -X PUT http://localhost:8080/users/{user_id}?token={user_id} \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d '{
+    "firstName": "Updated John",
+    "lastName": "Updated Doe",
+    "username": "updated_jdoe",
+    "email": "updated.john.doe@example.com",
+    "aboutMe": "Updated about me section"
+  }'
+
+## Test PUT /change_password
+
+curl -X PUT http://localhost:8080/change_password?token={user_id} \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d '{
+    "currentPassword": "password123",
+    "newPassword": "newpassword456"
+  }'
+
+## Test POST /users/{user_id}/follow
+
+curl -X POST http://localhost:8080/users/{user_to_follow_id}/follow?token={current_user_id} \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json"
+
+## Test DELETE /users/{user_id}/unfollow
+
+curl -X DELETE http://localhost:8080/users/{user_to_unfollow_id}/unfollow?token={current_user_id} \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json"
+
+## Test GET /users/{user_id}/followers
+
+curl -X GET http://localhost:8080/users/{user_id}/followers \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json"
+
+## Test GET /users/{user_id}/following
+
+curl -X GET http://localhost:8080/users/{user_id}/following \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json"
+
 ## ====================== DECKS ====================================
 
 ## Test GET /explore
