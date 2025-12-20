@@ -5,7 +5,7 @@ from uuid import UUID
 
 @dataclass
 class CardModel:
-    __tablename__ = 'cards'
+    __tablename__ = "cards"
 
     id: UUID
     front_text: str
@@ -24,7 +24,15 @@ class CardModel:
                 INSERT INTO cards (id, front_text, back_text, difficulty, times_reviewed, success_rate, deck_id)
                 VALUES (%s, %s, %s, %s, %s, %s, %s)
                 """,
-                (self.id, self.front_text, self.back_text, self.difficulty, self.times_reviewed, self.success_rate, self.deck_id)
+                (
+                    self.id,
+                    self.front_text,
+                    self.back_text,
+                    self.difficulty,
+                    self.times_reviewed,
+                    self.success_rate,
+                    self.deck_id,
+                ),
             )
             db_conn.commit()
 
@@ -36,7 +44,15 @@ class CardModel:
                 SET front_text = %s, back_text = %s, difficulty = %s, times_reviewed = %s, success_rate = %s, updated_at = %s
                 WHERE id = %s
                 """,
-                (self.front_text, self.back_text, self.difficulty, self.times_reviewed, self.success_rate, self.updated_at, self.id)
+                (
+                    self.front_text,
+                    self.back_text,
+                    self.difficulty,
+                    self.times_reviewed,
+                    self.success_rate,
+                    self.updated_at,
+                    self.id,
+                ),
             )
             db_conn.commit()
 
@@ -46,7 +62,7 @@ class CardModel:
                 """
                 DELETE FROM cards WHERE id = %s
                 """,
-                (self.id,)
+                (self.id,),
             )
             db_conn.commit()
 
@@ -61,7 +77,7 @@ class CardModel:
                     WHERE deck_id = %s
                     ORDER BY created_at ASC
                     """,
-                    (deck_id,)
+                    (deck_id,),
                 )
                 cards = cur.fetchall()
                 return cards
@@ -79,13 +95,14 @@ class CardModel:
                     FROM cards
                     WHERE id = %s
                     """,
-                    (card_id,)
+                    (card_id,),
                 )
                 card = cur.fetchone()
                 return card
         except Exception as e:
             print(f"Error in find_card_by_id: {e}")
             return None
+
 
 def serialize_single_card_tuple(card_tuple):
     """
@@ -94,15 +111,15 @@ def serialize_single_card_tuple(card_tuple):
     if len(card_tuple) == 9:
         # Format standard pour les cartes
         return {
-            'id': str(card_tuple[0]),
-            'front_text': card_tuple[1],
-            'back_text': card_tuple[2],
-            'difficulty': card_tuple[3],
-            'times_reviewed': int(card_tuple[4]),
-            'success_rate': float(card_tuple[5]),
-            'deck_id': str(card_tuple[6]),
-            'created_at': card_tuple[7].isoformat() if card_tuple[7] else None,
-            'updated_at': card_tuple[8].isoformat() if card_tuple[8] else None,
+            "id": str(card_tuple[0]),
+            "front_text": card_tuple[1],
+            "back_text": card_tuple[2],
+            "difficulty": card_tuple[3],
+            "times_reviewed": int(card_tuple[4]),
+            "success_rate": float(card_tuple[5]),
+            "deck_id": str(card_tuple[6]),
+            "created_at": card_tuple[7].isoformat() if card_tuple[7] else None,
+            "updated_at": card_tuple[8].isoformat() if card_tuple[8] else None,
         }
     else:
         # Fallback pour des formats non reconnus
@@ -117,15 +134,15 @@ def serialize_card_data(card_data):
     if isinstance(card_data, CardModel):
         # Si c'est une instance de CardModel
         return {
-            'id': str(card_data.id),
-            'front_text': card_data.front_text,
-            'back_text': card_data.back_text,
-            'difficulty': card_data.difficulty,
-            'times_reviewed': card_data.times_reviewed,
-            'success_rate': card_data.success_rate,
-            'deck_id': str(card_data.deck_id),
-            'created_at': card_data.created_at.isoformat() if card_data.created_at else None,
-            'updated_at': card_data.updated_at.isoformat() if card_data.updated_at else None,
+            "id": str(card_data.id),
+            "front_text": card_data.front_text,
+            "back_text": card_data.back_text,
+            "difficulty": card_data.difficulty,
+            "times_reviewed": card_data.times_reviewed,
+            "success_rate": card_data.success_rate,
+            "deck_id": str(card_data.deck_id),
+            "created_at": (card_data.created_at.isoformat() if card_data.created_at else None),
+            "updated_at": (card_data.updated_at.isoformat() if card_data.updated_at else None),
         }
     elif isinstance(card_data, (list, tuple)) and card_data:
         if isinstance(card_data[0], (list, tuple)):

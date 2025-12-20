@@ -5,7 +5,7 @@ from uuid import UUID
 
 @dataclass
 class DeckModel:
-    __tablename__ = 'decks'
+    __tablename__ = "decks"
 
     id: UUID
     name: str
@@ -23,7 +23,14 @@ class DeckModel:
                 INSERT INTO decks (id, name, description, publish_status, owner_id, rating)
                 VALUES (%s, %s, %s, %s, %s, %s)
                 """,
-                (self.id, self.name, self.description, self.publish_status, self.owner_id, self.rating)
+                (
+                    self.id,
+                    self.name,
+                    self.description,
+                    self.publish_status,
+                    self.owner_id,
+                    self.rating,
+                ),
             )
             db_conn.commit()
 
@@ -35,7 +42,13 @@ class DeckModel:
                 SET name = %s, description = %s, publish_status = %s, updated_at = %s
                 WHERE id = %s
                 """,
-                (self.name, self.description, self.publish_status, self.updated_at, self.id)
+                (
+                    self.name,
+                    self.description,
+                    self.publish_status,
+                    self.updated_at,
+                    self.id,
+                ),
             )
             db_conn.commit()
 
@@ -45,7 +58,7 @@ class DeckModel:
                 """
                 DELETE FROM decks WHERE id = %s
                 """,
-                (self.id,)
+                (self.id,),
             )
             db_conn.commit()
 
@@ -103,7 +116,7 @@ class DeckModel:
                     GROUP BY d.id, d.name, d.description, d.rating, d.created_at, d.updated_at, u.username
                     ORDER BY d.created_at DESC, d.rating DESC
                     """,
-                    (user_id,)
+                    (user_id,),
                 )
                 decks = cur.fetchall()
 
@@ -135,10 +148,10 @@ class DeckModel:
                     GROUP BY d.id, d.name, d.description, d.publish_status, d.rating, d.created_at, d.updated_at, u.username
                     ORDER BY d.created_at DESC
                     """,
-                    (user_id,)
+                    (user_id,),
                 )
                 decks = cur.fetchall()
-                
+
                 return decks
         except Exception as e:
             print(f"Error in find_decks_by_user_id: {e}")
@@ -167,14 +180,15 @@ class DeckModel:
                     WHERE d.id = %s
                     GROUP BY d.id, d.name, d.description, d.publish_status, d.owner_id, d.rating, d.created_at, d.updated_at, u.username
                     """,
-                    (id,)
+                    (id,),
                 )
                 deck = cur.fetchone()
-                
+
                 return deck
         except Exception as e:
             print(f"Error in find_deck_by_id: {e}")
             return None
+
 
 def serialize_single_deck_tuple(deck_tuple):
     """
@@ -184,41 +198,41 @@ def serialize_single_deck_tuple(deck_tuple):
     if len(deck_tuple) == 8:
         # Format pour explore_decks et feed_decks (sans publish_status et owner_id)
         return {
-            'id': str(deck_tuple[0]),
-            'name': deck_tuple[1],
-            'description': deck_tuple[2],
-            'rating': float(deck_tuple[3]),
-            'created_at': deck_tuple[4].isoformat() if deck_tuple[4] else None,
-            'updated_at': deck_tuple[5].isoformat() if deck_tuple[5] else None,
-            'owner': deck_tuple[6],
-            'card_count': int(deck_tuple[7])
+            "id": str(deck_tuple[0]),
+            "name": deck_tuple[1],
+            "description": deck_tuple[2],
+            "rating": float(deck_tuple[3]),
+            "created_at": deck_tuple[4].isoformat() if deck_tuple[4] else None,
+            "updated_at": deck_tuple[5].isoformat() if deck_tuple[5] else None,
+            "owner": deck_tuple[6],
+            "card_count": int(deck_tuple[7]),
         }
     elif len(deck_tuple) == 9:
         # Format pour find_decks_by_user_id (avec publish_status)
         return {
-            'id': str(deck_tuple[0]),
-            'name': deck_tuple[1],
-            'description': deck_tuple[2],
-            'publish_status': deck_tuple[3],
-            'rating': float(deck_tuple[4]),
-            'created_at': deck_tuple[5].isoformat() if deck_tuple[5] else None,
-            'updated_at': deck_tuple[6].isoformat() if deck_tuple[6] else None,
-            'owner': deck_tuple[7],
-            'card_count': int(deck_tuple[8])
+            "id": str(deck_tuple[0]),
+            "name": deck_tuple[1],
+            "description": deck_tuple[2],
+            "publish_status": deck_tuple[3],
+            "rating": float(deck_tuple[4]),
+            "created_at": deck_tuple[5].isoformat() if deck_tuple[5] else None,
+            "updated_at": deck_tuple[6].isoformat() if deck_tuple[6] else None,
+            "owner": deck_tuple[7],
+            "card_count": int(deck_tuple[8]),
         }
     elif len(deck_tuple) == 10:
         # Format pour find_deck_by_id (avec publish_status et owner_id)
         return {
-            'id': str(deck_tuple[0]),
-            'name': deck_tuple[1],
-            'description': deck_tuple[2],
-            'publish_status': deck_tuple[3],
-            'owner_id': str(deck_tuple[4]),
-            'rating': float(deck_tuple[5]),
-            'created_at': deck_tuple[6].isoformat() if deck_tuple[6] else None,
-            'updated_at': deck_tuple[7].isoformat() if deck_tuple[7] else None,
-            'owner': deck_tuple[8],
-            'card_count': int(deck_tuple[9])
+            "id": str(deck_tuple[0]),
+            "name": deck_tuple[1],
+            "description": deck_tuple[2],
+            "publish_status": deck_tuple[3],
+            "owner_id": str(deck_tuple[4]),
+            "rating": float(deck_tuple[5]),
+            "created_at": deck_tuple[6].isoformat() if deck_tuple[6] else None,
+            "updated_at": deck_tuple[7].isoformat() if deck_tuple[7] else None,
+            "owner": deck_tuple[8],
+            "card_count": int(deck_tuple[9]),
         }
     else:
         # Fallback pour des formats non reconnus
@@ -233,14 +247,14 @@ def serialize_deck_data(deck_data):
     if isinstance(deck_data, DeckModel):
         # Si c'est une instance de DeckModel
         return {
-            'id': str(deck_data.id),
-            'name': deck_data.name,
-            'description': deck_data.description,
-            'publish_status': deck_data.publish_status,
-            'owner_id': str(deck_data.owner_id),
-            'rating': float(deck_data.rating),
-            'created_at': deck_data.created_at.isoformat() if deck_data.created_at else None,
-            'updated_at': deck_data.updated_at.isoformat() if deck_data.updated_at else None,
+            "id": str(deck_data.id),
+            "name": deck_data.name,
+            "description": deck_data.description,
+            "publish_status": deck_data.publish_status,
+            "owner_id": str(deck_data.owner_id),
+            "rating": float(deck_data.rating),
+            "created_at": (deck_data.created_at.isoformat() if deck_data.created_at else None),
+            "updated_at": (deck_data.updated_at.isoformat() if deck_data.updated_at else None),
         }
     elif isinstance(deck_data, (list, tuple)) and deck_data:
         if isinstance(deck_data[0], (list, tuple)):

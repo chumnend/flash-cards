@@ -5,7 +5,7 @@ from uuid import UUID
 
 @dataclass
 class FollowerModel:
-    __tablename__ = 'followers'
+    __tablename__ = "followers"
 
     id: UUID
     follower_id: UUID

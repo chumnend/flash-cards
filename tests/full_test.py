@@ -4,6 +4,7 @@ from webtest import TestApp
 
 from flashly import main
 
+
 class Test(TestCase):
     def setUp(self):
         app = main({})
@@ -11,7 +12,7 @@ class Test(TestCase):
         self.testapp = TestApp(app)
 
     def test_hello_world(self):
-        response = self.testapp.get('/', status=200)
+        response = self.testapp.get("/", status=200)
 
     def test_404_not_found(self):
-        response = self.testapp.get('/nonexistent', status=404)
+        response = self.testapp.get("/nonexistent", status=404)
