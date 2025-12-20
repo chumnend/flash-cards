@@ -87,3 +87,49 @@ curl -X PUT http://localhost:8080/decks/{deck_id}?token={user_id} \
 curl -X DELETE http://localhost:8080/decks/{deck_id}?token={user_id} \
   -H "Content-Type: application/json" \
   -H "Accept: application/json"
+
+## ====================== CARDS ====================================
+
+## Test GET /decks/{deck_id}/cards (public deck)
+
+curl -X GET http://localhost:8080/decks/{deck_id}/cards \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json"
+
+## Test GET /decks/{deck_id}/cards (private deck - with token)
+
+curl -X GET http://localhost:8080/decks/{deck_id}/cards?token={user_id} \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json"
+
+## Test POST /decks/{deck_id}/cards
+
+curl -X POST http://localhost:8080/decks/{deck_id}/cards?token={user_id} \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d '{
+    "frontText": "What is the capital of France?",
+    "backText": "Paris"
+  }'
+
+## Test GET /decks/{deck_id}/cards/{card_id}
+
+curl -X GET http://localhost:8080/decks/{deck_id}/cards/{card_id} \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json"
+
+## Test PUT /decks/{deck_id}/cards/{card_id}
+
+curl -X PUT http://localhost:8080/decks/{deck_id}/cards/{card_id}?token={user_id} \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d '{
+    "frontText": "What is the capital of France?",
+    "backText": "Paris, France"
+  }'
+
+## Test DELETE /decks/{deck_id}/cards/{card_id}
+
+curl -X DELETE http://localhost:8080/decks/{deck_id}/cards/{card_id}?token={user_id} \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json"
