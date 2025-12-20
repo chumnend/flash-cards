@@ -45,7 +45,7 @@ class DeckModel:
                 """
                 DELETE FROM decks WHERE id = %s
                 """,
-                (self.id)
+                (self.id,)
             )
             db_conn.commit()
 
