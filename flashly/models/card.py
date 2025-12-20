@@ -114,8 +114,6 @@ def serialize_card_data(card_data):
     Sérialise les données de carte(s) en format JSON avec les champs comme clés.
     Peut accepter une seule carte ou une liste de cartes.
     """
-    from flashly.models import CardModel
-    
     if isinstance(card_data, CardModel):
         # Si c'est une instance de CardModel
         return {

@@ -4,8 +4,8 @@ from datetime import datetime
 from pyramid.request import Request
 from pyramid.view import view_config
 
-from flashly.models import UserModel
-from flashly.models import UserDetailsModel
+from flashly.models.user import UserModel
+from flashly.models.user_details import UserDetailsModel
 
 @view_config(
     route_name="register",

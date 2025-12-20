@@ -4,8 +4,7 @@ from datetime import datetime
 from pyramid.request import Request
 from pyramid.view import view_config
 
-from flashly.models import DeckModel
-from flashly.utils.serialize import serialize_deck_data
+from flashly.models.deck import DeckModel, serialize_deck_data
 
 
 @view_config(
