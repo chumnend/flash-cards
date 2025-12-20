@@ -42,6 +42,7 @@ fix: format check
 client-dev:
 	@cd flashly-client && yarn dev
 
+# Development setup
 clean:
 	@find . -type d -name "__pycache__" -exec rm -rf {} +
 	@rm -rf .pytest_cache .coverage
