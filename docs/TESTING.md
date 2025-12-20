@@ -1,5 +1,7 @@
 # cURL Command for testing
 
+## ====================== USERS ====================================
+
 ## Test POST /register
 
 curl -X POST http://localhost:8080/register \
@@ -31,6 +33,8 @@ curl -X POST http://localhost:8080/logout \
 curl -X GET http://localhost:8080/users/{user_id} \
   -H "Content-Type: application/json" \
   -H "Accept: application/json"
+
+## ====================== DECKS ====================================
 
 ## Test GET /explore
 
@@ -67,17 +71,19 @@ curl -X GET http://localhost:8080/decks/{deck_id} \
   -H "Content-Type: application/json" \
   -H "Accept: application/json"
 
+## Test PUT /decks/{deck_id}
 
-
-
-curl -X GET http://localhost:8080/decks/feed?token=37bfd0d8-6e4d-4f8a-a5bd-5df396ac756a \
+curl -X PUT http://localhost:8080/decks/{deck_id}?token={user_id} \
   -H "Content-Type: application/json" \
-  -H "Accept: application/json"
+  -H "Accept: application/json" \
+  -d '{
+    "name": "Updated Deck Name",
+    "description": "Updated description",
+    "publishStatus": "public"
+  }'
 
-curl -X GET http://localhost:8080/decks?token=37bfd0d8-6e4d-4f8a-a5bd-5df396ac756a \
-  -H "Content-Type: application/json" \
-  -H "Accept: application/json"
+## Test DELETE /decks/{deck_id}
 
-curl -X GET http://localhost:8080/decks/69764111-df5c-4386-8f58-c50eba027c40 \
+curl -X DELETE http://localhost:8080/decks/{deck_id}?token={user_id} \
   -H "Content-Type: application/json" \
   -H "Accept: application/json"

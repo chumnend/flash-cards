@@ -27,8 +27,27 @@ class DeckModel:
             )
             db_conn.commit()
 
+    def update(self, db_conn):
+        with db_conn.cursor() as cur:
+            cur.execute(
+                """
+                UPDATE decks 
+                SET name = %s, description = %s, publish_status = %s, updated_at = %s
+                WHERE id = %s
+                """,
+                (self.name, self.description, self.publish_status, self.updated_at, self.id)
+            )
+            db_conn.commit()
+
     def delete(self, db_conn):
-        pass
+        with db_conn.cursor() as cur:
+            cur.execute(
+                """
+                DELETE FROM decks WHERE id = %s
+                """,
+                (self.id)
+            )
+            db_conn.commit()
 
     @classmethod
     def find_explore_decks(cls, db_conn):
