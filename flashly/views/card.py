@@ -66,9 +66,91 @@ def get_cards(request: Request):
 )
 def create_card(request: Request):
     deck_id = request.matchdict['deck_id']
-    return {
-        'message': f'/decks/{deck_id}/cards create route hit'
-    }
+    
+    # Get JSON request
+    try:
+        data = request.json_body
+    except (ValueError, UnicodeDecodeError):
+        request.response.status_code = 400
+        return {"error": "Invalid JSON"}
+    
+    # Get token from request
+    token = request.params.get('token')
+    if not token:
+        request.response.status_code = 400
+        return {"error": "Token is required"}
+    
+    # Fetch database connector
+    db_conn = request.db_conn
+    
+    # Verify that the deck exists
+    deck = DeckModel.find_deck_by_id(db_conn, deck_id)
+    if deck is None:
+        request.response.status_code = 404
+        return {"error": "Deck not found"}
+    
+    # Check if the user owns this deck
+    deck_owner_id = deck[4]  # owner_id is at index 4
+    if str(deck_owner_id) != token:
+        request.response.status_code = 403
+        return {"error": "You can only add cards to your own decks"}
+    
+    # Validate that all required fields are present
+    required_fields = ["frontText", "backText"]
+    missing_fields = [field for field in required_fields if field not in data or not data[field].strip()]
+    if missing_fields:
+        request.response.status_code = 400
+        return {"error": f"Missing required fields: {', '.join(missing_fields)}"}
+    
+    # Extract data
+    front_text = data['frontText'].strip()
+    back_text = data['backText'].strip()
+    difficulty = data.get('difficulty', 'easy').strip()
+    
+    # Validate difficulty
+    valid_difficulties = ['easy', 'medium', 'hard']
+    if difficulty not in valid_difficulties:
+        request.response.status_code = 400
+        return {"error": f"Invalid difficulty. Must be one of: {', '.join(valid_difficulties)}"}
+    
+    try:
+        # Create new card
+        new_card = CardModel(
+            id=str(uuid.uuid4()),
+            front_text=front_text,
+            back_text=back_text,
+            difficulty=difficulty,
+            times_reviewed=0,
+            success_rate=0.0,
+            deck_id=deck_id,
+            created_at=datetime.now(),
+            updated_at=datetime.now()
+        )
+        new_card.save(db_conn)
+        
+        # Update the deck's updated_at timestamp
+        # First get the deck as a DeckModel instance
+        updated_deck = DeckModel(
+            id=deck[0],
+            name=deck[1],
+            description=deck[2],
+            publish_status=deck[3],
+            owner_id=deck[4],
+            rating=deck[5],
+            created_at=deck[6],
+            updated_at=datetime.now()
+        )
+        updated_deck.update(db_conn)
+        
+        return {
+            'message': 'Card successfully created',
+            'card': serialize_card_data(new_card),
+        }
+        
+    except Exception as e:
+        print(f"Error creating card: {e}")
+        request.response.status_code = 500
+        return {"error": "Failed to create card"}
 
 
 @view_config(
