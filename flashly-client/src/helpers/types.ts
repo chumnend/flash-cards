@@ -5,26 +5,6 @@ export interface IAuthUser {
     token: string;
 };
 
-export interface IRegisterResponse {
-    message: string,
-    user: {
-        id: string,
-        name: string,
-        email: string,
-    } | null | undefined,
-    token: string | null | undefined,
-}
-
-export interface ILoginResponse {
-    message: string,
-    user?: {
-        id: string,
-        name: string,
-        email: string,
-    } | null | undefined,
-    token: string | null | undefined,
-}
-
 export interface ICard {
     id: string,
     frontText: string,
@@ -40,6 +20,8 @@ export interface ICard {
 export interface ICategory {
     id: string,
     name: string,
+    createdAt: Date,
+    updatedAt: Date,
 }
 
 export interface IDeck {
@@ -54,6 +36,79 @@ export interface IDeck {
     createdAt: Date,
     updatedAt: Date,
 }
+
+export interface IUserDetails {
+    id: string,
+    userId: string,
+    aboutMe: string,
+    createdAt: Date,
+    updatedAt: Date,
+}
+
+export interface IUser {
+    id: string,
+    firstName: string,
+    lastName: string,
+    username: string,
+    email: string,
+    password: string,
+    details: IUserDetails,
+    following: Array<IUser>,
+    followers: Array<IUser>,
+    decks: Array<IDeck>,
+    createdAt: Date,
+    updatedAt: Date,
+}
+
+// ====================== USERS ====================================
+
+export interface IRegisterResponse {
+    message: string,
+    user: {
+        id: string,
+        firstName: string,
+        lastName: string,
+        username: string,
+        email: string,
+    } | null | undefined,
+    token: string | null | undefined,
+}
+
+export interface ILoginResponse {
+    message: string,
+    user?: {
+        id: string,
+        firstName: string,
+        lastName: string,
+        username: string,
+        email: string,
+    } | null | undefined,
+    token: string | null | undefined,
+}
+
+export interface IProfileResponse {
+    message: string,
+    user: IUser,
+}
+
+export interface ISettingsResponse {
+    message: string,
+    user: IUser,
+}
+
+export interface IChangePasswordResponse {
+    message: string,
+}
+
+export interface IFollowResponse {
+    message: string,
+}
+
+export interface IUnfollowResponse {
+    message: string,
+}
+
+// ====================== DECKS ====================================
 
 export interface IExploreResponse {
     message: string,
@@ -84,11 +139,12 @@ export interface IDeleteDeckResponse {
     message: string,
 }
 
+//  ====================== CARDS ====================================
+
 export interface INewCardResponse {
     message: string,
     card: ICard,
 }
-
 
 export interface IModifyCardResponse {
     message: string,
@@ -96,48 +152,5 @@ export interface IModifyCardResponse {
 }
 
 export interface IDeleteCardResponse {
-    message: string,
-}
-
-export interface IUser {
-    id: string,
-    firstName: string,
-    lastName: string,
-    email: string,
-    password: string,
-    details: IUserDetails,
-    following: Array<IUser>,
-    followers: Array<IUser>,
-    decks: Array<IDeck>,
-    createdAt: Date,
-    updatedAt: Date,
-}
-
-export interface IUserDetails {
-    id: string,
-    aboutMe: string,
-    createdAt: Date,
-    updatedAt: Date,
-}
-
-export interface IProfileResponse {
-    message: string,
-    user: IUser,
-}
-
-export interface ISettingsResponse {
-    message: string,
-    user: IUser,
-}
-
-export interface IChangePasswordResponse {
-    message: string,
-}
-
-export interface IFollowResponse {
-    message: string,
-}
-
-export interface IUnfollowResponse {
     message: string,
 }
