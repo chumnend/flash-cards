@@ -81,7 +81,7 @@ const RegisterPage = () => {
       const data = await api.register(formData.firstName, formData.lastName, formData.email, formData.password);
   
       if (data.user && data.token) {
-        handleRegister(data.user.id, data.user.name, data.user.email, data.token);
+        handleRegister(data.user.id, data.user.username, data.user.email, data.token);
         navigate("/feed");
       } else {
         throw new Error('Registration succeeded but user data is missing.');
