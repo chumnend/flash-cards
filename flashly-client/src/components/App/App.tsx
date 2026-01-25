@@ -5,6 +5,8 @@ import Navbar from '../Navbar/Navbar';
 import { type ContextType  } from '../../helpers/context';
 import { type IAuthUser } from '../../helpers/types';
 
+import { hello } from '../../helpers/api';
+
 import './App.css'
 
 const App = () => {
@@ -38,6 +40,12 @@ const App = () => {
   };
 
   useEffect(() => {
+    const sayHello = async () => {
+      const data = await hello();
+      console.log(data)
+    }
+    sayHello()
+
     const userSession = localStorage.getItem('userSession');
     if (!userSession) {
       return;
