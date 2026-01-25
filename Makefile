@@ -1,9 +1,18 @@
-# Pyramid backed
-dev:
+# Pyramid backend
+server-dev:
 	@python run.py --host=0.0.0.0 --port=8080 --reload
 
 test:
 	@pytest
+
+# React frontend
+client-dev:
+	@cd flashly-client && yarn dev
+
+# Development - run both backend and frontend
+dev-all:
+	@echo "Starting both backend and frontend..."
+	@python run.py --host=0.0.0.0 --port=8080 --reload & cd flashly-client && yarn dev
 
 # Manage database
 migrate:
@@ -37,10 +46,6 @@ check: format-check lint type-check
 
 fix: format check
 	@echo "Code formatted and all checks passed!"
-
-# React frontend
-client-dev:
-	@cd flashly-client && yarn dev
 
 # Development setup
 clean:
