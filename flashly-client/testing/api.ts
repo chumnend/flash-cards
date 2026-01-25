@@ -15,6 +15,7 @@ import {
     type IFollowResponse,
     type IUnfollowResponse,
     type IUser,
+    type IUserDetails,
     type IChangePasswordResponse,
 } from '../src/helpers/types';
 
@@ -52,6 +53,7 @@ export async function register(
         // create user details entry
         const newUserDetails = {
             id: userDetailsId,
+            userId,
             aboutMe: '',
             createdAt: new Date(),
             updatedAt: new Date(),
@@ -62,6 +64,7 @@ export async function register(
             id: userId,
             firstName,
             lastName,
+            username: `${firstName}-${lastName.charAt(0)}.`,
             email,
             password,
             details: userDetailsId,
@@ -80,7 +83,9 @@ export async function register(
             message: 'Registration successful',
             user: {
                 id: userId,
-                name: `${firstName} ${lastName.charAt(0)}.`,
+                firstName: firstName,
+                lastName: lastName,
+                username: `${firstName}-${lastName.charAt(0)}.`,
                 email,
             },
             token: userId,
@@ -105,7 +110,9 @@ export async function login(email: string, password: string): Promise<ILoginResp
             message: 'Login successful',
             user: {
                 id: foundUser.id,
-                name: `${foundUser.firstName} ${foundUser.lastName.charAt(0)}.`,
+                firstName: foundUser.firstName,
+                lastName: foundUser.lastName,
+                username: `${foundUser.firstName}-${foundUser.lastName.charAt(0)}.`,
                 email,
             },
             token: `${foundUser.id}`,
@@ -484,43 +491,6 @@ export async function profile(id: string): Promise<IProfileResponse> {
         // find user details
         const userDetails = db.userDetails.find(details => details.id === user.details);
         
-        // helper function to create a simplified user object (to avoid circular references)
-        const createSimplifiedUser = (userId: string): IUser | null => {
-            const u = db.users.find(user => user.id === userId);
-            if (!u) return null;
-
-            const uDetails = db.userDetails.find(details => details.id === u.details);
-            
-            return {
-                id: u.id,
-                firstName: u.firstName,
-                lastName: u.lastName,
-                email: u.email,
-                password: u.password,
-                details: uDetails || {
-                    id: u.details,
-                    aboutMe: '',
-                    createdAt: u.createdAt,
-                    updatedAt: u.updatedAt,
-                },
-                following: [], // Empty to avoid circular references
-                followers: [], // Empty to avoid circular references
-                decks: [], // Empty to avoid circular references  
-                createdAt: u.createdAt,
-                updatedAt: u.updatedAt,
-            };
-        };
-
-        // populate following list with simplified user objects
-        const populatedFollowing = user.following
-            .map(followingId => createSimplifiedUser(followingId))
-            .filter((u): u is IUser => u !== null);
-
-        // populate followers list with simplified user objects
-        const populatedFollowers = user.followers
-            .map(followerId => createSimplifiedUser(followerId))
-            .filter((u): u is IUser => u !== null);
-
         // populate decks list with full deck objects
         const populatedDecks = (user.decks as string[])
             .map(deckId => {
@@ -544,29 +514,46 @@ export async function profile(id: string): Promise<IProfileResponse> {
             })
             .filter(deck => deck !== null);
 
-        // build the complete user object
-        const completeUser: IUser = {
+        // build the user object for IProfileResponse
+        const profileUser: IUser = {
             id: user.id,
             firstName: user.firstName,
             lastName: user.lastName,
+            username: user.username,
             email: user.email,
             password: user.password,
             details: userDetails || {
                 id: user.details,
+                userId: user.id,
                 aboutMe: '',
                 createdAt: user.createdAt,
                 updatedAt: user.updatedAt,
             },
-            following: populatedFollowing,
-            followers: populatedFollowers,
+            following: [], // Empty for profile response
+            followers: [], // Empty for profile response
             decks: populatedDecks,
+            createdAt: user.createdAt,
+            updatedAt: user.updatedAt,
+        };
+
+        const profileUserDetails: IUserDetails = userDetails || {
+            id: user.details,
+            userId: user.id,
+            aboutMe: '',
             createdAt: user.createdAt,
             updatedAt: user.updatedAt,
         };
 
         return {
             message: 'Profile successfully retrieved',
-            user: completeUser,
+            user: profileUser,
+            userDetails: profileUserDetails,
+            decks: populatedDecks,
+            statistics: {
+                followingCount: (user.following as string[]).length,
+                followersCount: (user.followers as string[]).length,
+                decksCount: populatedDecks.length
+            }
         }
     } catch (error) {
         console.error(error);
@@ -598,9 +585,9 @@ export async function settings(
 
         // validate email uniqueness if email is being updated
         if (email && email !== user.email) {
-            const existingUserWithEmail = db.users.find(u => u.email === email && u.id !== id);
-            if (existingUserWithEmail) {
-                throw new Error('A user with this email already exists');
+            const existingUser = db.users.find(u => u.email === email && u.id !== id);
+            if (existingUser) {
+                throw new Error('Email already taken');
             }
         }
 
@@ -609,8 +596,9 @@ export async function settings(
         const updatedLastName = lastName !== undefined ? lastName.trim() : user.lastName;
         const updatedEmail = email !== undefined ? email.trim() : user.email;
         const updatedAboutMe = aboutMe !== undefined ? aboutMe.trim() : userDetails.aboutMe;
+        
         if (!updatedFirstName || !updatedLastName || !updatedEmail) {
-            throw new Error('First name, last name, and email are required');
+            throw new Error('Required fields cannot be empty');
         }
 
          // update user information
@@ -623,50 +611,12 @@ export async function settings(
         if (aboutMe !== undefined) userDetails.aboutMe = updatedAboutMe;
         userDetails.updatedAt = new Date();
 
-         // helper function to create a simplified user object (to avoid circular references)
-        const createSimplifiedUser = (userId: string): IUser | null => {
-            const u = db.users.find(user => user.id === userId);
-            if (!u) return null;
-
-            const uDetails = db.userDetails.find(details => details.id === u.details);
-            
-            return {
-                id: u.id,
-                firstName: u.firstName,
-                lastName: u.lastName,
-                email: u.email,
-                password: u.password,
-                details: uDetails || {
-                    id: u.details,
-                    aboutMe: '',
-                    createdAt: u.createdAt,
-                    updatedAt: u.updatedAt,
-                },
-                following: [], // Empty to avoid circular references
-                followers: [], // Empty to avoid circular references
-                decks: [], // Empty to avoid circular references  
-                createdAt: u.createdAt,
-                updatedAt: u.updatedAt,
-            };
-        };
-
-        // populate following list with simplified user objects
-        const populatedFollowing = user.following
-            .map(followingId => createSimplifiedUser(followingId))
-            .filter((u): u is IUser => u !== null);
-
-        // populate followers list with simplified user objects
-        const populatedFollowers = user.followers
-            .map(followerId => createSimplifiedUser(followerId))
-            .filter((u): u is IUser => u !== null);
-
         // populate decks list with full deck objects
         const populatedDecks = (user.decks as string[])
             .map(deckId => {
                 const deck = db.decks.find(d => d.id === deckId);
                 if (!deck) return null;
 
-                // Enrich deck with categories and cards
                 const populatedCategories = deck.categories
                     .map(categoryId => db.categories.find(category => category.id === categoryId)?.name)
                     .filter(category => category !== undefined);
@@ -688,11 +638,12 @@ export async function settings(
             id: user.id,
             firstName: user.firstName,
             lastName: user.lastName,
+            username: user.username,
             email: user.email,
             password: user.password,
             details: userDetails,
-            following: populatedFollowing,
-            followers: populatedFollowers,
+            following: [], // Empty for settings response
+            followers: [], // Empty for settings response
             decks: populatedDecks,
             createdAt: user.createdAt,
             updatedAt: user.updatedAt,

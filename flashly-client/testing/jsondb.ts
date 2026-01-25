@@ -3,6 +3,7 @@ export const users = [
         id: 'agew2153',
         firstName: 'Nicholas',
         lastName: 'Chumney',
+        username: 'NicholasC',
         email: 'nicholas.chumney@outlook.com',
         password: 'test123',
         details: 'safv4567',
@@ -16,6 +17,7 @@ export const users = [
         id: 'bvwr4021',
         firstName: 'John',
         lastName: 'Doe',
+        username: 'JohnD',
         email: 'johndoe@gmail.com',
         password: 'jd2025',
         details: 'resf6578',
@@ -30,12 +32,14 @@ export const users = [
 export const userDetails = [
     {
         id: 'safv4567',
+        userId: 'agew2153',
         aboutMe: 'I am Nicholas!',
         createdAt: new Date(100000),
         updatedAt: new Date(100000),
     },
     {
         id: 'resf6578',
+        userId: 'bvwr4021',
         aboutMe: '',
         createdAt: new Date(145600),
         updatedAt: new Date(145600),

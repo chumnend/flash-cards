@@ -76,7 +76,7 @@ export interface IRegisterResponse {
 
 export interface ILoginResponse {
     message: string,
-    user?: {
+    user: {
         id: string,
         firstName: string,
         lastName: string,
@@ -89,6 +89,13 @@ export interface ILoginResponse {
 export interface IProfileResponse {
     message: string,
     user: IUser,
+    userDetails: IUserDetails,
+    decks: IDeck[],
+    statistics: {
+        followingCount: number,
+        followersCount: number,
+        decksCount: number
+    }
 }
 
 export interface ISettingsResponse {
@@ -106,6 +113,18 @@ export interface IFollowResponse {
 
 export interface IUnfollowResponse {
     message: string,
+}
+
+export interface IGetFollowers {
+    message: string,
+    followers: IUser[],
+    count: number
+}
+
+export interface IGetFollowing {
+    message: string,
+    followers: IUser[],
+    count: number
 }
 
 // ====================== DECKS ====================================
@@ -135,11 +154,37 @@ export interface INewDeckResponse {
     deck: IDeck,
 }
 
+export interface IUpdateDeckResponse {
+    message: string,
+    deck: IDeck,
+}
+
 export interface IDeleteDeckResponse {
     message: string,
 }
 
 //  ====================== CARDS ====================================
+
+export interface IGetCardsResponse {
+    message: string,
+    cards: ICard[],
+    deck_info: {
+        id: string,
+        name: string,
+        card_count: number
+    }
+}
+
+export interface IGetCardResponse {
+    message: string,
+    cards: ICard,
+    deck_info: {
+        id: string,
+        name: string,
+        card_count: number
+    }
+}
+
 
 export interface INewCardResponse {
     message: string,
