@@ -170,8 +170,59 @@ def get_profile(request: Request):
         }
 
     return {
-        "message": f"/users/{user_id} route hit",
-        "profile": profile,
+        "message": "Profile loaded successfully",
+        "user": {
+            "id": profile["id"],
+            "firstName": profile["first_name"],
+            "lastName": profile["last_name"],
+            "username": profile["username"],
+            "email": profile["email"],
+            "createdAt": profile["created_at"],
+            "updatedAt": profile["updated_at"]
+        },
+        "userDetails": {
+            "aboutMe": profile["about_me"]
+        },
+        "decks": [
+            {
+                "id": deck["id"],
+                "name": deck["name"],
+                "description": deck["description"],
+                "publishStatus": deck["publish_status"],
+                "rating": deck["rating"],
+                "createdAt": deck["created_at"],
+                "updatedAt": deck["updated_at"],
+                "cardsCount": len(deck["cards"]),
+                "cards": [
+                    {
+                        "id": card["id"],
+                        "frontText": card["front_text"],
+                        "backText": card["back_text"],
+                        "difficulty": card["difficulty"],
+                        "timesReviewed": card["times_reviewed"],
+                        "successRate": card["success_rate"],
+                        "createdAt": card["created_at"],
+                        "updatedAt": card["updated_at"]
+                    }
+                    for card in deck["cards"]
+                ],
+                "categories": [
+                    {
+                        "id": category["id"],
+                        "name": category["name"],
+                        "createdAt": category["created_at"],
+                        "updatedAt": category["updated_at"]
+                    }
+                    for category in deck["categories"]
+                ]
+            }
+            for deck in profile["decks"]
+        ],
+        "statistics": {
+            "followingCount": profile["following_count"],
+            "followersCount": profile["followers_count"],
+            "decksCount": len(profile["decks"])
+        }
     }
 
 
@@ -210,7 +261,7 @@ def update_user(request: Request):
                 return {"error": "User not found"}
 
             user = UserModel(
-                id=UUID(record[0]),
+                id=uuid.UUID(record[0]),
                 first_name=record[1],
                 last_name=record[2],
                 username=record[3],
@@ -334,7 +385,7 @@ def change_password(request: Request):
             return {"error": "User not found"}
 
         user = UserModel(
-            id=UUID(record[0]),
+            id=uuid.UUID(record[0]),
             first_name=record[1],
             last_name=record[2],
             username=record[3],
