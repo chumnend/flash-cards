@@ -1,4 +1,4 @@
-import type { IRegisterResponse } from "./types";
+import type { ILoginResponse, IRegisterResponse } from "./types";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
 
@@ -33,6 +33,39 @@ export async function register(
     });
     if (!response.ok) {
         throw new Error('Registration failed');
+    }
+
+    const data = await response.json();
+    return {
+        message: data.message,
+        user: data.user ? {
+            id: data.user.id,
+            firstName: data.user.firstName,
+            lastName: data.user.lastName,
+            username: data.user.username,
+            email: data.user.email,
+        } : null,
+        token: data.token || null,
+    }
+}
+
+
+export async function login(
+    email: string,
+    password: string,
+): Promise<ILoginResponse> {
+    const response = await fetch(`${API_BASE_URL}/register`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            email,
+            password
+        })
+    });
+    if (!response.ok) {
+        throw new Error('Login failed');
     }
 
     const data = await response.json();
