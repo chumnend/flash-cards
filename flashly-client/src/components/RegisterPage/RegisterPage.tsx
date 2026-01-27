@@ -11,6 +11,7 @@ const RegisterPage = () => {
   const [formData, setFormData] = useState<{[key: string]: string}>({
     firstName: '',
     lastName: '',
+    username: '',
     email: '',
     password: '',
     confirmPassword: ''
@@ -43,6 +44,10 @@ const RegisterPage = () => {
 
     if (!formData.lastName.trim()) {
       newErrors.lastName = 'Last name is required';
+    }
+
+    if (!formData.username.trim()) {
+      newErrors.username = 'Username is required';
     }
 
     if (!formData.email.trim()) {
@@ -78,7 +83,13 @@ const RegisterPage = () => {
     setIsLoading(true);
     
     try {
-      const data = await api.register(formData.firstName, formData.lastName, formData.email, formData.password);
+      const data = await api.register(
+        formData.firstName,
+        formData.lastName,
+        formData.username,
+        formData.email,
+        formData.password
+      );
   
       if (data.user && data.token) {
         handleRegister(data.user.id, data.user.username, data.user.email, data.token);
@@ -90,6 +101,7 @@ const RegisterPage = () => {
       setFormData({
         firstName: '',
         lastName: '',
+        username: '',
         email: '',
         password: '',
         confirmPassword: ''
@@ -147,6 +159,20 @@ const RegisterPage = () => {
               />
               {errors.lastName && <span className="error-message">{errors.lastName}</span>}
             </div>
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="username">Username</label>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              value={formData.username}
+              onChange={handleChange}
+              className={errors.username ? 'error' : ''}
+              placeholder="Choose a username"
+            />
+            {errors.username && <span className="error-message">{errors.username}</span>}
           </div>
           
           <div className="form-group">
