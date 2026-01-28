@@ -1,4 +1,4 @@
-import type { ILoginResponse, IRegisterResponse } from "./types";
+import type { ILoginResponse, IProfileResponse, IRegisterResponse } from "./types";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
 
@@ -54,7 +54,7 @@ export async function login(
     email: string,
     password: string,
 ): Promise<ILoginResponse> {
-    const response = await fetch(`${API_BASE_URL}/register`, {
+    const response = await fetch(`${API_BASE_URL}/login`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -79,5 +79,29 @@ export async function login(
             email: data.user.email,
         } : null,
         token: data.token || null,
+    }
+}
+
+
+export async function profile(
+    id: string
+): Promise<IProfileResponse> {
+    const response = await fetch(`${API_BASE_URL}/users/${id}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    });
+    if (!response.ok) {
+        throw new Error('Login failed');
+    }
+
+    const data = await response.json();
+    return {
+        message: data.message,
+        user: data.user,
+        userDetails: data.userDetails,
+        decks: data.decks,
+        statistics: data.statistics,
     }
 }
