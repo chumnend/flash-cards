@@ -3,7 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 
 import Loader from '../Loader'
 import Modal from '../Modal/Modal';
-import * as api from '../../../testing/api';
+import * as api from '../../helpers/api';
+import { useAuthContext } from '../../helpers/context';
 import type { ICard, IDeck } from '../../helpers/types';
 
 import './DeckManagerPage.css';
@@ -24,6 +25,7 @@ const DeckManagerPage = () => {
     const [isCardDeleteModalOpen, setIsCardDeleteModalOpen] = useState<boolean>(false);
     const [cardToDelete, setCardToDelete] = useState<string | null>(null);
     const [isCardDeleting, setIsCardDeleting] = useState<boolean>(false);
+    const { authUser } = useAuthContext();
     const params = useParams();
     const navigate = useNavigate();
 
@@ -103,15 +105,18 @@ const DeckManagerPage = () => {
         setIsCardFormSubmitting(true);
 
         try {
+            if (!authUser?.token) {
+                throw new Error('Authentication required');
+            }
             if (editingCardId) {
-                const data = await api.modifyCard(editingCardId, cardFormData.frontText, cardFormData.backText);
+                const data = await api.modifyCard(deck!.id, editingCardId, cardFormData.frontText, cardFormData.backText, authUser.token);
                 setCards(prev => prev.map(card => 
                     card.id === editingCardId ? data.card : card
                 ));
                 clearCardFormData();
                 setIsCardModalOpen(false);
             } else {
-                const data = await api.newCard(cardFormData.frontText, cardFormData.backText, deck!.id);
+                const data = await api.newCard(cardFormData.frontText, cardFormData.backText, deck!.id, authUser.token);
                 clearCardFormData();
                 setCards(prev => [...prev, data.card]);
                 setIsCardModalOpen(false);
@@ -128,7 +133,10 @@ const DeckManagerPage = () => {
 
         setIsDeckDeleting(true);
         try {
-            await api.deleteDeck(deck.id);
+            if (!authUser?.token) {
+                throw new Error('Authentication required');
+            }
+            await api.deleteDeck(deck.id, authUser.token);
             // Navigate back to decks page after successful deletion
             navigate('/decks');
         } catch (error) {
@@ -148,7 +156,10 @@ const DeckManagerPage = () => {
 
         setIsCardDeleting(true);
         try {
-            await api.deleteCard(cardToDelete);
+            if (!authUser?.token || !deck) {
+                throw new Error('Authentication required');
+            }
+            await api.deleteCard(deck.id, cardToDelete, authUser.token);
             setCards(prev => prev.filter(card => card.id !== cardToDelete));
         } catch (error) {
             console.error('Unable to delete card', error);

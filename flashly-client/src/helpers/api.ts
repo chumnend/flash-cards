@@ -105,7 +105,7 @@ export async function login(
 }
 
 
-export async function getUserProfile(
+export async function profile(
     id: string
 ): Promise<IProfileResponse> {
     const response = await fetch(`${API_BASE_URL}/users/${id}`, {
@@ -128,7 +128,7 @@ export async function getUserProfile(
     }
 }
 
-export async function updateUser(
+export async function settings(
     id: string,
     token: string,
     firstName?: string,

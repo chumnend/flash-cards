@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import DeckList from '../DeckList';
 import Loader from '../Loader';
 import Modal from '../Modal';
-import * as api from '../../../testing/api';
+import * as api from '../../helpers/api';
 import { useAuthContext } from '../../helpers/context';
 import type { IDeck } from '../../helpers/types';
 
@@ -70,7 +70,10 @@ const DecksPage = () => {
         setIsFormSubmitting(true);
 
         try {
-            const data = await api.newDeck(formData.name, formData.description);
+            if (!authUser?.token) {
+                throw new Error('Authentication required');
+            }
+            const data = await api.newDeck(formData.name, formData.description, authUser.token);
             navigate(`/decks/${data.deck.id}/manage`);
         } catch (error) {
             console.error('New deck submission failed', error);

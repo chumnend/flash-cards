@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import Loader from '../Loader';
-import * as api from '../../../testing/api';
+import * as api from '../../helpers/api';
 import type { IUser } from '../../helpers/types';
 import { useAuthContext } from '../../helpers/context';
 
@@ -10,7 +10,6 @@ import './SettingsPage.css';
 
 const SettingsPage = () => {
     const [isLoading, setIsLoading] = useState(true);
-    const [user, setUser] = useState<IUser | null>(null);
     const [following, setFollowing] = useState<IUser[]>([]);
     const [infoForm, setInfoForm] = useState({
         firstName: '',
@@ -35,7 +34,6 @@ const SettingsPage = () => {
                     return;
                 }
                 const data = await api.profile(authUser.id);
-                setUser(data.user);
                 setFollowing(data.user.following);
                 setInfoForm({
                     firstName: data.user.firstName,
@@ -59,7 +57,7 @@ const SettingsPage = () => {
         setIsLoading(true)
 
         try {
-            await api.unfollow(authUser.id, id);
+            await api.unfollow(id, authUser.token);
             setFollowing(prev => prev.filter(user => user.id !== id));
         } catch (error) {
             console.error(error)
@@ -76,6 +74,7 @@ const SettingsPage = () => {
         try {
             await api.settings(
                 authUser!.id,
+                authUser!.token,
                 infoForm.firstName,
                 infoForm.lastName,
                 infoForm.email,
@@ -98,7 +97,7 @@ const SettingsPage = () => {
         setIsLoading(true)
 
         try {
-            await api.changePassword(user!.id, passwordForm.newPassword);
+            await api.changePassword(passwordForm.newPassword, authUser!.token);
         } catch (error) {
             console.error(error)
         } finally {

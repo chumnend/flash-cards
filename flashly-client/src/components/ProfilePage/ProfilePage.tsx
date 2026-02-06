@@ -3,7 +3,7 @@ import { useNavigate, useParams, Link } from 'react-router-dom';
 
 import Loader from '../Loader';
 import DeckList from '../DeckList';
-import * as api from '../../../testing/api';
+import * as api from '../../helpers/api';
 import type { IUser } from '../../helpers/types';
 import { useAuthContext } from '../../helpers/context';
 
@@ -49,7 +49,7 @@ const ProfilePage = () => {
 
     try {
       if (isFollowing) {
-        await api.unfollow(authUser.id, user.id);
+        await api.unfollow(user.id, authUser.token);
         setIsFollowing(false);
         // Update local list of followerss
         setUser(prev => prev ? {
@@ -57,7 +57,7 @@ const ProfilePage = () => {
           followers: prev.followers.filter(follower => follower.id !== authUser.id)
         } : null);
       } else {
-        await api.follow(authUser.id, user.id);
+        await api.follow(user.id, authUser.token);
         setIsFollowing(true);
         // Update local list of followers
         const followerUser = {
