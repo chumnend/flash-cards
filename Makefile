@@ -1,6 +1,6 @@
 # Pyramid backend
 server-dev:
-	@python run.py --host=0.0.0.0 --port=8080 --reload
+	@python run.py --host=0.0.0.0 --port=6543 --reload
 
 test:
 	@pytest
@@ -14,7 +14,7 @@ dev-all:
 	@concurrently \
     	--names "BACKEND,FRONTEND" \
 		--prefix-colors "blue,green" \
-		"python run.py --host=0.0.0.0 --port=8080 --reload" \
+		"python run.py --host=0.0.0.0 --port=6543 --reload" \
 		"cd flashly-client && yarn dev"
 
 # Manage database

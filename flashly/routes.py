@@ -1,23 +1,4 @@
-def add_cors_headers_response_callback(event):
-    def cors_headers(request, response):
-        response.headers.update({
-            'Access-Control-Allow-Origin': 'http://localhost:5173',
-            'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-            'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-            'Access-Control-Allow-Credentials': 'true'
-        })
-    event.request.add_response_callback(cors_headers)
-
-
 def includeme(config):
-    config.add_subscriber(add_cors_headers_response_callback, 'pyramid.events.NewRequest')
-
-    config.add_view(
-        lambda request: request.response,
-        request_method='OPTIONS',
-        permission='__no_permission_required__'
-    )
-
     config.add_route("hello", "/")
 
     # User Routes

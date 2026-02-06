@@ -22,7 +22,7 @@ import type {
     IGetFollowing
 } from "./types";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:6543';
 
 export async function hello(): Promise<{ message: string}> {
     const response = await fetch(`${API_BASE_URL}`);
