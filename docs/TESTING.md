@@ -4,7 +4,7 @@
 
 ## Test POST /register
 
-curl -X POST http://localhost:8080/register \
+curl -X POST http://localhost:6543/api/register \
   -H "Content-Type: application/json" \
   -d '{
     "firstName": "John",
@@ -16,7 +16,7 @@ curl -X POST http://localhost:8080/register \
 
 ## Test POST /login
 
-curl -X POST http://localhost:8080/login \
+curl -X POST http://localhost:6543/api/login \
   -H "Content-Type: application/json" \
   -d '{
     "email": "john.doe@example.com",
@@ -25,18 +25,18 @@ curl -X POST http://localhost:8080/login \
 
 ## Test POST /logout
 
-curl -X POST http://localhost:8080/logout \
+curl -X POST http://localhost:6543/api/logout \
   -H "Content-Type: application/json"
 
 ## Test GET /users/{user_id}
 
-curl -X GET http://localhost:8080/users/{user_id} \
+curl -X GET http://localhost:6543/api/users/{user_id} \
   -H "Content-Type: application/json" \
   -H "Accept: application/json"
 
 ## Test PUT /users/{user_id}
 
-curl -X PUT http://localhost:8080/users/{user_id}?token={user_id} \
+curl -X PUT http://localhost:6543/api/users/{user_id}?token={user_id} \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
   -d '{
@@ -49,7 +49,7 @@ curl -X PUT http://localhost:8080/users/{user_id}?token={user_id} \
 
 ## Test PUT /change_password
 
-curl -X PUT http://localhost:8080/change_password?token={user_id} \
+curl -X PUT http://localhost:6543/api/change_password?token={user_id} \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
   -d '{
@@ -59,25 +59,25 @@ curl -X PUT http://localhost:8080/change_password?token={user_id} \
 
 ## Test POST /users/{user_id}/follow
 
-curl -X POST http://localhost:8080/users/{user_to_follow_id}/follow?token={current_user_id} \
+curl -X POST http://localhost:6543/api/users/{user_to_follow_id}/follow?token={current_user_id} \
   -H "Content-Type: application/json" \
   -H "Accept: application/json"
 
 ## Test DELETE /users/{user_id}/unfollow
 
-curl -X DELETE http://localhost:8080/users/{user_to_unfollow_id}/unfollow?token={current_user_id} \
+curl -X DELETE http://localhost:6543/api/users/{user_to_unfollow_id}/unfollow?token={current_user_id} \
   -H "Content-Type: application/json" \
   -H "Accept: application/json"
 
 ## Test GET /users/{user_id}/followers
 
-curl -X GET http://localhost:8080/users/{user_id}/followers \
+curl -X GET http://localhost:6543/api/users/{user_id}/followers \
   -H "Content-Type: application/json" \
   -H "Accept: application/json"
 
 ## Test GET /users/{user_id}/following
 
-curl -X GET http://localhost:8080/users/{user_id}/following \
+curl -X GET http://localhost:6543/api/users/{user_id}/following \
   -H "Content-Type: application/json" \
   -H "Accept: application/json"
 
@@ -85,25 +85,25 @@ curl -X GET http://localhost:8080/users/{user_id}/following \
 
 ## Test GET /explore
 
-curl -X GET http://localhost:8080/decks/explore \
+curl -X GET http://localhost:6543/api/decks/explore \
   -H "Content-Type: application/json" \
   -H "Accept: application/json"
 
 ## Test GET /decks/feed
 
-curl -X GET http://localhost:8080/decks/feed?token={user_id} \
+curl -X GET http://localhost:6543/api/decks/feed?token={user_id} \
   -H "Content-Type: application/json" \
   -H "Accept: application/json"
 
 ## Test GET /decks
 
-curl -X GET http://localhost:8080/decks?token={user_id} \
+curl -X GET http://localhost:6543/api/decks?token={user_id} \
   -H "Content-Type: application/json" \
   -H "Accept: application/json"
 
 ## Test POST /decks
 
-curl -X POST http://localhost:8080/decks?token={user_id} \
+curl -X POST http://localhost:6543/api/decks?token={user_id} \
   -H "Content-Type: application/json" \
   -H "Accept: application/json"
   -d '{
@@ -114,13 +114,13 @@ curl -X POST http://localhost:8080/decks?token={user_id} \
 
 ## GET /decks/{deck_id}
 
-curl -X GET http://localhost:8080/decks/{deck_id} \
+curl -X GET http://localhost:6543/api/decks/{deck_id} \
   -H "Content-Type: application/json" \
   -H "Accept: application/json"
 
 ## Test PUT /decks/{deck_id}
 
-curl -X PUT http://localhost:8080/decks/{deck_id}?token={user_id} \
+curl -X PUT http://localhost:6543/api/decks/{deck_id}?token={user_id} \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
   -d '{
@@ -131,7 +131,7 @@ curl -X PUT http://localhost:8080/decks/{deck_id}?token={user_id} \
 
 ## Test DELETE /decks/{deck_id}
 
-curl -X DELETE http://localhost:8080/decks/{deck_id}?token={user_id} \
+curl -X DELETE http://localhost:6543/api/decks/{deck_id}?token={user_id} \
   -H "Content-Type: application/json" \
   -H "Accept: application/json"
 
@@ -139,19 +139,19 @@ curl -X DELETE http://localhost:8080/decks/{deck_id}?token={user_id} \
 
 ## Test GET /decks/{deck_id}/cards (public deck)
 
-curl -X GET http://localhost:8080/decks/{deck_id}/cards \
+curl -X GET http://localhost:6543/api/decks/{deck_id}/cards \
   -H "Content-Type: application/json" \
   -H "Accept: application/json"
 
 ## Test GET /decks/{deck_id}/cards (private deck - with token)
 
-curl -X GET http://localhost:8080/decks/{deck_id}/cards?token={user_id} \
+curl -X GET http://localhost:6543/api/decks/{deck_id}/cards?token={user_id} \
   -H "Content-Type: application/json" \
   -H "Accept: application/json"
 
 ## Test POST /decks/{deck_id}/cards
 
-curl -X POST http://localhost:8080/decks/{deck_id}/cards?token={user_id} \
+curl -X POST http://localhost:6543/api/decks/{deck_id}/cards?token={user_id} \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
   -d '{
@@ -161,13 +161,13 @@ curl -X POST http://localhost:8080/decks/{deck_id}/cards?token={user_id} \
 
 ## Test GET /decks/{deck_id}/cards/{card_id}
 
-curl -X GET http://localhost:8080/decks/{deck_id}/cards/{card_id} \
+curl -X GET http://localhost:6543/api/decks/{deck_id}/cards/{card_id} \
   -H "Content-Type: application/json" \
   -H "Accept: application/json"
 
 ## Test PUT /decks/{deck_id}/cards/{card_id}
 
-curl -X PUT http://localhost:8080/decks/{deck_id}/cards/{card_id}?token={user_id} \
+curl -X PUT http://localhost:6543/api/decks/{deck_id}/cards/{card_id}?token={user_id} \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
   -d '{
@@ -177,6 +177,6 @@ curl -X PUT http://localhost:8080/decks/{deck_id}/cards/{card_id}?token={user_id
 
 ## Test DELETE /decks/{deck_id}/cards/{card_id}
 
-curl -X DELETE http://localhost:8080/decks/{deck_id}/cards/{card_id}?token={user_id} \
+curl -X DELETE http://localhost:6543/api/decks/{deck_id}/cards/{card_id}?token={user_id} \
   -H "Content-Type: application/json" \
   -H "Accept: application/json"

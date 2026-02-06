@@ -22,10 +22,10 @@ import type {
     IGetFollowing
 } from "./types";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:6543';
+const API_BASE_URL = '/api';
 
 export async function hello(): Promise<{ message: string}> {
-    const response = await fetch(`${API_BASE_URL}`);
+    const response = await fetch(`${API_BASE_URL}/`);
     if (!response.ok) {
         throw new Error('Something went wrong!')
     }

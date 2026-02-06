@@ -64,9 +64,16 @@ const ProfilePage = () => {
           id: authUser.id,
           firstName: authUser.name.split(' ')[0],
           lastName: authUser.name.split(' ')[1] || '',
+          username: authUser.email, // Using email as username fallback
           email: authUser.email,
           password: '',
-          details: { id: '', aboutMe: '', createdAt: new Date(), updatedAt: new Date() },
+          details: { 
+            id: '', 
+            userId: authUser.id, 
+            aboutMe: '', 
+            createdAt: new Date(), 
+            updatedAt: new Date() 
+          },
           following: [],
           followers: [],
           decks: [],
