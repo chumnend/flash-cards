@@ -1,0 +1,66 @@
+[tool.poetry]
+name = "flashly"
+version = "0.0.0"
+description = ""
+authors = ["Nicholas Chumney <nicholas.chumney@outlook.com>"]
+readme = "README.md"
+packages = [{include = "flashly"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+waitress = "^3.0.2"
+pyramid = "^2.0.2"
+psycopg2-binary = "^2.9.10"
+python-dotenv = "^1.1.1"
+bcrypt = "^5.0.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.4.2"
+pytest-cov = "^0.15.0"
+black = "^24.0.0"
+flake8 = "^7.0.0"
+mypy = "^1.0.0"
+webtest = "^3.0.6"
+
+[tool.poetry.plugins."paste.app_factory"]
+main = "flashly:main"
+
+[tool.black]
+line-length = 120
+target-version = ['py310']
+include = '\.pyi?$'
+extend-exclude = '''
+# A regex preceded by ^/ will apply only to files and directories in the root of the project.
+(
+  ^/migrations/.*\.py$
+  | __pycache__
+  | \.git
+  | \.mypy_cache
+  | \.pytest_cache
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+)
+'''
+
+[tool.flake8]
+max-line-length = 120
+extend-ignore = ["E203", "W503"]
+exclude = [
+    "__pycache__",
+    ".git",
+    ".mypy_cache",
+    ".pytest_cache",
+    ".venv",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "migrations"
+]
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
