@@ -38,7 +38,7 @@ class DeckModel:
         with db_conn.cursor() as cur:
             cur.execute(
                 """
-                UPDATE decks 
+                UPDATE decks
                 SET name = %s, description = %s, publish_status = %s, updated_at = %s
                 WHERE id = %s
                 """,

@@ -40,7 +40,7 @@ class CardModel:
         with db_conn.cursor() as cur:
             cur.execute(
                 """
-                UPDATE cards 
+                UPDATE cards
                 SET front_text = %s, back_text = %s, difficulty = %s, times_reviewed = %s, success_rate = %s, updated_at = %s
                 WHERE id = %s
                 """,

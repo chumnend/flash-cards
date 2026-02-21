@@ -38,7 +38,7 @@ class UserModel:
         with db_conn.cursor() as cur:
             cur.execute(
                 """
-                INSERT INTO users (id, first_name, last_name, username, email, password_hash) 
+                INSERT INTO users (id, first_name, last_name, username, email, password_hash)
                    VALUES (%s, %s, %s, %s, %s, %s)
                 """,
                 (
@@ -100,29 +100,29 @@ class UserModel:
             # Single comprehensive query to get all user profile data
             cur.execute(
                 """
-                SELECT 
+                SELECT
                     u.id, u.first_name, u.last_name, u.username, u.email, u.created_at, u.updated_at,
                     ud.about_me,
                     COALESCE(following.following_count, 0) as following_count,
                     COALESCE(followers.followers_count, 0) as followers_count,
-                    d.id as deck_id, d.name as deck_name, d.description as deck_description, 
-                    d.publish_status, d.rating as deck_rating, d.created_at as deck_created_at, 
+                    d.id as deck_id, d.name as deck_name, d.description as deck_description,
+                    d.publish_status, d.rating as deck_rating, d.created_at as deck_created_at,
                     d.updated_at as deck_updated_at,
-                    c.id as card_id, c.front_text, c.back_text, c.difficulty, c.times_reviewed, 
-                    c.success_rate as card_success_rate, c.created_at as card_created_at, 
+                    c.id as card_id, c.front_text, c.back_text, c.difficulty, c.times_reviewed,
+                    c.success_rate as card_success_rate, c.created_at as card_created_at,
                     c.updated_at as card_updated_at,
-                    cat.id as category_id, cat.name as category_name, 
+                    cat.id as category_id, cat.name as category_name,
                     cat.created_at as category_created_at, cat.updated_at as category_updated_at
                 FROM users u
                 LEFT JOIN user_details ud ON u.id = ud.user_id
                 LEFT JOIN (
-                    SELECT follower_id, COUNT(*) as following_count 
-                    FROM followers 
+                    SELECT follower_id, COUNT(*) as following_count
+                    FROM followers
                     GROUP BY follower_id
                 ) following ON u.id = following.follower_id
                 LEFT JOIN (
-                    SELECT following_id, COUNT(*) as followers_count 
-                    FROM followers 
+                    SELECT following_id, COUNT(*) as followers_count
+                    FROM followers
                     GROUP BY following_id
                 ) followers ON u.id = followers.following_id
                 LEFT JOIN decks d ON u.id = d.owner_id

@@ -299,7 +299,7 @@ def update_user(request: Request):
         with db_conn.cursor() as cur:
             cur.execute(
                 """
-                UPDATE users 
+                UPDATE users
                 SET first_name = %s, last_name = %s, username = %s, email = %s, updated_at = %s
                 WHERE id = %s
                 """,
@@ -311,14 +311,12 @@ def update_user(request: Request):
             with db_conn.cursor() as cur:
                 cur.execute(
                     """
-                    UPDATE user_details 
+                    UPDATE user_details
                     SET about_me = %s, updated_at = %s
                     WHERE user_id = %s
                     """,
                     (about_me, datetime.now(), user_id),
                 )
-
-        db_conn.commit()
 
         return {
             "message": "Profile updated successfully",
@@ -331,17 +329,6 @@ def update_user(request: Request):
             },
         }
 
-    except Exception as e:
-        print(f"Error updating user: {e}")
-        request.response.status_code = 500
-        return {"error": "Failed to update profile"}
-
-
-@view_config(route_name="change_password", request_method="PUT", renderer="json")
-def change_password(request: Request):
-    # Get JSON request
-    try:
-        data = request.json_body
     except (ValueError, UnicodeDecodeError):
         request.response.status_code = 400
         return {"error": "Invalid JSON"}
@@ -406,7 +393,7 @@ def change_password(request: Request):
         with db_conn.cursor() as cur:
             cur.execute(
                 """
-                UPDATE users 
+                UPDATE users
                 SET password_hash = %s, updated_at = %s
                 WHERE id = %s
                 """,
