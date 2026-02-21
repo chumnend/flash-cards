@@ -178,11 +178,9 @@ def get_profile(request: Request):
             "username": profile["username"],
             "email": profile["email"],
             "createdAt": profile["created_at"],
-            "updatedAt": profile["updated_at"]
+            "updatedAt": profile["updated_at"],
         },
-        "userDetails": {
-            "aboutMe": profile["about_me"]
-        },
+        "userDetails": {"aboutMe": profile["about_me"]},
         "decks": [
             {
                 "id": deck["id"],
@@ -202,7 +200,7 @@ def get_profile(request: Request):
                         "timesReviewed": card["times_reviewed"],
                         "successRate": card["success_rate"],
                         "createdAt": card["created_at"],
-                        "updatedAt": card["updated_at"]
+                        "updatedAt": card["updated_at"],
                     }
                     for card in deck["cards"]
                 ],
@@ -211,18 +209,18 @@ def get_profile(request: Request):
                         "id": category["id"],
                         "name": category["name"],
                         "createdAt": category["created_at"],
-                        "updatedAt": category["updated_at"]
+                        "updatedAt": category["updated_at"],
                     }
                     for category in deck["categories"]
-                ]
+                ],
             }
             for deck in profile["decks"]
         ],
         "statistics": {
             "followingCount": profile["following_count"],
             "followersCount": profile["followers_count"],
-            "decksCount": len(profile["decks"])
-        }
+            "decksCount": len(profile["decks"]),
+        },
     }
 
 

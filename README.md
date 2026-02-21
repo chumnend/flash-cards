@@ -14,11 +14,17 @@ TBD
 
 1) Install Python 3.7 or newer.
 
+2) Setup Postgres database to connect to.
+
 2) Create a virtual environment: `python3 -m venv venv`
 
 3) Activate the virtual environment: `source venv/bin/activate` (on Linux/macOS)
 
 4) Install the project dependencies: `poetry install`
+
+5) Copy example environment file and enter values: `cp .env.example .env`
+
+6) Initialize the database tables: `make migrate`
 
 5) Run the application in development mode: `make dev`
 
