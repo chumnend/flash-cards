@@ -1,6 +1,6 @@
 def includeme(config):
     # API Routes with /api prefix
-    config.add_route("hello", "/api/")
+    config.add_route("status", "/status")
 
     # User Routes
     config.add_route("register", "/api/register", request_method="POST")

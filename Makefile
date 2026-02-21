@@ -1,4 +1,4 @@
-.PHONY: help install install-dev dev prod test clean migrate check fix
+.PHONY: help install install-dev dev test clean migrate check fix
 
 # Default target
 help:
