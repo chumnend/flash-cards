@@ -28,10 +28,6 @@ def main(global_config=None, **settings):
     settings.update(env_vars)
 
     with Configurator(settings=settings) as config:
-        # Add static views for React build files
-        config.add_static_view('static', 'flashly:client/dist', cache_max_age=3600)
-        config.add_static_view('assets', 'flashly:client/dist/assets', cache_max_age=31536000)  # 1 year cache for assets
-        
         config.include(".routes")
         config.include(".models")
         config.scan()

@@ -1,24 +1,18 @@
-.PHONY: help install install-dev install-client build dev prod test test-backend test-frontend clean migrate createdb dropdb format format-check lint type-check check fix
+.PHONY: help install install-dev dev prod test clean migrate createdb dropdb format format-check lint type-check check fix
 
 # Default target
 help:
 	@echo "Available commands:"
 	@echo "  Development:"
-	@echo "    install        - Install Python dependencies"
-	@echo "    install-dev    - Install Python dev dependencies"
-	@echo "    install-client - Install client dependencies"
-	@echo "    dev           - Run development servers (React + Python)"
-	@echo "    dev-backend   - Run backend development server only"
-	@echo "    dev-client    - Run client development server only"
+	@echo "    install       - Install Python dependencies"
+	@echo "    install-dev   - Install Python dev dependencies"
+	@echo "    dev          - Run development server"
 	@echo ""
 	@echo "  Production:"
-	@echo "    build         - Build client for production"
-	@echo "    prod          - Build client and start production server"
+	@echo "    prod         - Start production server"
 	@echo ""
 	@echo "  Testing:"
-	@echo "    test          - Run all tests"
-	@echo "    test-backend  - Run backend tests only"
-	@echo "    test-frontend - Run frontend tests only"
+	@echo "    test         - Run backend tests"
 	@echo ""
 	@echo "  Database:"
 	@echo "    migrate       - Drop and recreate database"
@@ -45,46 +39,20 @@ install-dev:
 	@echo "Installing Python dev dependencies..."
 	@poetry install --with dev
 
-install-client:
-	@echo "Installing client dependencies..."
-	@cd flashly/client && npm install
-
 # Development
-dev: install-client
-	@echo "Starting development servers..."
-	@concurrently \
-		--names "BACKEND,FRONTEND" \
-		--prefix-colors "blue,green" \
-		"python run.py --reload" \
-		"cd flashly/client && npm run dev"
-
-dev-backend:
-	@echo "Starting backend development server..."
+dev:
+	@echo "Starting development server..."
 	@python run.py --reload
 
-dev-client: install-client
-	@echo "Starting client development server..."
-	@cd flashly/client && npm run dev
-
 # Production
-build: install-client
-	@echo "Building client for production..."
-	@cd flashly/client && npm run build
-
-prod: build
+prod:
 	@echo "Starting production server..."
 	@python run.py
 
 # Testing
-test: test-backend test-frontend
-
-test-backend:
+test:
 	@echo "Running backend tests..."
 	@pytest -v
-
-test-frontend: install-client
-	@echo "Running frontend tests..."
-	@cd flashly/client && npm test
 
 # Manage database
 migrate:
@@ -126,6 +94,4 @@ fix: format check
 clean:
 	@echo "Cleaning cache and build files..."
 	@find . -type d -name "__pycache__" -exec rm -rf {} +
-	@find . -type d -name "node_modules" -exec rm -rf {} +
 	@rm -rf .pytest_cache .coverage
-	@rm -rf flashly/client/dist flashly/client/.vite

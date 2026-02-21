@@ -29,6 +29,3 @@ def includeme(config):
     config.add_route("get_card", "/api/decks/{deck_id}/cards/{card_id}", request_method="GET")
     config.add_route("update_card", "/api/decks/{deck_id}/cards/{card_id}", request_method="PUT")
     config.add_route("delete_card", "/api/decks/{deck_id}/cards/{card_id}", request_method="DELETE")
-
-    # Catch-all route for React SPA (must be last)
-    config.add_route("spa", "/*path")
