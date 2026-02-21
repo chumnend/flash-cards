@@ -23,7 +23,7 @@ help:
 # Development
 install:
 	@echo "Installing Python dependencies..."
-	@poetry install --with-dev
+	@poetry install
 
 dev:
 	@echo "Starting development server..."
