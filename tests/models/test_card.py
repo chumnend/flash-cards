@@ -1,4 +1,3 @@
-import pytest
 import uuid
 from datetime import datetime
 from unittest.mock import Mock, patch
@@ -24,9 +23,9 @@ class TestCardModel:
     def test_save_card(self, sample_card, mock_db_conn):
         """Test saving a card to database."""
         mock_cursor = mock_db_conn.cursor.return_value.__enter__.return_value
-        
+
         sample_card.save(mock_db_conn)
-        
+
         # Verify that execute was called with correct SQL
         mock_cursor.execute.assert_called_once()
         args = mock_cursor.execute.call_args[0]
@@ -38,16 +37,16 @@ class TestCardModel:
         assert sample_card.times_reviewed in args[1]
         assert sample_card.success_rate in args[1]
         assert sample_card.deck_id in args[1]
-        
+
         # Verify commit was called
         mock_db_conn.commit.assert_called_once()
 
     def test_update_card(self, sample_card, mock_db_conn):
         """Test updating a card in database."""
         mock_cursor = mock_db_conn.cursor.return_value.__enter__.return_value
-        
+
         sample_card.update(mock_db_conn)
-        
+
         # Verify that execute was called with UPDATE SQL
         mock_cursor.execute.assert_called_once()
         args = mock_cursor.execute.call_args[0]
@@ -57,9 +56,9 @@ class TestCardModel:
     def test_delete_card(self, sample_card, mock_db_conn):
         """Test deleting a card from database."""
         mock_cursor = mock_db_conn.cursor.return_value.__enter__.return_value
-        
+
         sample_card.delete(mock_db_conn)
-        
+
         # Verify that execute was called with DELETE SQL
         mock_cursor.execute.assert_called_once()
         args = mock_cursor.execute.call_args[0]
@@ -67,27 +66,27 @@ class TestCardModel:
         assert sample_card.id in args[1]
         mock_db_conn.commit.assert_called_once()
 
-    @patch('flashly.models.card.CardModel.find_cards_by_deck_id')
+    @patch("flashly.models.card.CardModel.find_cards_by_deck_id")
     def test_find_cards_by_deck_id(self, mock_find):
         """Test finding cards by deck ID."""
         mock_db_conn = Mock()
         deck_id = uuid.uuid4()
         mock_find.return_value = [("card_data",)]
-        
+
         result = CardModel.find_cards_by_deck_id(mock_db_conn, deck_id)
-        
+
         mock_find.assert_called_once_with(mock_db_conn, deck_id)
         assert result == [("card_data",)]
 
-    @patch('flashly.models.card.CardModel.find_card_by_id')
+    @patch("flashly.models.card.CardModel.find_card_by_id")
     def test_find_card_by_id(self, mock_find):
         """Test finding card by ID."""
         mock_db_conn = Mock()
         card_id = uuid.uuid4()
         mock_find.return_value = ("card_data",)
-        
+
         result = CardModel.find_card_by_id(mock_db_conn, card_id)
-        
+
         mock_find.assert_called_once_with(mock_db_conn, card_id)
         assert result == ("card_data",)
 
@@ -102,12 +101,12 @@ class TestCardModel:
             success_rate=0.0,
             deck_id=uuid.uuid4(),
             created_at=datetime.now(),
-            updated_at=datetime.now()
+            updated_at=datetime.now(),
         )
         assert card.difficulty == "easy"
-        
+
         # Test other valid difficulties
-        for difficulty in ['medium', 'hard']:
+        for difficulty in ["medium", "hard"]:
             card.difficulty = difficulty
             assert card.difficulty == difficulty
 
@@ -122,7 +121,7 @@ class TestCardModel:
         """Test times_reviewed is non-negative."""
         sample_card.times_reviewed = 0
         assert sample_card.times_reviewed == 0
-        
+
         sample_card.times_reviewed = 10
         assert sample_card.times_reviewed == 10
 

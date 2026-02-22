@@ -54,8 +54,8 @@ fix:
 	@echo "Formatting code with Black..."
 	@poetry run black flashly/ tests/ migrations/
 	@echo "Running code quality checks..."
-	@echo "Checking code formatting with Black..."
-	@poetry run black --check flashly/ tests/ migrations/
+	@echo "Formatting with Black..."
+	@poetry run black flashly/ tests/ migrations/
 	@echo "Linting code with Flake8..."
 	@poetry run flake8 flashly/ tests/ migrations/
 	@echo "Type checking with MyPy..."

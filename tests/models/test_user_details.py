@@ -1,7 +1,5 @@
-import pytest
 import uuid
 from datetime import datetime
-from unittest.mock import Mock
 
 from flashly.models.user_details import UserDetailsModel
 
@@ -20,9 +18,9 @@ class TestUserDetailsModel:
     def test_save_user_details(self, sample_user_details, mock_db_conn):
         """Test saving user details to database."""
         mock_cursor = mock_db_conn.cursor.return_value.__enter__.return_value
-        
+
         sample_user_details.save(mock_db_conn)
-        
+
         # Verify that execute was called with correct SQL
         mock_cursor.execute.assert_called_once()
         args = mock_cursor.execute.call_args[0]
@@ -30,18 +28,14 @@ class TestUserDetailsModel:
         assert sample_user_details.id in args[1]
         assert sample_user_details.user_id in args[1]
         assert sample_user_details.about_me in args[1]
-        
+
         # Verify commit was called
         mock_db_conn.commit.assert_called_once()
 
     def test_empty_about_me(self):
         """Test user details with empty about_me."""
         user_details = UserDetailsModel(
-            id=uuid.uuid4(),
-            user_id=uuid.uuid4(),
-            about_me="",
-            created_at=datetime.now(),
-            updated_at=datetime.now()
+            id=uuid.uuid4(), user_id=uuid.uuid4(), about_me="", created_at=datetime.now(), updated_at=datetime.now()
         )
         assert user_details.about_me == ""
 
@@ -53,7 +47,7 @@ class TestUserDetailsModel:
             user_id=uuid.uuid4(),
             about_me=long_text,
             created_at=datetime.now(),
-            updated_at=datetime.now()
+            updated_at=datetime.now(),
         )
         assert user_details.about_me == long_text
 

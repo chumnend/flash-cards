@@ -1,9 +1,8 @@
 import pytest
 import uuid
 from datetime import datetime
-from unittest.mock import Mock, MagicMock
+from unittest.mock import Mock
 from pyramid.config import Configurator
-from pyramid.request import Request
 from pyramid.testing import DummyRequest
 
 from flashly.models.user import UserModel
@@ -20,7 +19,7 @@ def mock_db_conn():
     """Mock database connection for testing."""
     mock_conn = Mock()
     mock_cursor = Mock()
-    
+
     # Set up the context manager properly
     mock_context = Mock()
     mock_context.__enter__ = Mock(return_value=mock_cursor)
@@ -36,12 +35,12 @@ def sample_user():
     return UserModel(
         id=uuid.uuid4(),
         first_name="John",
-        last_name="Doe", 
+        last_name="Doe",
         username="johndoe",
         email="john@example.com",
         password_hash="hashed_password",
         created_at=datetime.now(),
-        updated_at=datetime.now()
+        updated_at=datetime.now(),
     )
 
 
@@ -54,7 +53,7 @@ def sample_user_details():
         user_id=user_id,
         about_me="I love learning!",
         created_at=datetime.now(),
-        updated_at=datetime.now()
+        updated_at=datetime.now(),
     )
 
 
@@ -70,7 +69,7 @@ def sample_card():
         success_rate=0.8,
         deck_id=uuid.uuid4(),
         created_at=datetime.now(),
-        updated_at=datetime.now()
+        updated_at=datetime.now(),
     )
 
 
@@ -85,39 +84,28 @@ def sample_deck():
         owner_id=uuid.uuid4(),
         rating=4.5,
         created_at=datetime.now(),
-        updated_at=datetime.now()
+        updated_at=datetime.now(),
     )
 
 
 @pytest.fixture
 def sample_category():
     """Create a sample category for testing."""
-    return CategoryModel(
-        id=uuid.uuid4(),
-        name="Programming",
-        created_at=datetime.now(),
-        updated_at=datetime.now()
-    )
+    return CategoryModel(id=uuid.uuid4(), name="Programming", created_at=datetime.now(), updated_at=datetime.now())
 
 
 @pytest.fixture
 def sample_follower():
     """Create a sample follower relationship for testing."""
     return FollowerModel(
-        id=uuid.uuid4(),
-        follower_id=uuid.uuid4(),
-        following_id=uuid.uuid4(),
-        created_at=datetime.now()
+        id=uuid.uuid4(), follower_id=uuid.uuid4(), following_id=uuid.uuid4(), created_at=datetime.now()
     )
 
 
 @pytest.fixture
 def sample_deck_category():
     """Create a sample deck category relationship for testing."""
-    return DeckCategoryModel(
-        deck_id=uuid.uuid4(),
-        category_id=uuid.uuid4()
-    )
+    return DeckCategoryModel(deck_id=uuid.uuid4(), category_id=uuid.uuid4())
 
 
 @pytest.fixture
@@ -128,13 +116,13 @@ def mock_request():
     request.json_body = {}
     request.params = {}
     request.matchdict = {}
-    
+
     # Set up response mock with status attributes
     mock_response = Mock()
     mock_response.status = 200
     mock_response.status_code = 200
     request.response = mock_response
-    
+
     return request
 
 
@@ -142,5 +130,5 @@ def mock_request():
 def pyramid_config():
     """Create a Pyramid configuration for testing."""
     config = Configurator()
-    config.include('pyramid_chameleon')
+    config.include("pyramid_chameleon")
     return config
