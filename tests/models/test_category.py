@@ -3,44 +3,54 @@ import uuid
 from datetime import datetime
 from unittest.mock import Mock
 
-# Note: The actual category.py file appears to have a naming issue where it uses 'DeckModel'
-# instead of 'CategoryModel'. This test file provides tests for what the CategoryModel should be.
-# TODO: Fix the category.py file to use proper naming
-
-import pytest
-import uuid
-from datetime import datetime
-from unittest.mock import Mock
-
-# Temporarily commenting out the import due to naming issue in source file
-# from flashly.models.category import CategoryModel
+from flashly.models.category import CategoryModel
 
 
 class TestCategoryModel:
     """Test cases for CategoryModel."""
-    
-    @pytest.mark.skip(reason="CategoryModel import issue - needs source file fix")
-    def test_category_model_creation(self):
+
+    def test_category_model_creation(self, sample_category):
         """Test creating a CategoryModel instance."""
-        # This test is skipped until the category.py file naming issue is resolved
-        pass
+        assert isinstance(sample_category.id, uuid.UUID)
+        assert sample_category.name == "Programming"
+        assert isinstance(sample_category.created_at, datetime)
+        assert isinstance(sample_category.updated_at, datetime)
 
-    @pytest.mark.skip(reason="CategoryModel import issue - needs source file fix")
     def test_category_with_different_names(self):
-        """Test category with different names - skipped due to import issue."""
-        pass
+        """Test category with different names."""
+        names = ["Programming", "Science", "Math", "History", "Art"]
+        for name in names:
+            category = CategoryModel(
+                id=uuid.uuid4(),
+                name=name,
+                created_at=datetime.now(),
+                updated_at=datetime.now()
+            )
+            assert category.name == name
 
-    @pytest.mark.skip(reason="CategoryModel import issue - needs source file fix")
     def test_category_name_case_sensitivity(self):
-        """Test category name case sensitivity - skipped due to import issue."""
-        pass
+        """Test category name case sensitivity."""
+        category = CategoryModel(
+            id=uuid.uuid4(),
+            name="Programming",
+            created_at=datetime.now(),
+            updated_at=datetime.now()
+        )
+        assert category.name == "Programming"
+        
+        category.name = "programming"
+        assert category.name == "programming"
 
-    @pytest.mark.skip(reason="CategoryModel import issue - needs source file fix")
     def test_empty_category_name(self):
-        """Test category with empty name - skipped due to import issue."""
-        pass
+        """Test category with empty name."""
+        category = CategoryModel(
+            id=uuid.uuid4(),
+            name="",
+            created_at=datetime.now(),
+            updated_at=datetime.now()
+        )
+        assert category.name == ""
 
-    @pytest.mark.skip(reason="CategoryModel import issue - needs source file fix")
     def test_tablename_attribute(self):
-        """Test that __tablename__ is set correctly - skipped due to import issue."""
-        pass
+        """Test that __tablename__ is set correctly."""
+        assert CategoryModel.__tablename__ == "categories"

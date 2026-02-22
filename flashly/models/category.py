@@ -4,7 +4,7 @@ from uuid import UUID
 
 
 @dataclass
-class DeckModel:
+class CategoryModel:
     __tablename__ = "categories"
 
     id: UUID

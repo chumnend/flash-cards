@@ -10,6 +10,7 @@ from flashly.models.user import UserModel
 from flashly.models.card import CardModel
 from flashly.models.deck import DeckModel
 from flashly.models.user_details import UserDetailsModel
+from flashly.models.category import CategoryModel
 from flashly.models.follower import FollowerModel
 from flashly.models.deck_category import DeckCategoryModel
 
@@ -91,14 +92,12 @@ def sample_deck():
 @pytest.fixture
 def sample_category():
     """Create a sample category for testing."""
-    # Note: category.py appears to have a naming issue - commenting out for now
-    # return CategoryModel(
-    #     id=uuid.uuid4(),
-    #     name="Programming",
-    #     created_at=datetime.now(),
-    #     updated_at=datetime.now()
-    # )
-    return None
+    return CategoryModel(
+        id=uuid.uuid4(),
+        name="Programming",
+        created_at=datetime.now(),
+        updated_at=datetime.now()
+    )
 
 
 @pytest.fixture
