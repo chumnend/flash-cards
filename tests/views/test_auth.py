@@ -2,7 +2,7 @@ import uuid
 from unittest.mock import Mock, patch
 import pytest
 
-from flashly.views.user import register, login
+from flashly.views.auth import register, login
 
 
 class TestUserViews:

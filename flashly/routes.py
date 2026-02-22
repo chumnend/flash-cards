@@ -2,10 +2,12 @@ def includeme(config):
     # API Routes with /api prefix
     config.add_route("status", "/status")
 
-    # User Routes
+    # Authentication/Authorization Routes
     config.add_route("register", "/api/register", request_method="POST")
     config.add_route("login", "/api/login", request_method="POST")
     config.add_route("logout", "/api/logout", request_method="POST")
+
+    # User Routes
     config.add_route("get_profile", "/api/users/{user_id}", request_method="GET")
     config.add_route("update_user", "/api/users/{user_id}", request_method="PUT")
     config.add_route("change_password", "/api/change_password", request_method="PUT")
