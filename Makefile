@@ -32,7 +32,7 @@ dev:
 # Testing
 test:
 	@echo "Running backend tests..."
-	@pytest -v
+	@pytest --cov -v
 
 # Manage database
 migrate:

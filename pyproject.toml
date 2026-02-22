@@ -17,7 +17,7 @@ setuptools = "^81.0.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.4.2"
-pytest-cov = "^0.15.0"
+pytest-cov = "^4.0.0"
 black = "^24.0.0"
 flake8 = "^7.0.0"
 mypy = "^1.0.0"
@@ -61,6 +61,27 @@ exclude = [
     "dist",
     "migrations"
 ]
+
+[tool.coverage.run]
+branch = true
+source = ["flashly"]
+omit = [
+    "*/__pycache__/*",
+    "*/migrations/*",
+    "*/venv/*",
+    "tests/*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+]
+show_missing = true
+precision = 2
 
 [build-system]
 requires = ["poetry-core"]
