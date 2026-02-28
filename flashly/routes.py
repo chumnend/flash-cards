@@ -1,6 +1,10 @@
 def includeme(config):
+    # Static files configuration
+    config.add_static_view(name='assets', path='flashly:./dist/assets', cache_max_age=3600)
+    config.add_static_view(name='', path='flashly:./dist', cache_max_age=3600)
+    
     # API Routes with /api prefix
-    config.add_route("status", "/status")
+    config.add_route("status", "/api/status")
 
     # Authentication/Authorization Routes
     config.add_route("register", "/api/register", request_method="POST")
@@ -31,3 +35,7 @@ def includeme(config):
     config.add_route("get_card", "/api/decks/{deck_id}/cards/{card_id}", request_method="GET")
     config.add_route("update_card", "/api/decks/{deck_id}/cards/{card_id}", request_method="PUT")
     config.add_route("delete_card", "/api/decks/{deck_id}/cards/{card_id}", request_method="DELETE")
+
+    # Frontend Routes
+    config.add_route("frontend", "/")
+    config.add_route("frontend_catchall", "/*subpath")
