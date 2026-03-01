@@ -26,7 +26,7 @@ install:
 
 dev:
 	@echo "Starting development server..."
-	@python run.py --reload
+	@python run.py
 
 build: clean-dist
 	@echo "Building frontend assets..."
@@ -44,7 +44,7 @@ migrate:
 	@echo "Dropping and recreating database..."
 	@python ./migrations/scripts/dropdb.py && python ./migrations/scripts/createdb.py
 
-check:
+lint:
 	@echo "Running code quality checks..."
 	@echo "Checking code formatting with Black..."
 	@poetry run black --check flashly/ tests/ migrations/
@@ -54,7 +54,7 @@ check:
 	@poetry run mypy flashly/
 	@echo "All code quality checks passed!"
 
-fix:
+format:
 	@echo "Formatting code with Black..."
 	@poetry run black flashly/ tests/ migrations/
 	@echo "Running code quality checks..."
