@@ -32,18 +32,6 @@ def includeme(config):
     config.add_route("update_card", "/api/decks/{deck_id}/cards/{card_id}", request_method="PUT")
     config.add_route("delete_card", "/api/decks/{deck_id}/cards/{card_id}", request_method="DELETE")
 
-    # Frontend Routes
-    config.add_route("frontend", "/")
-    config.add_route("frontend_catchall", "/*subpath")
+    # Catch-all route for React SPA (must be last)
+    config.add_route("frontend", "/*path")
 
-    # Static files configuration
-    config.add_static_view(
-        name="assets",
-        path="flashly:./dist/assets",
-        cache_max_age=3600,
-    )
-    config.add_static_view(
-        name="",
-        path="flashly:./dist",
-        cache_max_age=3600,
-    )

@@ -31,8 +31,10 @@ dev:
 build: clean-dist
 	@echo "Building frontend assets..."
 	@cd frontend && yarn run build
-	@echo "Copying built assets into backend package..."
-	@cp -R ./frontend/dist ./flashly/
+	@echo "Built frontend assets"
+	@echo "Moving built assets into backend package..."
+	@mv ./frontend/dist ./flashly/
+	@echo "Moved frontend assets into backend package"
 
 test:
 	@echo "Running backend tests..."
