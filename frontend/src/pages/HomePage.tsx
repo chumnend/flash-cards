@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
+import { checkApiStatus  } from '../helpers/api'
+
 type StatusState = {
   message: string
 }
@@ -10,39 +12,13 @@ function HomePage() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const checkApiStatus = async () => {
+  const handleCheckApiStatus = async () => {
     try {
       setIsLoading(true)
       setError(null)
       setStatus(null)
 
-      const response = await fetch('/api/status')
-      if (!response.ok) {
-        throw new Error(`Request failed with status ${response.status}`)
-      }
-
-      const contentType = response.headers.get('content-type') ?? ''
-      let message: string
-
-      if (contentType.includes('application/json')) {
-        const data = await response.json()
-        if (typeof data === 'string') {
-          message = data
-        } else if (data && typeof data === 'object') {
-          if ('message' in data && typeof data.message === 'string') {
-            message = data.message
-          } else if ('status' in data && typeof data.status === 'string') {
-            message = data.status
-          } else {
-            message = JSON.stringify(data)
-          }
-        } else {
-          message = 'Received unexpected JSON response from API.'
-        }
-      } else {
-        message = await response.text()
-      }
-
+      const { message } = await checkApiStatus()
       setStatus({ message })
     } catch (err) {
       const errorMessage =
@@ -78,7 +54,7 @@ function HomePage() {
           <button
             type="button"
             className="button button--ghost"
-            onClick={checkApiStatus}
+            onClick={handleCheckApiStatus}
             disabled={isLoading}
           >
             {isLoading ? 'Checking…' : 'Check API status'}

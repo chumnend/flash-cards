@@ -7,7 +7,7 @@ import NotFoundPage from './pages/NotFoundPage'
 
 function App() {
   return (
-    <div className="app-shell">
+    <div>
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
