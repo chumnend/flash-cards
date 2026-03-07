@@ -22,7 +22,7 @@ def register(request: Request):
         return {"error": "Invalid JSON"}
 
     # Validate that all required fields are present
-    required_fields = ["firstName", "lastName", "email", "password"]
+    required_fields = ["firstName", "lastName", "username", "email", "password"]
     missing_fields = [field for field in required_fields if field not in data or not data[field].strip()]
     if missing_fields:
         request.response.status = 400
