@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
-import { checkApiStatus  } from '../helpers/api'
+import { checkApiStatus  } from '../../helpers/api/auth'
 
 type StatusState = {
   message: string

@@ -24,7 +24,7 @@ install:
 	@echo "Installing Python dependencies..."
 	@poetry install
 
-dev:
+dev: build
 	@echo "Starting development server..."
 	@python run.py
 
@@ -66,7 +66,6 @@ format:
 	@poetry run mypy flashly/
 	@echo "Code formatted and all checks passed!"
 
-# Development setup
 clean:
 	@echo "Cleaning cache and build files..."
 	@find . -type d -name "__pycache__" -exec rm -rf {} +
