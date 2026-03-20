@@ -2,12 +2,13 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
 import { checkApiStatus  } from '../../helpers/api/auth'
+import Page from '../layout/Page';
 
 type StatusState = {
   message: string
 }
 
-function HomePage() {
+const HomePage = () => {
   const [status, setStatus] = useState<StatusState | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -30,7 +31,7 @@ function HomePage() {
   }
 
   return (
-    <main className="page page--centered">
+    <Page>
       <section className="page-card">
         <header className="page-header">
           <h1 className="page-title">Flashly</h1>
@@ -75,7 +76,7 @@ function HomePage() {
           </div>
         </section>
       </section>
-    </main>
+    </Page>
   )
 }
 

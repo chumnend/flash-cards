@@ -3,8 +3,9 @@ import type { ChangeEvent, FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
 import { registerUser } from '../../helpers/api/auth'
+import Page from '../layout/Page';
 
-function RegisterPage() {
+const RegisterPage = () => {
   const navigate = useNavigate()
   const [formValues, setFormValues] = useState({
     firstName: '',
@@ -62,7 +63,7 @@ function RegisterPage() {
   }
 
   return (
-    <main className="page page--centered">
+    <Page>
       <section className="page-card">
         <header className="page-header">
           <h1 className="page-title">Create your account</h1>
@@ -170,7 +171,7 @@ function RegisterPage() {
           <Link to="/">Back to home</Link>
         </p>
       </section>
-    </main>
+    </Page>
   )
 }
 

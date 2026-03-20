@@ -3,8 +3,9 @@ import type { ChangeEvent, FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
 import { loginUser } from '../../helpers/api/auth'
+import Page from '../layout/Page';
 
-function LoginPage() {
+const LoginPage = () => {
   const navigate = useNavigate()
   const [formValues, setFormValues] = useState({
     email: '',
@@ -49,7 +50,7 @@ function LoginPage() {
   }
 
   return (
-    <main className="page page--centered">
+    <Page>
       <section className="page-card">
         <header className="page-header">
           <h1 className="page-title">Login</h1>
@@ -101,7 +102,7 @@ function LoginPage() {
           <Link to="/">Back to home</Link>
         </p>
       </section>
-    </main>
+    </Page>
   )
 }
 

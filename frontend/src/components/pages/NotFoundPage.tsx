@@ -1,8 +1,10 @@
 import { Link } from 'react-router-dom'
 
-function NotFoundPage() {
+import Page from '../layout/Page';
+
+const NotFoundPage = () => {
   return (
-    <main className="page page--centered">
+    <Page>
       <section className="page-card">
         <header className="page-header">
           <h1 className="page-title">Page not found</h1>
@@ -15,7 +17,7 @@ function NotFoundPage() {
           <Link to="/">Return to home</Link>
         </p>
       </section>
-    </main>
+    </Page>
   )
 }
 
