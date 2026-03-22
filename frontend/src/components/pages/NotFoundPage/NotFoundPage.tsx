@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 
-import Page from '../layout/Page';
+import Page from '../../layout/Page'
 
 const NotFoundPage = () => {
   return (

@@ -2,8 +2,8 @@ import { useState } from 'react'
 import type { ChangeEvent, FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
-import { loginUser } from '../../helpers/api/auth'
-import Page from '../layout/Page';
+import { loginUser } from '../../../helpers/api/auth'
+import Page from '../../layout/Page';
 
 const LoginPage = () => {
   const navigate = useNavigate()

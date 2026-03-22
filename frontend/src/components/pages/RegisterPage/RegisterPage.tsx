@@ -2,11 +2,12 @@ import { useState } from 'react'
 import type { ChangeEvent, FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
-import { registerUser } from '../../helpers/api/auth'
-import Page from '../layout/Page';
+import { registerUser } from '../../../helpers/api/auth'
+import Page from '../../layout/Page';
 
 const RegisterPage = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+
   const [formValues, setFormValues] = useState({
     firstName: '',
     lastName: '',
@@ -14,9 +15,9 @@ const RegisterPage = () => {
     email: '',
     password: '',
     confirmPassword: '',
-  })
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
-  const [error, setError] = useState<string | null>(null)
+  });
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target
@@ -24,7 +25,7 @@ const RegisterPage = () => {
       ...prev,
       [name]: value,
     }))
-  }
+  };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()

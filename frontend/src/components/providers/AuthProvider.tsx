@@ -6,6 +6,7 @@ import type { LoginPayload, User } from '../../helpers/types';
 interface AuthContextProps {
     user: User | null,
     token: string | null,
+    isAuthenticated: boolean,
     login(payload: LoginPayload): Promise<void>,
     logout(): void,
 }
@@ -13,6 +14,7 @@ interface AuthContextProps {
 export const AuthContext = createContext<AuthContextProps>({
     user: null,
     token: null,
+    isAuthenticated: false,
     login: async () => {},
     logout: () => {},
 });
@@ -54,6 +56,8 @@ const AuthProvider = (props: AuthProviderProps) => {
     }
 
     const logout = () => {
+        setUser(null);
+        setToken(null);
         window.localStorage.removeItem('flashly_token');
         window.localStorage.removeItem('flashly_user');
     }
@@ -61,6 +65,7 @@ const AuthProvider = (props: AuthProviderProps) => {
     const contextValue = {
         user,
         token,
+        isAuthenticated: !!user && !!token,
         login,
         logout
     }
