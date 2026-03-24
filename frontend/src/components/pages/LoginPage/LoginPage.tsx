@@ -1,109 +1,87 @@
-import { useState } from 'react'
-import type { ChangeEvent, FormEvent } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useState } from 'react';
+import type { ChangeEvent, FormEvent } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 
-import { loginUser } from '../../../helpers/api/auth'
+import { useAuth } from '../../providers/AuthProvider';
 import Page from '../../layout/Page';
+import FormField from '../../elements/FormField';
+import FormError from '../../elements/FormError';
+import LoaderButton from '../../elements/LoaderButton';
 
 const LoginPage = () => {
-  const navigate = useNavigate()
-  const [formValues, setFormValues] = useState({
-    email: '',
-    password: '',
-  })
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+    const auth = useAuth();
+    const navigate = useNavigate();
+    const location = useLocation();
 
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target
-    setFormValues((prev) => ({
-      ...prev,
-      [name]: value,
-    }))
-  }
+    const [formValues, setFormValues] = useState({ email: '', password: '' });
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
+    const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = event.target;
+        setFormValues((prev) => ({ ...prev, [name]: value }));
+    };
 
-    if (isSubmitting) return
+    const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        if (isSubmitting) return;
 
-    const email = formValues.email.trim()
-    const password = formValues.password
+        setError(null);
+        setIsSubmitting(true);
 
-    setError(null)
-    setIsSubmitting(true)
+        try {
+            await auth.login({ email: formValues.email.trim(), password: formValues.password });
+            const from = location.state?.from?.pathname ?? '/feed';
+            navigate(from, { replace: true });
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
 
-    try {
-      const auth = await loginUser({ email, password })
+    return (
+        <Page>
+            <section className="page-card">
+                <header className="page-header">
+                    <h1 className="page-title">Login</h1>
+                    <p className="page-subtitle">Welcome back. Enter your details to continue.</p>
+                </header>
 
-      // Simple client-side auth persistence; can be replaced with context later
-      window.localStorage.setItem('flashly_token', auth.token)
-      window.localStorage.setItem('flashly_user', JSON.stringify(auth.user))
+                <form className="form" onSubmit={handleSubmit}>
+                    <FormField
+                        label="Email"
+                        type="email"
+                        name="email"
+                        placeholder="you@example.com"
+                        autoComplete="email"
+                        value={formValues.email}
+                        onChange={handleChange}
+                        required
+                    />
+                    <FormField
+                        label="Password"
+                        type="password"
+                        name="password"
+                        placeholder="••••••••"
+                        autoComplete="current-password"
+                        value={formValues.password}
+                        onChange={handleChange}
+                        required
+                    />
+                    <FormError message={error} />
+                    <LoaderButton label="Login" loadingLabel="Logging in..." isLoading={isSubmitting} />
+                </form>
 
-      navigate('/')
-    } catch (err) {
-      const message = err instanceof Error ? err.message : 'Something went wrong. Please try again.'
-      setError(message)
-    } finally {
-      setIsSubmitting(false)
-    }
-  }
+                <p className="page-footer-text">
+                    New here? <Link to="/register">Create an account</Link>
+                </p>
+                <p className="page-footer-text">
+                    <Link to="/">Back to home</Link>
+                </p>
+            </section>
+        </Page>
+    );
+};
 
-  return (
-    <Page>
-      <section className="page-card">
-        <header className="page-header">
-          <h1 className="page-title">Login</h1>
-          <p className="page-subtitle">
-            Welcome back. Enter your details to continue.
-          </p>
-        </header>
-
-        <form className="form" onSubmit={handleSubmit}>
-          <label className="form-field">
-            <span className="form-label">Email</span>
-            <input
-              type="email"
-              name="email"
-              className="form-input"
-              placeholder="you@example.com"
-              autoComplete="email"
-              value={formValues.email}
-              onChange={handleChange}
-              required
-            />
-          </label>
-
-          <label className="form-field">
-            <span className="form-label">Password</span>
-            <input
-              type="password"
-              name="password"
-              className="form-input"
-              placeholder="••••••••"
-              autoComplete="current-password"
-              value={formValues.password}
-              onChange={handleChange}
-              required
-            />
-          </label>
-
-          {error && <p className="form-error">{error}</p>}
-
-          <button type="submit" className="button button--primary form-submit" disabled={isSubmitting}>
-            {isSubmitting ? 'Logging in...' : 'Login'}
-          </button>
-        </form>
-
-        <p className="page-footer-text">
-          New here? <Link to="/register">Create an account</Link>
-        </p>
-        <p className="page-footer-text">
-          <Link to="/">Back to home</Link>
-        </p>
-      </section>
-    </Page>
-  )
-}
-
-export default LoginPage
+export default LoginPage;

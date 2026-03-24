@@ -1,179 +1,87 @@
-import { useState } from 'react'
-import type { ChangeEvent, FormEvent } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useState } from 'react';
+import type { ChangeEvent, FormEvent } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
-import { registerUser } from '../../../helpers/api/auth'
+import { registerUser } from '../../../helpers/api/auth';
+import { useAuth } from '../../providers/AuthProvider';
 import Page from '../../layout/Page';
+import FormField from '../../elements/FormField';
+import FormError from '../../elements/FormError';
+import LoaderButton from '../../elements/LoaderButton';
 
 const RegisterPage = () => {
-  const navigate = useNavigate();
+    const auth = useAuth();
+    const navigate = useNavigate();
 
-  const [formValues, setFormValues] = useState({
-    firstName: '',
-    lastName: '',
-    username: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-  });
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
+    const [formValues, setFormValues] = useState({
+        firstName: '',
+        lastName: '',
+        username: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+    });
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target
-    setFormValues((prev) => ({
-      ...prev,
-      [name]: value,
-    }))
-  };
+    const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = event.target;
+        setFormValues((prev) => ({ ...prev, [name]: value }));
+    };
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
+    const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        if (isSubmitting) return;
 
-    if (isSubmitting) return
+        const { firstName, lastName, username, email, password, confirmPassword } = formValues;
 
-    const { firstName, lastName, username, email, password, confirmPassword } = formValues
+        if (password !== confirmPassword) {
+            setError('Passwords do not match');
+            return;
+        }
 
-    if (password !== confirmPassword) {
-      setError('Passwords do not match')
-      return
-    }
+        setError(null);
+        setIsSubmitting(true);
 
-    setError(null)
-    setIsSubmitting(true)
+        try {
+            await registerUser({ firstName: firstName.trim(), lastName: lastName.trim(), username: username.trim(), email: email.trim(), password });
+            await auth.login({ email: email.trim(), password });
+            navigate('/feed');
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
 
-    try {
-      const auth = await registerUser({
-        firstName: firstName.trim(),
-        lastName: lastName.trim(),
-        username: username.trim(),
-        email: email.trim(),
-        password,
-      })
+    return (
+        <Page>
+            <section className="page-card">
+                <header className="page-header">
+                    <h1 className="page-title">Create your account</h1>
+                    <p className="page-subtitle">Start building decks in a few seconds.</p>
+                </header>
 
-      window.localStorage.setItem('flashly_token', auth.token)
-      window.localStorage.setItem('flashly_user', JSON.stringify(auth.user))
+                <form className="form" onSubmit={handleSubmit}>
+                    <FormField label="First name" type="text" name="firstName" placeholder="Jane" autoComplete="given-name" value={formValues.firstName} onChange={handleChange} required />
+                    <FormField label="Last name" type="text" name="lastName" placeholder="Doe" autoComplete="family-name" value={formValues.lastName} onChange={handleChange} required />
+                    <FormField label="Username" type="text" name="username" placeholder="flashlyfan" autoComplete="username" value={formValues.username} onChange={handleChange} required />
+                    <FormField label="Email" type="email" name="email" placeholder="you@example.com" autoComplete="email" value={formValues.email} onChange={handleChange} required />
+                    <FormField label="Password" type="password" name="password" placeholder="Create a password" autoComplete="new-password" value={formValues.password} onChange={handleChange} required />
+                    <FormField label="Confirm password" type="password" name="confirmPassword" placeholder="Repeat your password" autoComplete="new-password" value={formValues.confirmPassword} onChange={handleChange} required />
+                    <FormError message={error} />
+                    <LoaderButton label="Create account" loadingLabel="Creating account..." isLoading={isSubmitting} />
+                </form>
 
-      navigate('/login')
-    } catch (err) {
-      const message = err instanceof Error ? err.message : 'Something went wrong. Please try again.'
-      setError(message)
-    } finally {
-      setIsSubmitting(false)
-    }
-  }
+                <p className="page-footer-text">
+                    Already have an account? <Link to="/login">Login</Link>
+                </p>
+                <p className="page-footer-text">
+                    <Link to="/">Back to home</Link>
+                </p>
+            </section>
+        </Page>
+    );
+};
 
-  return (
-    <Page>
-      <section className="page-card">
-        <header className="page-header">
-          <h1 className="page-title">Create your account</h1>
-          <p className="page-subtitle">
-            Start building decks in a few seconds.
-          </p>
-        </header>
-
-        <form className="form" onSubmit={handleSubmit}>
-          <label className="form-field">
-            <span className="form-label">First name</span>
-            <input
-              type="text"
-              name="firstName"
-              className="form-input"
-              placeholder="Jane"
-              autoComplete="given-name"
-              value={formValues.firstName}
-              onChange={handleChange}
-              required
-            />
-          </label>
-
-          <label className="form-field">
-            <span className="form-label">Last name</span>
-            <input
-              type="text"
-              name="lastName"
-              className="form-input"
-              placeholder="Doe"
-              autoComplete="family-name"
-              value={formValues.lastName}
-              onChange={handleChange}
-              required
-            />
-          </label>
-
-          <label className="form-field">
-            <span className="form-label">Username</span>
-            <input
-              type="text"
-              name="username"
-              className="form-input"
-              placeholder="flashlyfan"
-              autoComplete="username"
-              value={formValues.username}
-              onChange={handleChange}
-              required
-            />
-          </label>
-
-          <label className="form-field">
-            <span className="form-label">Email</span>
-            <input
-              type="email"
-              name="email"
-              className="form-input"
-              placeholder="you@example.com"
-              autoComplete="email"
-              value={formValues.email}
-              onChange={handleChange}
-              required
-            />
-          </label>
-
-          <label className="form-field">
-            <span className="form-label">Password</span>
-            <input
-              type="password"
-              name="password"
-              className="form-input"
-              placeholder="Create a password"
-              autoComplete="new-password"
-              value={formValues.password}
-              onChange={handleChange}
-              required
-            />
-          </label>
-
-          <label className="form-field">
-            <span className="form-label">Confirm password</span>
-            <input
-              type="password"
-              name="confirmPassword"
-              className="form-input"
-              placeholder="Repeat your password"
-              autoComplete="new-password"
-              value={formValues.confirmPassword}
-              onChange={handleChange}
-              required
-            />
-          </label>
-
-          {error && <p className="form-error">{error}</p>}
-
-          <button type="submit" className="button button--primary form-submit" disabled={isSubmitting}>
-            {isSubmitting ? 'Creating account...' : 'Create account'}
-          </button>
-        </form>
-
-        <p className="page-footer-text">
-          Already have an account? <Link to="/login">Login</Link>
-        </p>
-        <p className="page-footer-text">
-          <Link to="/">Back to home</Link>
-        </p>
-      </section>
-    </Page>
-  )
-}
-
-export default RegisterPage
+export default RegisterPage;
