@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import Page from "../../layout/Page";
 import { useAuth } from '../../providers/AuthProvider';
 
+import './HomePage.css';
+
 const HomePage = () => {
   const auth = useAuth();
   const navigate = useNavigate();
@@ -20,8 +22,10 @@ const HomePage = () => {
 
   return (
     <Page>
-      <h1>Welcome to Flashly</h1>
-      <p>Your ultimate flashcard learning platform!</p>
+      <div className="homepage-hero">
+        <h1>Welcome to Flashly</h1>
+        <p>Your ultimate flashcard learning platform!</p>
+      </div>
     </Page>
   );
 }

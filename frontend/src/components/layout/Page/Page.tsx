@@ -1,14 +1,16 @@
 import type React from "react"
 
+import './Page.css'
+
 type Props = {
     children: React.ReactNode,
 }
 
-const Page = (props: Props) => {
+const Page = ({ children }: Props) => {
     return (
-        <main className="page">
-            {props.children}
-        </main>
+        <div className="page">
+            {children}
+        </div>
     )
 }
 
